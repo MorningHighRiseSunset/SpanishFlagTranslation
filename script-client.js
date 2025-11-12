@@ -13,18 +13,59 @@ window.addEventListener('DOMContentLoaded', () => {
     const input = document.getElementById('userInput');
     const btn = document.getElementById('translateBtn');
     const output = document.getElementById('output');
+    const form = document.getElementById('translateForm');
     // Hide modal and language selection for auto-detect
     const modal = document.getElementById('languageModal');
     if (modal) modal.style.display = 'none';
 
-    btn.addEventListener('click', async () => {
-        const text = input.value.trim();
-        if (!text) {
-            output.textContent = 'Please enter some text to translate';
-            return;
-        }
+    // Animated output helpers
+    function clearOutputAnimated(el){
+        return new Promise((resolve) => {
+            const letters = Array.from(el.querySelectorAll('.letter'));
+            if (letters.length === 0) { el.textContent = ''; resolve(); return; }
+            let i = letters.length - 1;
+            const step = () => {
+                if (i < 0) { el.innerHTML = ''; resolve(); return; }
+                const span = letters[i];
+                span.classList.remove('pop-in');
+                span.classList.add('pop-out');
+                i--;
+                setTimeout(step, 35);
+            };
+            step();
+        });
+    }
 
-        output.textContent = 'Translating...';
+    function typeOutputAnimated(el, text){
+        return new Promise((resolve) => {
+            el.innerHTML = '';
+            const chars = Array.from(String(text));
+            chars.forEach((ch, idx) => {
+                const span = document.createElement('span');
+                span.className = 'letter';
+                span.textContent = ch;
+                el.appendChild(span);
+                // stagger
+                setTimeout(() => span.classList.add('pop-in'), idx * 28);
+            });
+            // resolve after last char animation
+            setTimeout(() => resolve(), Math.max(250, chars.length * 28 + 60));
+        });
+    }
+
+    async function showMessage(msg){
+        await clearOutputAnimated(output);
+        await typeOutputAnimated(output, msg);
+    }
+
+    const setBusy = (busy) => { btn.disabled = busy; input.disabled = busy; };
+
+    const startTranslate = async () => {
+        const text = input.value.trim();
+        if (!text) { await showMessage('Please enter some text to translate'); return; }
+
+        setBusy(true);
+        await showMessage('Translating...');
 
         try {
             // When deployed to Netlify the function will be at /.netlify/functions/translate
@@ -34,11 +75,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json',
                     'Origin': window.location.origin
                 },
-                body: JSON.stringify({
-                    text: text,
-                    // No source: let server auto-detect
-                    target: 'es'
-                })
+                body: JSON.stringify({ text: text, target: 'es' })
             });
 
             if (!res.ok) {
@@ -48,23 +85,30 @@ window.addEventListener('DOMContentLoaded', () => {
                     errMsg = errBody?.error || errMsg;
                 } catch {}
                 if (res.status === 0 || res.status === 404 || res.status === 502 || res.status === 503) {
-                    errMsg = 'Cannot reach translation server. Make sure it is running (see instructions).';
+                    errMsg = 'Cannot reach translation server. Make sure it is running.';
                 }
-                output.textContent = errMsg;
+                await showMessage(errMsg);
+                setBusy(false);
                 return;
             }
 
             const json = await res.json();
             if (json.translatedText) {
-                output.textContent = json.translatedText;
+                await showMessage(json.translatedText);
             } else {
-                output.textContent = 'Translation succeeded but returned unexpected shape';
+                await showMessage('Translation succeeded but returned unexpected shape');
                 console.warn(json);
             }
 
         } catch (err) {
             console.error('Client error', err);
-            output.textContent = 'Cannot reach translation server. Make sure it is running (see instructions).';
+            await showMessage('Cannot reach translation server. Make sure it is running.');
+        } finally {
+            setBusy(false);
         }
-    });
+    };
+
+    // Wire up both click and form submit / Enter key
+    btn.addEventListener('click', startTranslate);
+    if (form) form.addEventListener('submit', (e) => { e.preventDefault(); startTranslate(); });
 });
