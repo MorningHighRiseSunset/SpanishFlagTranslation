@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Spanish Flag Translation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Spanish Translation Assistant</h1>
+        <input type="text" id="userInput" placeholder="Type a word to translate...">
+        <button id="translateBtn">Translate</button>
+        <div id="output"></div>
+    </div>
+        <!-- Language Selection Modal -->
+        <div id="languageModal" class="modal">
+            <div class="modal-content">
+                <h2>Select Your Language</h2>
+                <select id="languageSelect">
+                    <option value="english">English</option>
+                    <option value="french">French</option>
+                    <option value="hindi">Hindi</option>
+                    <option value="mandarin">Mandarin</option>
+                    <option value="spanish">Spanish</option>
+                    <option value="vietnamese">Vietnamese</option>
+                </select>
+                <button id="confirmLanguage">Confirm</button>
+            </div>
+        </div>
+    <script src="script-client.js"></script>
+</body>
+</html>
