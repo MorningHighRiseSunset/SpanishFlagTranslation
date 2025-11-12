@@ -62,14 +62,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const startTranslate = async () => {
         const text = input.value.trim();
-        if (!text) { await showMessage('Please enter some text to translate'); return; }
+    if (!text) { await showMessage('Please enter some text to translate (Por favor, introduce texto para traducir)'); return; }
 
-        setBusy(true);
-        await showMessage('Translating...');
+    setBusy(true);
+    await showMessage('Translating... (Traduciendo...)');
 
         try {
-            // When deployed to Netlify the function will be at /.netlify/functions/translate
-            const res = await fetch('/.netlify/functions/translate', {
+            // Use the /translate redirect which routes to the translate function
+            const res = await fetch('/translate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -79,13 +79,13 @@ window.addEventListener('DOMContentLoaded', () => {
             });
 
             if (!res.ok) {
-                let errMsg = `Translation failed (${res.status})`;
+                let errMsg = `Translation failed (${res.status}) (Error de traducción ${res.status})`;
                 try {
                     const errBody = await res.json();
                     errMsg = errBody?.error || errMsg;
                 } catch {}
                 if (res.status === 0 || res.status === 404 || res.status === 502 || res.status === 503) {
-                    errMsg = 'Cannot reach translation server. Make sure it is running.';
+                    errMsg = 'Cannot reach translation server. Make sure it is running. (No se puede acceder al servidor de traducción. Asegúrate de que esté en ejecución.)';
                 }
                 await showMessage(errMsg);
                 setBusy(false);
@@ -96,13 +96,13 @@ window.addEventListener('DOMContentLoaded', () => {
             if (json.translatedText) {
                 await showMessage(json.translatedText);
             } else {
-                await showMessage('Translation succeeded but returned unexpected shape');
+                await showMessage('Translation succeeded but returned unexpected shape (La traducción tuvo éxito pero devolvió una forma inesperada)');
                 console.warn(json);
             }
 
         } catch (err) {
             console.error('Client error', err);
-            await showMessage('Cannot reach translation server. Make sure it is running.');
+            await showMessage('Cannot reach translation server. Make sure it is running. (No se puede acceder al servidor de traducción. Asegúrate de que esté en ejecución.)');
         } finally {
             setBusy(false);
         }
