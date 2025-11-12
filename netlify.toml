@@ -3,6 +3,6 @@
   publish = "."
 
 [[redirects]]
-  from = "/translate"
-  to = "/.netlify/functions/translate"
+  from = "/.netlify/functions/*"
+  to = "/:splat"
   status = 200

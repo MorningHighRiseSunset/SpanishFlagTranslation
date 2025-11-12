@@ -68,8 +68,8 @@ window.addEventListener('DOMContentLoaded', () => {
     await showMessage('Translating... (Traduciendo...)');
 
         try {
-            // Use the /translate redirect which routes to the translate function
-            const res = await fetch('/translate', {
+            // When deployed to Netlify the function will be at /.netlify/functions/translate
+            const res = await fetch('/.netlify/functions/translate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
