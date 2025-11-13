@@ -1,9 +1,29 @@
 // Netlify function: enhanced translator with intent parsing and quoted-phrase handling
+// This file was migrated from the local server implementation so behavior is consistent
 
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
+const path = require('path');
 
-// Direct language code mapping
-const languageMap = {
+// Load language aliases shipped with the site (falls back gracefully)
+let languageAliases = {};
+try {
+  // try a few likely locations for the shipped language_aliases.json depending on where this file lives
+  // 1) when this file is in netlify/functions -> ../../language_aliases.json
+  // 2) when this file is in project root -> ./language_aliases.json
+  try {
+    languageAliases = require(path.join(__dirname, '..', '..', 'language_aliases.json'));
+  } catch (e1) {
+    try {
+      languageAliases = require(path.join(__dirname, 'language_aliases.json'));
+    } catch (e2) {
+      languageAliases = {};
+    }
+  }
+} catch (e) {
+  languageAliases = {};
+}
+
+const canonicalToCode = {
   english: 'en',
   spanish: 'es',
   french: 'fr',
@@ -16,31 +36,32 @@ const languageMap = {
   arabic: 'ar',
   japanese: 'ja',
   korean: 'ko',
-  russian: 'ru',
-  // Also handle 2-letter codes
-  en: 'en',
-  es: 'es',
-  fr: 'fr',
-  hi: 'hi',
-  zh: 'zh',
-  vi: 'vi',
-  pt: 'pt',
-  de: 'de',
-  it: 'it',
-  ar: 'ar',
-  ja: 'ja',
-  ko: 'ko',
-  ru: 'ru'
+  russian: 'ru'
+};
+
+const aliasToCode = {};
+Object.keys(languageAliases).forEach((canonical) => {
+  const list = languageAliases[canonical] || [];
+  const code = canonicalToCode[String(canonical).trim().toLowerCase()] || String(canonical).trim().toLowerCase();
+  list.forEach((a) => {
+    aliasToCode[String(a).trim().toLowerCase()] = code;
+  });
+  aliasToCode[String(canonical).trim().toLowerCase()] = code;
+});
+
+const fallbackMap = {
+  en: 'en', es: 'es', fr: 'fr', hi: 'hi', zh: 'zh', vi: 'vi', pt: 'pt', de: 'de', it: 'it', ar: 'ar', ja: 'ja', ko: 'ko', ru: 'ru'
 };
 
 function mapLanguageNameToCode(name) {
   if (!name) return null;
   const n = String(name).trim().toLowerCase();
   if (!n) return null;
-  if (languageMap[n]) return languageMap[n];
-  // Try cleaning special characters
+  if (aliasToCode[n]) return aliasToCode[n];
+  if (fallbackMap[n]) return fallbackMap[n];
   const cleaned = n.replace(/[^a-z]/g, '');
-  if (languageMap[cleaned]) return languageMap[cleaned];
+  if (aliasToCode[cleaned]) return aliasToCode[cleaned];
+  if (fallbackMap[cleaned]) return fallbackMap[cleaned];
   if (/^[a-z]{2}$/.test(cleaned)) return cleaned;
   return null;
 }

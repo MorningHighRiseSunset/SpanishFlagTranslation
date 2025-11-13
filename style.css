@@ -119,11 +119,7 @@ button[disabled]{opacity:0.6;cursor:default;transform:none}
 .output{
     margin-top: 24px;
     min-height: 60px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:0;
+    display: block;
     padding: 16px 20px;
     border-radius: 12px;
     background: linear-gradient(135deg, rgba(0,102,204,0.05), rgba(230,240,255,0.5));
@@ -133,6 +129,9 @@ button[disabled]{opacity:0.6;cursor:default;transform:none}
     font-weight: 500;
     line-height: 1.6;
     word-break: break-word;
+    word-wrap: break-word;
+    white-space: normal;
+    overflow-wrap: break-word;
 }
 
 .help{
@@ -148,9 +147,10 @@ button[disabled]{opacity:0.6;cursor:default;transform:none}
 
 /* Per letter animation - fixed for contiguous text */
 .letter{
-    display:inline;
-    will-change:transform,opacity;
-    opacity:0;
+    display: inline;
+    will-change: transform, opacity;
+    opacity: 0;
+    white-space: pre-wrap;
 }
 .letter.pop-in{
     animation:popIn .35s cubic-bezier(.2,.9,.3,1) forwards;

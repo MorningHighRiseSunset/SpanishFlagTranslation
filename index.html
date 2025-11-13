@@ -41,6 +41,25 @@
                             <option value="spanish">Spanish (Español)</option>
                             <option value="french">French (Français)</option>
                             <option value="hindi">Hindi (हिंदी)</option>
+                            You're right — we did! The API key IS set in Netlify. So the problem must be something else.
+                            
+                            Looking at the 502 error, the issue is likely in how the function is receiving or parsing the language codes. Let me check what's actually being sent and trace through the logic.
+                            
+                            When you select "Spanish" → "English", the dropdown values are "spanish" and "english". But I need to verify the mapLanguageNameToCode function is working correctly with those values.
+                            
+                            Actually, I think I found the issue — in the translate.js function, it's trying to use require() to load language_aliases.json, but that might not work in Netlify Functions. Let me simplify the function to not depend on that:
+                            
+                            translate.js+21-42
+                            Now let me push this fix:
+                            
+                            
+                            git add netlify/functions/translate.js; git commit -m "Fix: simplify language mapping, remove require() dependency"; git push
+                            Good! The push succeeded. Now Netlify should auto-deploy this within seconds.
+                            
+                            Try again on https://spanish-ai-translator.netlify.app/ and type:
+                            ¿Cómo se dice adiós en inglés?
+                            
+                            It should work now. The fix removed the problematic require() calls that might 
                             <option value="mandarin">Mandarin (中文)</option>
                             <option value="vietnamese">Vietnamese (Tiếng Việt)</option>
                         </select>

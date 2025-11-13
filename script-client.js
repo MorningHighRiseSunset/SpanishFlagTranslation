@@ -59,6 +59,9 @@ document.addEventListener('DOMContentLoaded', function() {
         userLanguages = JSON.parse(saved);
         initializeApp();
     } else {
+        // Set default language pair: Spanish to English
+        userLanguages = { source: 'spanish', target: 'english' };
+        localStorage.setItem('userLanguages', JSON.stringify(userLanguages));
         // Show modal on first load
         showLanguageModal(true);
     }
@@ -167,7 +170,7 @@ function updateTargetLanguageOptions() {
     if (source === 'spanish') {
         // Spanish speaker: allow all languages except Spanish
         availableTargets = ['english', 'french', 'hindi', 'mandarin', 'vietnamese'];
-    } else {
+    } else if (source !== '') {
         // Non-Spanish speaker: LOCK to Spanish only
         availableTargets = ['spanish'];
     }
@@ -181,9 +184,12 @@ function updateTargetLanguageOptions() {
         targetLang.appendChild(opt);
     });
 
-    // Auto-select Spanish if it's the only option (non-Spanish speaker)
+    // Auto-select default target language if available
     if (source !== 'spanish' && availableTargets.length === 1) {
         targetLang.value = 'spanish';
+    } else if (source === 'spanish' && availableTargets.length > 0) {
+        // For Spanish speakers, default to English
+        targetLang.value = 'english';
     }
 
     // Enable confirm button only if both are selected
