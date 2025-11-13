@@ -83,6 +83,19 @@ document.addEventListener('DOMContentLoaded', function() {
     if (sourceLang) {
         sourceLang.addEventListener('change', function() {
             updateTargetLanguageOptions();
+            updateUIText(); // Update UI text immediately when source changes
+        });
+    }
+
+    // Target language dropdown change
+    if (targetLang) {
+        targetLang.addEventListener('change', function() {
+            const confirmBtn = document.getElementById('confirmLanguage');
+            const source = sourceLang.value;
+            const target = targetLang.value;
+            if (confirmBtn) {
+                confirmBtn.disabled = !source || !target;
+            }
         });
     }
 
@@ -145,11 +158,19 @@ function updateTargetLanguageOptions() {
     const targetLang = document.getElementById('targetLang');
     const source = sourceLang.value;
 
-    // Get all available languages
-    const allLangs = ['spanish', 'english', 'french', 'hindi', 'mandarin', 'vietnamese'];
+    // SPANISH TRANSLATION ASSISTANT LOGIC:
+    // - If user speaks Spanish: they can translate TO any other language (except Spanish)
+    // - If user speaks any other language: LOCK to Spanish only
 
-    // Filter out the selected source language
-    const availableTargets = allLangs.filter(lang => lang !== source);
+    let availableTargets = [];
+    
+    if (source === 'spanish') {
+        // Spanish speaker: allow all languages except Spanish
+        availableTargets = ['english', 'french', 'hindi', 'mandarin', 'vietnamese'];
+    } else {
+        // Non-Spanish speaker: LOCK to Spanish only
+        availableTargets = ['spanish'];
+    }
 
     // Repopulate target dropdown
     targetLang.innerHTML = '<option value="">-- Select --</option>';
@@ -160,6 +181,11 @@ function updateTargetLanguageOptions() {
         targetLang.appendChild(opt);
     });
 
+    // Auto-select Spanish if it's the only option (non-Spanish speaker)
+    if (source !== 'spanish' && availableTargets.length === 1) {
+        targetLang.value = 'spanish';
+    }
+
     // Enable confirm button only if both are selected
     const confirmBtn = document.getElementById('confirmLanguage');
     if (confirmBtn) {
@@ -169,14 +195,20 @@ function updateTargetLanguageOptions() {
 
 function initializeApp() {
     if (!userLanguages) return;
+    updateUIText();
+}
 
-    // Update UI text based on source language
+function updateUIText() {
     const input = document.getElementById('input');
     const submitBtn = document.getElementById('submitBtn');
     const help = document.querySelector('.help');
-
-    // Get language code from source language value
-    const sourceLangCode = langCodes[codeToDisplay[userLanguages.source]] || 'en';
+    const sourceLang = document.getElementById('sourceLang');
+    
+    // Get the source language (either from saved userLanguages or from modal dropdown)
+    let sourceLangValue = userLanguages ? userLanguages.source : sourceLang.value;
+    
+    // Map to language code for i18n
+    const sourceLangCode = langCodes[codeToDisplay[sourceLangValue]] || 'en';
     const texts = i18n[sourceLangCode] || i18n.en;
 
     if (input) input.placeholder = texts.placeholder;
