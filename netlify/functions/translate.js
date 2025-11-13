@@ -1,5 +1,5 @@
 // Netlify function: enhanced translator with intent parsing and quoted-phrase handling
-// Copied from project root and adjusted to run under netlify/functions/
+// This file was migrated from the local server implementation so behavior is consistent
 
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 const path = require('path');
@@ -7,8 +7,18 @@ const path = require('path');
 // Load language aliases shipped with the site (falls back gracefully)
 let languageAliases = {};
 try {
-  // when this file is in netlify/functions, language_aliases.json is two levels up
-  languageAliases = require(path.join(__dirname, '..', '..', 'language_aliases.json'));
+  // try a few likely locations for the shipped language_aliases.json depending on where this file lives
+  // 1) when this file is in netlify/functions -> ../../language_aliases.json
+  // 2) when this file is in project root -> ./language_aliases.json
+  try {
+    languageAliases = require(path.join(__dirname, '..', '..', 'language_aliases.json'));
+  } catch (e1) {
+    try {
+      languageAliases = require(path.join(__dirname, 'language_aliases.json'));
+    } catch (e2) {
+      languageAliases = {};
+    }
+  }
 } catch (e) {
   languageAliases = {};
 }
@@ -110,30 +120,18 @@ exports.handler = async function(event) {
   try {
     if (!GOOGLE_API_KEY) return { statusCode: 500, body: JSON.stringify({ error: 'Server: API key not configured' }) };
     const body = JSON.parse(event.body || '{}');
-    const { text, source, target: explicitTarget } = body || {};
+    const { text, source: userSource, target: userTarget } = body || {};
     if (!text) return { statusCode: 400, body: JSON.stringify({ error: 'Missing `text` in request body' }) };
 
-    let detectedSource = source;
-    if (!detectedSource) {
-      try {
-        detectedSource = await callGoogleDetect(text);
-      } catch (e) {
-        detectedSource = null;
-      }
-    }
+    // Map user language names (from dropdown) to codes
+    const sourceCode = userSource ? mapLanguageNameToCode(userSource) : null;
+    const targetCode = userTarget ? mapLanguageNameToCode(userTarget) : 'es';
 
-    let quotedPhrase = null;
-    let quotedFromOriginal = false;
-    const quotedMatch = text.match(/["'«»“”‹›](.+?)["'«»“”‹›]/);
-    if (quotedMatch && quotedMatch[1] && quotedMatch[1].trim()) {
-      quotedPhrase = quotedMatch[1].trim();
-      quotedFromOriginal = true;
-    }
-
+    // Translate user's input to English to parse intent (skip if already English)
     let englishText;
     try {
-      if (detectedSource && detectedSource !== 'en') {
-        const t = await callGoogleTranslate(text, 'en', detectedSource);
+      if (sourceCode && sourceCode !== 'en') {
+        const t = await callGoogleTranslate(text, 'en', sourceCode);
         englishText = t.translatedText || String(text);
       } else {
         englishText = String(text);
@@ -142,46 +140,55 @@ exports.handler = async function(event) {
       englishText = String(text);
     }
 
+    // Multi-language patterns: English, Spanish, French
     const patterns = [
+      // English patterns
       /how\s+(?:do\s+i|do\s+you)\s+say\s+(.+?)\s+in\s+([a-zA-Z\u00C0-\u024F\s]+)/i,
       /how\s+to\s+say\s+(.+?)\s+in\s+([a-zA-Z\u00C0-\u024F\s]+)/i,
       /what\s+is\s+(.+?)\s+in\s+([a-zA-Z\u00C0-\u024F\s]+)/i,
       /(?:can\s+you\s+)?translate\s+(.+?)\s+(?:to|into)\s+([a-zA-Z\u00C0-\u024F\s]+)/i,
       /how\s+would\s+i\s+say\s+(.+?)\s+in\s+([a-zA-Z\u00C0-\u024F\s]+)/i,
-      /how\s+do\s+i\s+say\s+(.+?)\s+in\s+([a-zA-Z\u00C0-\u024F\s]+)/i
+      /how\s+do\s+i\s+say\s+(.+?)\s+in\s+([a-zA-Z\u00C0-\u024F\s]+)/i,
+      // Spanish patterns: ¿Cómo se dice X en Y?
+      /¿?\s*cómo\s+se\s+dice\s+(.+?)\s+en\s+([a-záéíóúüñ\s]+)\s*\??/i,
+      /¿?\s*qué\s+significa\s+(.+?)\s+en\s+([a-záéíóúüñ\s]+)\s*\??/i,
+      // French patterns: Comment dit-on X en Y?
+      /comment\s+(?:dit|on\s+dit)\s+(.+?)\s+en\s+([a-zA-Zàâäéèêëîïôöùûüœæç\s]+)/i,
+      /qu'est-ce\s+que\s+c'est\s+(.+?)\s+en\s+([a-zA-Zàâäéèêëîïôöùûüœæç\s]+)/i
     ];
 
     let match = null;
     for (const p of patterns) {
-      const m = englishText.match(p);
+      const m = englishText.match(p) || text.match(p);
       if (m) { match = m; break; }
     }
 
     if (match) {
-      const phraseEnglish = match[1].trim().replace(/["'«»“”‹›]/g, '');
+      const phraseToTranslate = match[1].trim().replace(/["'«»""‹›]/g, '');
       const langName = match[2].trim().toLowerCase();
-      const targetCode = mapLanguageNameToCode(langName);
-      if (targetCode) {
+      const extractedTargetCode = mapLanguageNameToCode(langName);
+      
+      if (extractedTargetCode) {
         try {
-          if (quotedPhrase && quotedFromOriginal) {
-            const sourceForPhrase = detectedSource || source || undefined;
-            const translated = await callGoogleTranslate(quotedPhrase, targetCode, sourceForPhrase);
-            return { statusCode: 200, body: JSON.stringify({ translatedText: translated.translatedText, raw: translated }) };
-          }
-
-          const translated = await callGoogleTranslate(phraseEnglish, targetCode, 'en');
-          return { statusCode: 200, body: JSON.stringify({ translatedText: translated.translatedText, raw: translated }) };
+          // Translate the extracted phrase to the target language mentioned in the question
+          const translated = await callGoogleTranslate(phraseToTranslate, extractedTargetCode, sourceCode);
+          return { 
+            statusCode: 200, 
+            body: JSON.stringify({ result: translated.translatedText })
+          };
         } catch (err) {
           return { statusCode: 502, body: JSON.stringify({ error: 'Translation provider error', details: err.details || String(err) }) };
         }
       }
     }
 
-    const finalTarget = explicitTarget || 'es';
+    // Fallback: translate from source to target language using user's preference
     try {
-      const sourceForTranslate = (detectedSource && detectedSource !== finalTarget) ? detectedSource : undefined;
-      const translated = await callGoogleTranslate(text, finalTarget, sourceForTranslate);
-      return { statusCode: 200, body: JSON.stringify({ translatedText: translated.translatedText, raw: translated }) };
+      const translated = await callGoogleTranslate(text, targetCode, sourceCode);
+      return { 
+        statusCode: 200, 
+        body: JSON.stringify({ result: translated.translatedText })
+      };
     } catch (err) {
       return { statusCode: 502, body: JSON.stringify({ error: 'Translation provider error', details: err.details || String(err) }) };
     }

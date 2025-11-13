@@ -9,14 +9,17 @@
 <body>
     <div class="container">
         <header class="site-header">
-            <h1>Spanish Translation Assistant (Asistente de Traducción al Español)</h1>
+            <div class="header-top">
+                <h1>Spanish Translation Assistant (Asistente de Traducción al Español)</h1>
+                <button id="settingsBtn" class="settings-btn" title="Change language settings">⚙️</button>
+            </div>
             <p class="tag">Fast, friendly translations with playful text animations (Traducciones rápidas y amigables con animaciones de texto)</p>
         </header>
 
         <form id="translateForm" class="controls" action="#" onsubmit="return false;">
-            <label for="userInput" class="visually-hidden">Text to translate (Texto a traducir)</label>
-            <input type="text" id="userInput" inputmode="text" autocomplete="off" placeholder="Type a word or phrase... (Escriba una palabra o frase...)">
-            <button id="translateBtn" type="submit">Translate (Traducir)</button>
+            <label for="input" class="visually-hidden">Text to translate (Texto a traducir)</label>
+            <input type="text" id="input" inputmode="text" autocomplete="off" placeholder="Type a word or phrase... (Escriba una palabra o frase...)">
+            <button id="submitBtn" type="submit">Translate (Traducir)</button>
         </form>
 
         <div id="output" class="output" role="status" aria-live="polite"></div>
@@ -26,16 +29,37 @@
         <!-- Language Selection Modal -->
         <div id="languageModal" class="modal">
             <div class="modal-content">
-                <h2>Select Your Language (Selecciona tu idioma)</h2>
-                <select id="languageSelect">
-                    <option value="english">English (Inglés)</option>
-                    <option value="french">French (Francés)</option>
-                    <option value="hindi">Hindi (Hindi)</option>
-                    <option value="mandarin">Mandarin (Chino)</option>
-                    <option value="spanish">Spanish (Español)</option>
-                    <option value="vietnamese">Vietnamese (Vietnamita)</option>
-                </select>
-                <button id="confirmLanguage">Confirm (Confirmar)</button>
+                <h2>Choose Your Languages</h2>
+                <p class="modal-subtitle">Select the language you speak and what you want to translate to</p>
+                
+                <div class="language-pair">
+                    <div class="language-group">
+                        <label for="sourceLang">I speak:</label>
+                        <select id="sourceLang">
+                            <option value="">-- Select --</option>
+                            <option value="english">English</option>
+                            <option value="spanish">Spanish (Español)</option>
+                            <option value="french">French (Français)</option>
+                            <option value="hindi">Hindi (हिंदी)</option>
+                            <option value="mandarin">Mandarin (中文)</option>
+                            <option value="vietnamese">Vietnamese (Tiếng Việt)</option>
+                        </select>
+                    </div>
+
+                    <div class="swap-arrow">⇄</div>
+
+                    <div class="language-group">
+                        <label for="targetLang">I want to translate to:</label>
+                        <select id="targetLang">
+                            <option value="">-- Select --</option>
+                            <option value="spanish">Spanish (Español)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button id="confirmLanguage" class="btn-confirm">Start Translating</button>
+                </div>
             </div>
         </div>
     <script src="script-client.js"></script>
