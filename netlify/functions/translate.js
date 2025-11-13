@@ -2,6 +2,18 @@
 // This file was migrated from the local server implementation so behavior is consistent
 
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
+// Safe debug: log presence of the API key (masked) so we can tell if Netlify injected it
+try {
+  if (GOOGLE_API_KEY) {
+    const masked = `${GOOGLE_API_KEY.slice(0, 6)}...${GOOGLE_API_KEY.slice(-4)}`;
+    console.log('GOOGLE_API_KEY present:', true, 'masked:', masked);
+  } else {
+    console.log('GOOGLE_API_KEY present:', false);
+  }
+} catch (e) {
+  // Defensive: don't let logging errors break the function
+  console.log('Error while logging GOOGLE_API_KEY presence', String(e));
+}
 const path = require('path');
 
 // Load language aliases shipped with the site (falls back gracefully)
@@ -75,7 +87,14 @@ async function callGoogleDetect(q) {
     body: JSON.stringify(payload)
   });
   if (!apiRes.ok) {
-    const textErr = await apiRes.text();
+    // Log Google Detect response for debugging (do not log API key)
+    let textErr = '';
+    try {
+      textErr = await apiRes.text();
+    } catch (e) {
+      textErr = String(e);
+    }
+    console.log('Google Detect failed', { status: apiRes.status, body: textErr.slice(0,2000) });
     const err = new Error('Google detect error');
     err.status = apiRes.status;
     err.details = textErr;
@@ -100,7 +119,14 @@ async function callGoogleTranslate(q, target, source) {
   });
 
   if (!apiRes.ok) {
-    const textErr = await apiRes.text();
+    // Log Google Translate response for debugging (trim large bodies)
+    let textErr = '';
+    try {
+      textErr = await apiRes.text();
+    } catch (e) {
+      textErr = String(e);
+    }
+    console.log('Google Translate failed', { status: apiRes.status, body: textErr.slice(0,2000) });
     const err = new Error('Google API error');
     err.status = apiRes.status;
     err.details = textErr;
@@ -117,9 +143,12 @@ async function callGoogleTranslate(q, target, source) {
 }
 
 exports.handler = async function(event) {
+  console.log('translate handler invoked');
   try {
+    console.log('Incoming event body (raw):', typeof event.body === 'string' ? event.body.slice(0,1000) : event.body);
     if (!GOOGLE_API_KEY) return { statusCode: 500, body: JSON.stringify({ error: 'Server: API key not configured' }) };
     const body = JSON.parse(event.body || '{}');
+    console.log('Parsed request body:', { text: body.text ? '[REDACTED]' : undefined, source: body.source, target: body.target });
     const { text, source: userSource, target: userTarget } = body || {};
     if (!text) return { statusCode: 400, body: JSON.stringify({ error: 'Missing `text` in request body' }) };
 
