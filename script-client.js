@@ -59,8 +59,8 @@ document.addEventListener('DOMContentLoaded', function() {
         userLanguages = JSON.parse(saved);
         initializeApp();
     } else {
-        // Set default language pair: Spanish to English
-        userLanguages = { source: 'spanish', target: 'english' };
+        // Set default language pair: English to Spanish
+        userLanguages = { source: 'english', target: 'spanish' };
         localStorage.setItem('userLanguages', JSON.stringify(userLanguages));
         // Show modal on first load
         showLanguageModal(true);
