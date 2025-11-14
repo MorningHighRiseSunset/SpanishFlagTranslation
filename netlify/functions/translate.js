@@ -223,6 +223,8 @@ exports.handler = async function(event) {
     }
 
   } catch (err) {
-    return { statusCode: 500, body: JSON.stringify({ error: 'Server error', details: String(err) }) };
+    console.error('Unhandled error in translate handler:', err);
+    const errorDetails = err && err.stack ? err.stack : String(err);
+    return { statusCode: 500, body: JSON.stringify({ error: 'Server error', details: errorDetails }) };
   }
 };
