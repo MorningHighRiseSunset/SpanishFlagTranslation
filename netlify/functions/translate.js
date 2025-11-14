@@ -112,6 +112,13 @@ async function callGoogleTranslate(q, target, source) {
   const payload = { q: String(q), target: target, format: 'text' };
   if (source) payload.source = source;
 
+  // Debug: log the payload we'll send to Google (without API key)
+  try {
+    console.log('callGoogleTranslate payload', { q: String(q).slice(0,200), target, source });
+  } catch (e) {
+    /* ignore logging errors */
+  }
+
   const apiRes = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -134,6 +141,13 @@ async function callGoogleTranslate(q, target, source) {
   }
 
   const json = await apiRes.json();
+  // Debug: log the provider JSON (trimmed) to help diagnose unexpected untranslated responses
+  try {
+    console.log('callGoogleTranslate response', JSON.stringify(json && json.data && json.data.translations ? json.data.translations[0] : json).slice(0,2000));
+  } catch (e) {
+    /* ignore logging errors */
+  }
+
   if (json && json.data && json.data.translations && json.data.translations[0]) {
     return json.data.translations[0];
   }
