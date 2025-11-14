@@ -61,6 +61,12 @@ Object.keys(languageAliases).forEach((canonical) => {
   aliasToCode[String(canonical).trim().toLowerCase()] = code;
 });
 
+// Ensure canonical names from our built-in map are available even if the shipped
+// language_aliases.json couldn't be loaded into the function bundle.
+Object.keys(canonicalToCode).forEach((canonical) => {
+  aliasToCode[String(canonical).trim().toLowerCase()] = canonicalToCode[canonical];
+});
+
 const fallbackMap = {
   en: 'en', es: 'es', fr: 'fr', hi: 'hi', zh: 'zh', vi: 'vi', pt: 'pt', de: 'de', it: 'it', ar: 'ar', ja: 'ja', ko: 'ko', ru: 'ru'
 };
