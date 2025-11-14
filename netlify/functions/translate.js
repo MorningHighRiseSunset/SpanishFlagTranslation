@@ -214,9 +214,10 @@ exports.handler = async function(event) {
         try {
           // Translate the extracted phrase to the target language mentioned in the question
           const translated = await callGoogleTranslate(phraseToTranslate, extractedTargetCode, sourceCode);
-          return { 
-            statusCode: 200, 
-            body: JSON.stringify({ result: translated.translatedText })
+          // Return both the human-friendly result and the raw provider response for debugging
+          return {
+            statusCode: 200,
+            body: JSON.stringify({ result: translated.translatedText, raw: translated })
           };
         } catch (err) {
           return { statusCode: 502, body: JSON.stringify({ error: 'Translation provider error', details: err.details || String(err) }) };
@@ -228,9 +229,10 @@ exports.handler = async function(event) {
     try {
       console.log('Calling Google Translate for fallback', { text: text.slice(0,200), targetCode, sourceCode });
       const translated = await callGoogleTranslate(text, targetCode, sourceCode);
-      return { 
-        statusCode: 200, 
-        body: JSON.stringify({ result: translated.translatedText })
+      // Return both the human-friendly result and the raw provider response for debugging
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ result: translated.translatedText, raw: translated })
       };
     } catch (err) {
       return { statusCode: 502, body: JSON.stringify({ error: 'Translation provider error', details: err.details || String(err) }) };
