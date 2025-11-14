@@ -84,6 +84,49 @@ function mapLanguageNameToCode(name) {
   return null;
 }
 
+// Try resolving language names more broadly (handle Spanish language names like "inglés", "español", etc.)
+function resolveLanguageName(name) {
+  if (!name) return null;
+  // First try the existing resolver
+  const fromMap = mapLanguageNameToCode(name);
+  if (fromMap) return fromMap;
+
+  // Normalize accents and punctuation, e.g., "inglés" -> "ingles"
+  let cleaned = String(name).trim().toLowerCase();
+  try {
+    cleaned = cleaned.normalize('NFD').replace(/[\u0000-\u036f]/g, '').replace(/[^a-z\s]/g, '');
+  } catch (e) {
+    cleaned = cleaned.replace(/[^a-z\s]/g, '');
+  }
+
+  // Common Spanish names -> ISO codes
+  const spanishNameMap = {
+    ingles: 'en', ingleses: 'en', inglese: 'en',
+    espanol: 'es', espanola: 'es', espanoles: 'es', espanol: 'es', espanol_: 'es',
+    frances: 'fr', franceses: 'fr',
+    aleman: 'de', alemanes: 'de',
+    italiano: 'it', italianos: 'it',
+    portugues: 'pt', portuguesas: 'pt', portugues: 'pt',
+    japones: 'ja', japoneses: 'ja',
+    japonesa: 'ja',
+    chino: 'zh', china: 'zh', chinos: 'zh',
+    mandarin: 'zh', mandarines: 'zh',
+    ruso: 'ru', rusos: 'ru',
+    arabe: 'ar', arabes: 'ar',
+    coreano: 'ko', coreanos: 'ko',
+    vietnamita: 'vi', vietnamitas: 'vi',
+    hindi: 'hi', hindues: 'hi'
+  };
+
+  if (spanishNameMap[cleaned]) return spanishNameMap[cleaned];
+
+  // Try again against aliasToCode and fallbackMap with cleaned value
+  if (aliasToCode[cleaned]) return aliasToCode[cleaned];
+  if (fallbackMap[cleaned]) return fallbackMap[cleaned];
+
+  return null;
+}
+
 async function callGoogleDetect(q) {
   const url = `https://translation.googleapis.com/language/translate/v2/detect?key=${GOOGLE_API_KEY}`;
   const payload = { q: String(q) };
@@ -190,8 +233,9 @@ exports.handler = async function(event) {
       englishText = String(text);
     }
 
-    // Multi-language patterns: English, Spanish, French
-    const patterns = [
+  // Multi-language patterns: English, Spanish, French
+  // These patterns capture two groups: (1) phrase to translate, (2) language name
+  const patterns = [
       // English patterns
       /how\s+(?:do\s+i|do\s+you)\s+say\s+(.+?)\s+in\s+([a-zA-Z\u00C0-\u024F\s]+)/i,
       /how\s+to\s+say\s+(.+?)\s+in\s+([a-zA-Z\u00C0-\u024F\s]+)/i,
@@ -199,9 +243,11 @@ exports.handler = async function(event) {
       /(?:can\s+you\s+)?translate\s+(.+?)\s+(?:to|into)\s+([a-zA-Z\u00C0-\u024F\s]+)/i,
       /how\s+would\s+i\s+say\s+(.+?)\s+in\s+([a-zA-Z\u00C0-\u024F\s]+)/i,
       /how\s+do\s+i\s+say\s+(.+?)\s+in\s+([a-zA-Z\u00C0-\u024F\s]+)/i,
-      // Spanish patterns: ¿Cómo se dice X en Y?
-      /¿?\s*cómo\s+se\s+dice\s+(.+?)\s+en\s+([a-záéíóúüñ\s]+)\s*\??/i,
-      /¿?\s*qué\s+significa\s+(.+?)\s+en\s+([a-záéíóúüñ\s]+)\s*\??/i,
+  // Spanish patterns: ¿Cómo se dice X en Y?
+  /¿?\s*cómo\s+se\s+dice\s+(.+?)\s+en\s+([a-záéíóúüñ\s]+)\s*\??/i,
+  /¿?\s*qué\s+significa\s+(.+?)\s+en\s+([a-záéíóúüñ\s]+)\s*\??/i,
+  /¿?\s*qué\s+quiere\s+decir\s+(.+?)\s+en\s+([a-záéíóúüñ\s]+)\s*\??/i,
+  /¿?\s*qué\s+quiere\s+decir\s+(.+?)\s*\??/i,
       // French patterns: Comment dit-on X en Y?
       /comment\s+(?:dit|on\s+dit)\s+(.+?)\s+en\s+([a-zA-Zàâäéèêëîïôöùûüœæç\s]+)/i,
       /qu'est-ce\s+que\s+c'est\s+(.+?)\s+en\s+([a-zA-Zàâäéèêëîïôöùûüœæç\s]+)/i
@@ -214,23 +260,39 @@ exports.handler = async function(event) {
     }
 
     if (match) {
-      const phraseToTranslate = match[1].trim().replace(/["'«»""‹›]/g, '');
-      const langName = match[2].trim().toLowerCase();
-      const extractedTargetCode = mapLanguageNameToCode(langName);
-      
+      const phraseToTranslate = (match[1] || '').trim().replace(/["'«»“”‹›]/g, '');
+      // If the pattern didn't capture a second group (some patterns may omit it), try heuristics
+      const maybeLang = (match[2] || '').trim();
+      let extractedTargetCode = null;
+      if (maybeLang) {
+        extractedTargetCode = resolveLanguageName(maybeLang);
+      }
+
+      // If we couldn't determine target language from the question, fallback to user's target or English
+      if (!extractedTargetCode) {
+        // If the question explicitly mentions "en inglés" or similar, map 'inglés' -> 'en'
+        if (/ingles|inglesa|inglés|inglés/i.test(maybeLang || '') || /en\s*ingl(es|és)/i.test(englishText)) {
+          extractedTargetCode = 'en';
+        } else if (userTarget) {
+          const mapped = mapLanguageNameToCode(userTarget);
+          if (mapped) extractedTargetCode = mapped;
+        }
+      }
+
       if (extractedTargetCode) {
         try {
           // Translate the extracted phrase to the target language mentioned in the question
-          const translated = await callGoogleTranslate(phraseToTranslate, extractedTargetCode, sourceCode);
-          // Return both the human-friendly result and the raw provider response for debugging
-              return {
-                statusCode: 200,
-                body: JSON.stringify({ result: translated.translatedText })
-              };
+          const translated = await callGoogleTranslate(phraseToTranslate || text, extractedTargetCode, sourceCode);
+          // Return only the translated phrase as the direct answer
+          return {
+            statusCode: 200,
+            body: JSON.stringify({ result: translated.translatedText })
+          };
         } catch (err) {
           return { statusCode: 502, body: JSON.stringify({ error: 'Translation provider error', details: err.details || String(err) }) };
         }
       }
+      // else continue to fallback translation
     }
 
     // Fallback: translate from source to target language using user's preference
