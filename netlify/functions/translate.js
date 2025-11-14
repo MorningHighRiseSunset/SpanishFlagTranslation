@@ -168,6 +168,8 @@ exports.handler = async function(event) {
          console.log('Could not map target language:', userTarget, 'falling back to', targetCode);
        }
      }    // Translate user's input to English to parse intent (skip if already English)
+    // Debug: log resolved language codes
+    console.log('Resolved language codes', { sourceCode, targetCode });
     let englishText;
     try {
       if (sourceCode && sourceCode !== 'en') {
@@ -224,6 +226,7 @@ exports.handler = async function(event) {
 
     // Fallback: translate from source to target language using user's preference
     try {
+      console.log('Calling Google Translate for fallback', { text: text.slice(0,200), targetCode, sourceCode });
       const translated = await callGoogleTranslate(text, targetCode, sourceCode);
       return { 
         statusCode: 200, 
