@@ -152,9 +152,22 @@ exports.handler = async function(event) {
     const { text, source: userSource, target: userTarget } = body || {};
     if (!text) return { statusCode: 400, body: JSON.stringify({ error: 'Missing `text` in request body' }) };
 
-    // Map user language names (from dropdown) to codes
-    const sourceCode = userSource ? mapLanguageNameToCode(userSource) : null;
-    const targetCode = userTarget ? mapLanguageNameToCode(userTarget) : 'es';
+    // Map user language names (from dropdown) to codes (be resilient if mapping fails)
+    let sourceCode = null;
+    if (userSource) {
+      sourceCode = mapLanguageNameToCode(userSource);
+      if (!sourceCode) console.log('Could not map source language:', userSource);
+    }
+
+    let targetCode = 'es'; // default to Spanish
+    if (userTarget) {
+      const mapped = mapLanguageNameToCode(userTarget);
+      if (mapped) {
+        targetCode = mapped;
+      } else {
+        console.log('Could not map target language:', userTarget, 'falling back to', targetCode);
+      }
+    }
 
     // Translate user's input to English to parse intent (skip if already English)
     let englishText;
