@@ -159,17 +159,15 @@ exports.handler = async function(event) {
       if (!sourceCode) console.log('Could not map source language:', userSource);
     }
 
-    let targetCode = 'es'; // default to Spanish
-    if (userTarget) {
-      const mapped = mapLanguageNameToCode(userTarget);
-      if (mapped) {
-        targetCode = mapped;
-      } else {
-        console.log('Could not map target language:', userTarget, 'falling back to', targetCode);
-      }
-    }
-
-    // Translate user's input to English to parse intent (skip if already English)
+    let targetCode = 'es'; // default to Spanish (client will set explicit language pair)
+     if (userTarget) {
+       const mapped = mapLanguageNameToCode(userTarget);
+       if (mapped) {
+         targetCode = mapped;
+       } else {
+         console.log('Could not map target language:', userTarget, 'falling back to', targetCode);
+       }
+     }    // Translate user's input to English to parse intent (skip if already English)
     let englishText;
     try {
       if (sourceCode && sourceCode !== 'en') {
