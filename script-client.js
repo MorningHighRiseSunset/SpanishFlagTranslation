@@ -1,271 +1,54 @@
-// Localization object for UI text
+// Client script: auto-detect-as-you-type with optional manual override
+// Localized UI strings
 const i18n = {
     en: {
         placeholder: "Type a word or phrase...",
         button: "Translate",
         help: "Use short phrases for best results",
         errorServer: "Cannot reach translation server. Make sure it is running.",
-        errorMissing: "Please select both languages before translating."
+        detectedPrefix: "Detected:",
+        translatingTo: "Translating to:",
+        manualMode: "Manual mode",
+        manualSourceLabel: "I speak:",
+        manualTargetLabel: "Translate to:",
+        autoOption: "Auto-detect"
     },
     es: {
         placeholder: "Escriba una palabra o frase...",
         button: "Traducir",
         help: "Use frases cortas para mejores resultados",
         errorServer: "No se puede acceder al servidor de traducción. Asegúrate de que esté en ejecución.",
-        errorMissing: "Por favor, selecciona ambos idiomas antes de traducir."
-    },
-    fr: {
-        placeholder: "Tapez un mot ou une phrase...",
-        button: "Traduire",
-        help: "Utilisez de courtes phrases pour de meilleurs résultats",
-        errorServer: "Impossible d'accéder au serveur de traduction. Assurez-vous qu'il est en cours d'exécution.",
-        errorMissing: "Veuillez sélectionner les deux langues avant de traduire."
-    },
-    hi: {
-        placeholder: "एक शब्द या वाक्यांश टाइप करें...",
-        button: "अनुवाद करें",
-        help: "सर्वोत्तम परिणामों के लिए छोटे वाक्यांशों का उपयोग करें",
-        errorServer: "अनुवाद सर्वर तक नहीं पहुंच सकता। सुनिश्चित करें कि यह चल रहा है।",
-        errorMissing: "अनुवाद करने से पहले कृपया दोनों भाषाओं का चयन करें।"
+        detectedPrefix: "Detectado:",
+        translatingTo: "Traduciendo a:",
+        manualMode: "Modo manual",
+        manualSourceLabel: "Hablo:",
+        manualTargetLabel: "Traducir a:",
+        autoOption: "Detección automática"
     }
 };
 
-// Map display names to language codes
-const langCodes = {
-    'English': 'en',
-    'Spanish (Español)': 'es',
-    'French (Français)': 'fr',
-    'Hindi (हिंदी)': 'hi',
-    'Mandarin (中文)': 'zh',
-    'Vietnamese (Tiếng Việt)': 'vi'
-};
+// Friendly names for language codes
+const codeToFriendly = { en: 'English', es: 'Spanish', fr: 'French', hi: 'Hindi', zh: 'Mandarin', vi: 'Vietnamese' };
 
-// Reverse map: code to display name
-const codeToDisplay = {
-    'english': 'English',
-    'spanish': 'Spanish (Español)',
-    'french': 'French (Français)',
-    'hindi': 'Hindi (हिंदी)',
-    'mandarin': 'Mandarin (中文)',
-    'vietnamese': 'Vietnamese (Tiếng Việt)'
-};
+// Manual options (values map to server mapping expectations)
+const manualOptions = [
+    { key: '', label_en: i18n.en.autoOption, label_es: i18n.es.autoOption },
+    { key: 'english', label_en: 'English', label_es: 'Inglés' },
+    { key: 'spanish', label_en: 'Spanish (Español)', label_es: 'Español' },
+    { key: 'french', label_en: 'French (Français)', label_es: 'Francés' },
+    { key: 'hindi', label_en: 'Hindi (हिंदी)', label_es: 'Hindi' },
+    { key: 'mandarin', label_en: 'Mandarin (中文)', label_es: 'Mandarín' },
+    { key: 'vietnamese', label_en: 'Vietnamese (Tiếng Việt)', label_es: 'Vietnamita' }
+];
 
-let userLanguages = null;
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Try to load saved language preferences
-    const saved = localStorage.getItem('userLanguages');
-    if (saved) {
-        userLanguages = JSON.parse(saved);
-        initializeApp();
-    } else {
-        // Set default language pair: Spanish to English
-        userLanguages = { source: 'spanish', target: 'english' };
-        localStorage.setItem('userLanguages', JSON.stringify(userLanguages));
-        // Show modal on first load
-        showLanguageModal(true);
-    }
-
-    const form = document.getElementById('translateForm');
-    const input = document.getElementById('input');
-    const output = document.getElementById('output');
-    const submitBtn = document.getElementById('submitBtn');
-    const settingsBtn = document.getElementById('settingsBtn');
-    const sourceLang = document.getElementById('sourceLang');
-    const targetLang = document.getElementById('targetLang');
-    const confirmLanguage = document.getElementById('confirmLanguage');
-
-    // Settings button reopens modal
-    if (settingsBtn) {
-        settingsBtn.addEventListener('click', function() {
-            showLanguageModal(false);
-        });
-    }
-
-    // Source language dropdown change
-    if (sourceLang) {
-        sourceLang.addEventListener('change', function() {
-            updateTargetLanguageOptions();
-            updateUIText(); // Update UI text immediately when source changes
-        });
-    }
-
-    // Target language dropdown change
-    if (targetLang) {
-        targetLang.addEventListener('change', function() {
-            const confirmBtn = document.getElementById('confirmLanguage');
-            const source = sourceLang.value;
-            const target = targetLang.value;
-            if (confirmBtn) {
-                confirmBtn.disabled = !source || !target;
-            }
-        });
-    }
-
-    // Confirm language button
-    if (confirmLanguage) {
-        confirmLanguage.addEventListener('click', function() {
-            const source = sourceLang.value;
-            const target = targetLang.value;
-            
-            if (!source || !target) {
-                alert('Please select both languages');
-                return;
-            }
-
-            userLanguages = { source, target };
-            localStorage.setItem('userLanguages', JSON.stringify(userLanguages));
-            hideLanguageModal();
-            initializeApp();
-        });
-    }
-
-    // Form submission
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        if (!userLanguages) {
-            alert('Please set your language preferences first');
-            return;
-        }
-        await startTranslate();
-    });
-
-    // Clear output on input
-    input.addEventListener('input', function() {
-        if (output.textContent.trim()) {
-            clearOutputAnimated(output);
-        }
-    });
-});
-
-function showLanguageModal(isFirstLoad) {
-    const modal = document.getElementById('languageModal');
-    if (modal) {
-        modal.classList.add('show');
-        // Disable closing if first load
-        if (isFirstLoad) {
-            modal.style.pointerEvents = 'auto';
-        }
-    }
-}
-
-function hideLanguageModal() {
-    const modal = document.getElementById('languageModal');
-    if (modal) {
-        modal.classList.remove('show');
-    }
-}
-
-function updateTargetLanguageOptions() {
-    const sourceLang = document.getElementById('sourceLang');
-    const targetLang = document.getElementById('targetLang');
-    const source = sourceLang.value;
-
-    // SPANISH TRANSLATION ASSISTANT LOGIC:
-    // - If user speaks Spanish: they can translate TO any other language (except Spanish)
-    // - If user speaks any other language: LOCK to Spanish only
-
-    let availableTargets = [];
-    
-    if (source === 'spanish') {
-        // Spanish speaker: allow all languages except Spanish
-        availableTargets = ['english', 'french', 'hindi', 'mandarin', 'vietnamese'];
-    } else if (source !== '') {
-        // Non-Spanish speaker: LOCK to Spanish only
-        availableTargets = ['spanish'];
-    }
-
-    // Repopulate target dropdown
-    targetLang.innerHTML = '<option value="">-- Select --</option>';
-    availableTargets.forEach(lang => {
-        const opt = document.createElement('option');
-        opt.value = lang;
-        opt.textContent = codeToDisplay[lang];
-        targetLang.appendChild(opt);
-    });
-
-    // Auto-select default target language if available
-    if (source !== 'spanish' && availableTargets.length === 1) {
-        targetLang.value = 'spanish';
-    } else if (source === 'spanish' && availableTargets.length > 0) {
-        // For Spanish speakers, default to English
-        targetLang.value = 'english';
-    }
-
-    // Enable confirm button only if both are selected
-    const confirmBtn = document.getElementById('confirmLanguage');
-    if (confirmBtn) {
-        confirmBtn.disabled = !source || !targetLang.value;
-    }
-}
-
-function initializeApp() {
-    if (!userLanguages) return;
-    updateUIText();
-}
-
-function updateUIText() {
-    const input = document.getElementById('input');
-    const submitBtn = document.getElementById('submitBtn');
-    const help = document.querySelector('.help');
-    const sourceLang = document.getElementById('sourceLang');
-    
-    // Get the source language (either from saved userLanguages or from modal dropdown)
-    let sourceLangValue = userLanguages ? userLanguages.source : sourceLang.value;
-    
-    // Map to language code for i18n
-    const sourceLangCode = langCodes[codeToDisplay[sourceLangValue]] || 'en';
-    const texts = i18n[sourceLangCode] || i18n.en;
-
-    if (input) input.placeholder = texts.placeholder;
-    if (submitBtn) submitBtn.textContent = texts.button;
-    if (help) help.textContent = texts.help;
-}
+let detectTimer = null;
+const DEBOUNCE_MS = 600;
 
 function setBusy(busy) {
-    document.getElementById('input').disabled = busy;
-    document.getElementById('submitBtn').disabled = busy;
-}
-
-async function startTranslate() {
     const input = document.getElementById('input');
-    const output = document.getElementById('output');
-    const text = input.value.trim();
-    
-    if (!text) return;
-    if (!userLanguages || !userLanguages.source || !userLanguages.target) {
-        output.textContent = i18n.en.errorMissing;
-        return;
-    }
-
-    setBusy(true);
-    try {
-        const response = await fetch('/.netlify/functions/translate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                text,
-                source: userLanguages.source,
-                target: userLanguages.target
-            })
-        });
-
-        if (!response.ok) throw new Error('HTTP ' + response.status);
-        const data = await response.json();
-
-        if (data.error) {
-            output.textContent = 'Error: ' + data.error;
-        } else {
-            const result = data.result || '';
-            typeOutputAnimated(output, result);
-        }
-    } catch (error) {
-        const sourceLangCode = langCodes[codeToDisplay[userLanguages.source]] || 'en';
-        const errorMsg = i18n[sourceLangCode]?.errorServer || i18n.en.errorServer;
-        output.textContent = errorMsg;
-    } finally {
-        setBusy(false);
-    }
+    const submitBtn = document.getElementById('submitBtn');
+    if (input) input.disabled = !!busy;
+    if (submitBtn) submitBtn.disabled = !!busy;
 }
 
 function clearOutputAnimated(el) {
@@ -299,3 +82,164 @@ function typeOutputAnimated(el, text) {
         }, index * 28);
     });
 }
+
+function localizeUI() {
+    // Use page language to choose locale (default to en)
+    const pageLang = (document.documentElement.lang || 'en').slice(0,2).toLowerCase();
+    return i18n[pageLang] ? i18n[pageLang] : i18n.en;
+}
+
+function populateManualSelects() {
+    const locale = localizeUI();
+    const src = document.getElementById('manualSource');
+    const tgt = document.getElementById('manualTarget');
+    if (!src || !tgt) return;
+    src.innerHTML = '';
+    tgt.innerHTML = '';
+    manualOptions.forEach(opt => {
+        const o1 = document.createElement('option');
+        o1.value = opt.key;
+        o1.textContent = locale === i18n.es ? (opt.label_es || opt.label_en) : (opt.label_en || opt.label_es);
+        src.appendChild(o1);
+
+        const o2 = document.createElement('option');
+        o2.value = opt.key === '' ? 'spanish' : opt.key; // default target options should include spanish first
+        o2.textContent = locale === i18n.es ? (opt.label_es || opt.label_en) : (opt.label_en || opt.label_es);
+        tgt.appendChild(o2);
+    });
+}
+
+async function startTranslate() {
+    const input = document.getElementById('input');
+    const output = document.getElementById('output');
+    const detectLabel = document.getElementById('detectedInfo');
+    if (!input || !output) return;
+    const text = input.value.trim();
+    if (!text) return;
+
+    setBusy(true);
+    try {
+        // Build payload depending on manual mode
+        const manualToggle = document.getElementById('manualToggle');
+        const manualSource = document.getElementById('manualSource');
+        const manualTarget = document.getElementById('manualTarget');
+
+        const payload = { text };
+        if (manualToggle && manualToggle.checked) {
+            if (manualSource && manualSource.value) payload.source = manualSource.value;
+            if (manualTarget && manualTarget.value) payload.target = manualTarget.value;
+        }
+
+        const response = await fetch('/.netlify/functions/translate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const data = await response.json();
+
+        if (data.error) {
+            output.textContent = 'Error: ' + data.error;
+        } else {
+            const result = data.result || '';
+            typeOutputAnimated(output, result);
+
+            // Update detection/target display
+            if (detectLabel) {
+                const manualToggleEl = document.getElementById('manualToggle');
+                if (manualToggleEl && manualToggleEl.checked) {
+                    const s = document.getElementById('manualSource').value || localeString('autoOption');
+                    const t = document.getElementById('manualTarget').value || '—';
+                    detectLabel.textContent = `Manual: ${friendlyNameFromManualKey(s)} → ${friendlyNameFromManualKey(t)}`;
+                } else {
+                    const det = data.detectedSource || null;
+                    const targ = data.targetUsed || null;
+                    const detectedName = det ? (codeToFriendly[det] || det) : '—';
+                    const targetName = targ ? (codeToFriendly[targ] || targ) : '—';
+                    const locale = localizeUI();
+                    detectLabel.textContent = `${locale.detectedPrefix} ${detectedName} → ${locale.translatingTo} ${targetName}`;
+                }
+            }
+        }
+    } catch (error) {
+        const locale = localizeUI();
+        output.textContent = locale.errorServer;
+    } finally {
+        setBusy(false);
+    }
+}
+
+function friendlyNameFromManualKey(key) {
+    if (!key) return localizeUI().autoOption || 'Auto';
+    // map manual select keys to display names
+    const m = manualOptions.find(o => o.key === key);
+    if (!m) return key;
+    const locale = localizeUI();
+    return locale === i18n.es ? (m.label_es || m.label_en) : (m.label_en || m.label_es);
+}
+
+function localeString(k) {
+    const l = localizeUI();
+    return l[k] || k;
+}
+
+// Initialize UI
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('translateForm');
+    const input = document.getElementById('input');
+    const output = document.getElementById('output');
+    const submitBtn = document.getElementById('submitBtn');
+    const detectBar = document.getElementById('detectBar');
+    const detectedInfo = document.getElementById('detectedInfo');
+    const manualToggle = document.getElementById('manualToggle');
+    const manualControls = document.getElementById('manualControls');
+    const manualSource = document.getElementById('manualSource');
+    const manualTarget = document.getElementById('manualTarget');
+
+    // Localize placeholder/button/help
+    const locale = localizeUI();
+    if (input) input.placeholder = locale.placeholder;
+    if (submitBtn) submitBtn.textContent = locale.button;
+    const help = document.querySelector('.help');
+    if (help) help.textContent = locale.help;
+    const manualToggleLabel = document.getElementById('manualToggleLabel');
+    if (manualToggleLabel) manualToggleLabel.textContent = locale.manualMode;
+    const srcLabel = document.querySelector('label[for="manualSource"]');
+    const tgtLabel = document.querySelector('label[for="manualTarget"]');
+    if (srcLabel) srcLabel.textContent = locale.manualSourceLabel;
+    if (tgtLabel) tgtLabel.textContent = locale.manualTargetLabel;
+
+    populateManualSelects();
+
+    // Hide manual controls initially
+    if (manualControls) manualControls.style.display = 'none';
+
+    // Submit handler
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            await startTranslate();
+        });
+    }
+
+    // Debounced input
+    if (input) {
+        input.addEventListener('input', function() {
+            if (output && output.textContent.trim()) clearOutputAnimated(output);
+            if (detectTimer) clearTimeout(detectTimer);
+            detectTimer = setTimeout(() => startTranslate(), DEBOUNCE_MS);
+        });
+    }
+
+    // Manual toggle
+    if (manualToggle) {
+        manualToggle.addEventListener('change', function() {
+            const manualOn = manualToggle.checked;
+            if (manualControls) manualControls.style.display = manualOn ? 'flex' : 'none';
+            // re-run translate to respect manual mode change
+            startTranslate();
+        });
+    }
+
+});

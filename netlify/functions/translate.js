@@ -209,7 +209,6 @@ exports.handler = async function(event) {
       sourceCode = mapLanguageNameToCode(userSource);
       if (!sourceCode) console.log('Could not map source language:', userSource);
     }
-
     let targetCode = 'es'; // default to Spanish (client will set explicit language pair)
      if (userTarget) {
        const mapped = mapLanguageNameToCode(userTarget);
@@ -222,7 +221,31 @@ exports.handler = async function(event) {
     // Debug: log resolved language codes
     console.log('Resolved language codes', { sourceCode, targetCode });
     let englishText;
+  // Track detection/used target information to return to client
+  let detectedSource = sourceCode || null;
+  let usedTarget = targetCode || null;
     try {
+      // If we don't know the source language, try to detect it using Google Detect
+      if (!sourceCode) {
+        try {
+          const detected = await callGoogleDetect(text);
+          if (detected) {
+            sourceCode = detected;
+            console.log('Detected source language:', sourceCode);
+            // Auto-map detected source to a sensible target if user didn't supply one
+            // Requirements: spanish -> english; french/hindi/mandarin/vietnamese -> spanish
+            if (!userTarget) {
+              if (sourceCode === 'es') targetCode = 'en';
+              else if (['fr', 'hi', 'zh', 'vi'].includes(sourceCode)) targetCode = 'es';
+            }
+            detectedSource = sourceCode;
+            usedTarget = targetCode;
+          }
+        } catch (e) {
+          console.log('Language detection failed, continuing without it', String(e));
+        }
+      }
+
       if (sourceCode && sourceCode !== 'en') {
         const t = await callGoogleTranslate(text, 'en', sourceCode);
         englishText = t.translatedText || String(text);
@@ -283,10 +306,10 @@ exports.handler = async function(event) {
         try {
           // Translate the extracted phrase to the target language mentioned in the question
           const translated = await callGoogleTranslate(phraseToTranslate || text, extractedTargetCode, sourceCode);
-          // Return only the translated phrase as the direct answer
+          // Return only the translated phrase as the direct answer and include detected/source info
           return {
             statusCode: 200,
-            body: JSON.stringify({ result: translated.translatedText })
+            body: JSON.stringify({ result: translated.translatedText, detectedSource: detectedSource, targetUsed: extractedTargetCode })
           };
         } catch (err) {
           return { statusCode: 502, body: JSON.stringify({ error: 'Translation provider error', details: err.details || String(err) }) };
@@ -301,7 +324,7 @@ exports.handler = async function(event) {
       const translated = await callGoogleTranslate(text, targetCode, sourceCode);
       return {
         statusCode: 200,
-        body: JSON.stringify({ result: translated.translatedText })
+        body: JSON.stringify({ result: translated.translatedText, detectedSource: detectedSource, targetUsed: targetCode })
       };
     } catch (err) {
       return { statusCode: 502, body: JSON.stringify({ error: 'Translation provider error', details: err.details || String(err) }) };

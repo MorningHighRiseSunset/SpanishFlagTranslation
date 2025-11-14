@@ -142,6 +142,30 @@ button[disabled]{opacity:0.6;cursor:default;transform:none}
     line-height: 1.4;
 }
 
+/* Detect bar and manual controls */
+.detect-bar{
+    margin-top:14px;
+    display:flex;
+    gap:12px;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+    color:var(--muted);
+    font-size:0.95rem;
+}
+.detected-info{
+    background: linear-gradient(90deg, rgba(0,102,204,0.03), rgba(230,240,255,0.4));
+    padding:8px 12px;
+    border-radius:10px;
+    border:1px solid rgba(0,102,204,0.08);
+    color:var(--accent-dark);
+    font-weight:600;
+}
+.manual-toggle{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:0.95rem}
+.manual-controls{margin-top:12px;display:flex;gap:12px;align-items:center;justify-content:center}
+.manual-select{padding:8px 10px;border-radius:8px;border:1px solid #e1e6ee;background:white}
+.manual-label{font-weight:600;color:var(--accent);font-size:0.9rem}
+
 /* Accessibility helper */
 .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
 
