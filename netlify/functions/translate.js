@@ -118,12 +118,6 @@ async function callGoogleTranslate(q, target, source) {
   const payload = { q: String(q), target: target, format: 'text' };
   if (source) payload.source = source;
 
-  // Debug: log the payload we'll send to Google (without API key)
-  try {
-    console.log('callGoogleTranslate payload', { q: String(q).slice(0,200), target, source });
-  } catch (e) {
-    /* ignore logging errors */
-  }
 
   const apiRes = await fetch(url, {
     method: 'POST',
@@ -147,12 +141,6 @@ async function callGoogleTranslate(q, target, source) {
   }
 
   const json = await apiRes.json();
-  // Debug: log the provider JSON (trimmed) to help diagnose unexpected untranslated responses
-  try {
-    console.log('callGoogleTranslate response', JSON.stringify(json && json.data && json.data.translations ? json.data.translations[0] : json).slice(0,2000));
-  } catch (e) {
-    /* ignore logging errors */
-  }
 
   if (json && json.data && json.data.translations && json.data.translations[0]) {
     return json.data.translations[0];
@@ -235,10 +223,10 @@ exports.handler = async function(event) {
           // Translate the extracted phrase to the target language mentioned in the question
           const translated = await callGoogleTranslate(phraseToTranslate, extractedTargetCode, sourceCode);
           // Return both the human-friendly result and the raw provider response for debugging
-          return {
-            statusCode: 200,
-            body: JSON.stringify({ result: translated.translatedText, raw: translated })
-          };
+              return {
+                statusCode: 200,
+                body: JSON.stringify({ result: translated.translatedText })
+              };
         } catch (err) {
           return { statusCode: 502, body: JSON.stringify({ error: 'Translation provider error', details: err.details || String(err) }) };
         }
@@ -249,10 +237,9 @@ exports.handler = async function(event) {
     try {
       console.log('Calling Google Translate for fallback', { text: text.slice(0,200), targetCode, sourceCode });
       const translated = await callGoogleTranslate(text, targetCode, sourceCode);
-      // Return both the human-friendly result and the raw provider response for debugging
       return {
         statusCode: 200,
-        body: JSON.stringify({ result: translated.translatedText, raw: translated })
+        body: JSON.stringify({ result: translated.translatedText })
       };
     } catch (err) {
       return { statusCode: 502, body: JSON.stringify({ error: 'Translation provider error', details: err.details || String(err) }) };
