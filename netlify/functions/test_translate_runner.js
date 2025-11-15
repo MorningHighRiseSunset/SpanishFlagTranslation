@@ -65,4 +65,10 @@ async function runTest(inputText) {
 
   console.log('\nTest 3: English "How do you say \"lo que sea\" in English?" (edge)');
   await runTest('How do you say "lo que sea" in English?');
+
+  console.log('\nTest 4: User input "¿Cómo se dice noche en español?"');
+  await runTest('¿Cómo se dice noche en español?');
+
+  console.log('\nTest 5: User input "como se dice noche en espanol" (no accents)');
+  await runTest('como se dice noche en espanol');
 })();

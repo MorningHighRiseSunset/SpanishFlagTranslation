@@ -42,16 +42,12 @@ const manualOptions = [
 ];
 
 let detectTimer = null;
-const DEBOUNCE_MS = 600;
+const DEBOUNCE_MS = 1500; // Increased from 600ms to avoid interrupting the user mid-word
 
 function setBusy(busy) {
-    const input = document.getElementById('input');
-    const submitBtn = document.getElementById('submitBtn');
-    if (input) input.disabled = !!busy;
-    if (submitBtn) submitBtn.disabled = !!busy;
-}
-
-function clearOutputAnimated(el) {
+  const input = document.getElementById('input');
+  if (input) input.disabled = !!busy;
+}function clearOutputAnimated(el) {
     const letters = Array.from(el.querySelectorAll('.letter'));
     if (letters.length === 0) {
         el.textContent = '';
@@ -186,31 +182,27 @@ function localeString(k) {
 
 // Initialize UI
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('translateForm');
-    const input = document.getElementById('input');
-    const output = document.getElementById('output');
-    const submitBtn = document.getElementById('submitBtn');
-    const detectBar = document.getElementById('detectBar');
-    const detectedInfo = document.getElementById('detectedInfo');
-    const manualToggle = document.getElementById('manualToggle');
-    const manualControls = document.getElementById('manualControls');
-    const manualSource = document.getElementById('manualSource');
-    const manualTarget = document.getElementById('manualTarget');
+  const form = document.getElementById('translateForm');
+  const input = document.getElementById('input');
+  const output = document.getElementById('output');
+  const detectBar = document.getElementById('detectBar');
+  const detectedInfo = document.getElementById('detectedInfo');
+  const manualToggle = document.getElementById('manualToggle');
+  const manualControls = document.getElementById('manualControls');
+  const manualSource = document.getElementById('manualSource');
+  const manualTarget = document.getElementById('manualTarget');
 
-    // Localize placeholder/button/help
-    const locale = localizeUI();
-    if (input) input.placeholder = locale.placeholder;
-    if (submitBtn) submitBtn.textContent = locale.button;
-    const help = document.querySelector('.help');
-    if (help) help.textContent = locale.help;
-    const manualToggleLabel = document.getElementById('manualToggleLabel');
-    if (manualToggleLabel) manualToggleLabel.textContent = locale.manualMode;
-    const srcLabel = document.querySelector('label[for="manualSource"]');
-    const tgtLabel = document.querySelector('label[for="manualTarget"]');
-    if (srcLabel) srcLabel.textContent = locale.manualSourceLabel;
-    if (tgtLabel) tgtLabel.textContent = locale.manualTargetLabel;
-
-    populateManualSelects();
+  // Localize placeholder/button/help
+  const locale = localizeUI();
+  if (input) input.placeholder = locale.placeholder;
+  const help = document.querySelector('.help');
+  if (help) help.textContent = locale.help;
+  const manualToggleLabel = document.getElementById('manualToggleLabel');
+  if (manualToggleLabel) manualToggleLabel.textContent = locale.manualMode;
+  const srcLabel = document.querySelector('label[for="manualSource"]');
+  const tgtLabel = document.querySelector('label[for="manualTarget"]');
+  if (srcLabel) srcLabel.textContent = locale.manualSourceLabel;
+  if (tgtLabel) tgtLabel.textContent = locale.manualTargetLabel;    populateManualSelects();
 
     // Hide manual controls initially
     if (manualControls) manualControls.style.display = 'none';

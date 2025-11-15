@@ -304,15 +304,19 @@ exports.handler = async function(event) {
 
       if (extractedTargetCode) {
         try {
-          // Translate the extracted phrase to the target language mentioned in the question
-          const translated = await callGoogleTranslate(phraseToTranslate || text, extractedTargetCode, sourceCode);
-          // Return only the translated phrase as the direct answer and include detected/source info
-          return {
-            statusCode: 200,
-            body: JSON.stringify({ result: translated.translatedText, detectedSource: detectedSource, targetUsed: extractedTargetCode })
-          };
+          // Only call Google Translate if we have a valid source code to translate FROM
+          // If sourceCode is not available or null, fall through to fallback
+          if (sourceCode && sourceCode !== extractedTargetCode) {
+            const translated = await callGoogleTranslate(phraseToTranslate || text, extractedTargetCode, sourceCode);
+            // Return only the translated phrase as the direct answer and include detected/source info
+            return {
+              statusCode: 200,
+              body: JSON.stringify({ result: translated.translatedText, detectedSource: detectedSource, targetUsed: extractedTargetCode })
+            };
+          }
         } catch (err) {
-          return { statusCode: 502, body: JSON.stringify({ error: 'Translation provider error', details: err.details || String(err) }) };
+          console.log('Pattern-matched translation failed, falling back to full-text translation', { error: String(err).slice(0, 200) });
+          // Fall through to fallback translation on error instead of returning 502
         }
       }
       // else continue to fallback translation
