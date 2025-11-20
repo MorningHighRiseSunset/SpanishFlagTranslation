@@ -163,17 +163,39 @@ async function startTranslate() {
         } else {
             const result = data.result || '';
             typeOutputAnimated(output, result);
-            
-            // Speak the output
-            const targetLang = data.targetUsed || 'es';
-            speakText(result, targetLang);
+
+            // Determine source/target codes for deciding whether to speak
+            const manualToggleEl = document.getElementById('manualToggle');
+            const manualSourceEl = document.getElementById('manualSource');
+            const manualTargetEl = document.getElementById('manualTarget');
+
+            // Map manual-select keys to short codes (keeps mapping local to Spanish flag only)
+            const manualKeyToCode = {
+                english: 'en',
+                spanish: 'es',
+                french: 'fr',
+                hindi: 'hi',
+                mandarin: 'zh',
+                vietnamese: 'vi'
+            };
+
+            const detectedSource = data.detectedSource || null;
+            const usedTarget = data.targetUsed || null;
+
+            // Prefer detected/returned codes; fall back to manual selection when manual mode is on
+            const effectiveSource = detectedSource || (manualToggleEl && manualToggleEl.checked && manualSourceEl && manualSourceEl.value ? manualKeyToCode[manualSourceEl.value] : null);
+            const effectiveTarget = usedTarget || (manualToggleEl && manualToggleEl.checked && manualTargetEl && manualTargetEl.value ? manualKeyToCode[manualTargetEl.value] : null);
+
+            // Only speak aloud when translating between English and Spanish (either direction)
+            if ((effectiveSource === 'en' && effectiveTarget === 'es') || (effectiveSource === 'es' && effectiveTarget === 'en')) {
+                speakText(result, effectiveTarget || 'es');
+            }
 
             // Update detection/target display
             if (detectLabel) {
-                const manualToggleEl = document.getElementById('manualToggle');
                 if (manualToggleEl && manualToggleEl.checked) {
-                    const s = document.getElementById('manualSource').value || localeString('autoOption');
-                    const t = document.getElementById('manualTarget').value || '—';
+                    const s = manualSourceEl && manualSourceEl.value ? manualSourceEl.value : localeString('autoOption');
+                    const t = manualTargetEl && manualTargetEl.value ? manualTargetEl.value : '—';
                     detectLabel.textContent = `Manual: ${friendlyNameFromManualKey(s)} → ${friendlyNameFromManualKey(t)}`;
                 } else {
                     const det = data.detectedSource || null;
