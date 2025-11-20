@@ -44,6 +44,29 @@ const manualOptions = [
 let detectTimer = null;
 const DEBOUNCE_MS = 1500; // Increased from 600ms to avoid interrupting the user mid-word
 
+// Map language codes to speech synthesis language tags
+const codeToSpeechLang = {
+    en: 'en-US',
+    es: 'es-ES',
+    fr: 'fr-FR',
+    hi: 'hi-IN',
+    zh: 'zh-CN',
+    vi: 'vi-VN'
+};
+
+function speakText(text, langCode) {
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = codeToSpeechLang[langCode] || 'es-ES';
+    utterance.rate = 1;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+    
+    window.speechSynthesis.speak(utterance);
+}
+
 function setBusy(busy) {
   const input = document.getElementById('input');
   if (input) input.disabled = !!busy;
@@ -140,6 +163,10 @@ async function startTranslate() {
         } else {
             const result = data.result || '';
             typeOutputAnimated(output, result);
+            
+            // Speak the output
+            const targetLang = data.targetUsed || 'es';
+            speakText(result, targetLang);
 
             // Update detection/target display
             if (detectLabel) {
