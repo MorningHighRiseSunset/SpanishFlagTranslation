@@ -182,13 +182,20 @@ async function startTranslate() {
             const detectedSource = data.detectedSource || null;
             const usedTarget = data.targetUsed || null;
 
+            console.log('TTS Debug:', { detectedSource, usedTarget, dataKeys: Object.keys(data) });
+
             // Prefer detected/returned codes; fall back to manual selection when manual mode is on
             const effectiveSource = detectedSource || (manualToggleEl && manualToggleEl.checked && manualSourceEl && manualSourceEl.value ? manualKeyToCode[manualSourceEl.value] : null);
             const effectiveTarget = usedTarget || (manualToggleEl && manualToggleEl.checked && manualTargetEl && manualTargetEl.value ? manualKeyToCode[manualTargetEl.value] : null);
 
+            console.log('TTS Debug effective:', { effectiveSource, effectiveTarget });
+
             // Only speak aloud when translating between English and Spanish (either direction)
             if ((effectiveSource === 'en' && effectiveTarget === 'es') || (effectiveSource === 'es' && effectiveTarget === 'en')) {
+                console.log('TTS: Speaking', result, 'in language', effectiveTarget);
                 speakText(result, effectiveTarget || 'es');
+            } else {
+                console.log('TTS: Not speaking. Condition not met.', { effectiveSource, effectiveTarget });
             }
 
             // Update detection/target display
