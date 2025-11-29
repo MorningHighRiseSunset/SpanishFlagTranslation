@@ -54,7 +54,13 @@ const codeToSpeechLang = {
     vi: 'vi-VN'
 };
 
+// Track the last translation and language for manual playback (for iPhone TTS workaround)
+let lastTranslation = { text: '', langCode: '' };
+
 function speakText(text, langCode) {
+    // Store for manual playback fallback
+    lastTranslation = { text, langCode };
+    
     // Cancel any ongoing speech
     window.speechSynthesis.cancel();
     
@@ -84,13 +90,19 @@ async function unlockAudioOnGesture() {
         if (__unlockAudioContext.state === 'suspended' && typeof __unlockAudioContext.resume === 'function') {
             await __unlockAudioContext.resume();
         }
-        // play an almost-silent buffer to ensure the audio device is ready
-        const buffer = __unlockAudioContext.createBuffer(1, 1, __unlockAudioContext.sampleRate || 44100);
+        // Play a real short tone to ensure audio device is fully unlocked on iOS
+        const buffer = __unlockAudioContext.createBuffer(1, __unlockAudioContext.sampleRate * 0.05, __unlockAudioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        // Fill with tiny sine wave (amplitude ~0.001 to be almost silent but trigger audio device)
+        const freq = 440; // A note
+        for (let i = 0; i < buffer.length; i++) {
+            data[i] = Math.sin((i / buffer.length) * freq * 2 * Math.PI) * 0.001;
+        }
         const src = __unlockAudioContext.createBufferSource();
         src.buffer = buffer;
         src.connect(__unlockAudioContext.destination);
         src.start(0);
-        debugLog('Audio unlocked on user gesture');
+        debugLog('Audio unlocked on user gesture (played tone)');
     } catch (err) {
         debugLog('Audio unlock failed', err && (err.message || err));
     }
@@ -232,6 +244,10 @@ async function startTranslate() {
         } else {
             const result = data.result || '';
             typeOutputAnimated(output, result);
+
+            // Show play button for manual TTS on iPhone
+            const playBtn = document.getElementById('playBtn');
+            if (playBtn) playBtn.style.display = 'inline-block';
 
             // Determine source/target codes for deciding whether to speak
             const manualToggleEl = document.getElementById('manualToggle');
@@ -396,6 +412,18 @@ document.addEventListener('DOMContentLoaded', function() {
             if (manualControls) manualControls.style.display = manualOn ? 'flex' : 'none';
             // re-run translate to respect manual mode change
             startTranslate();
+        });
+    }
+
+    // Play button: manual TTS trigger for iPhone fallback
+    const playBtn = document.getElementById('playBtn');
+    if (playBtn) {
+        playBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (lastTranslation.text && lastTranslation.langCode) {
+                debugLog('Manual play triggered', { text: lastTranslation.text, lang: lastTranslation.langCode });
+                speakText(lastTranslation.text, lastTranslation.langCode);
+            }
         });
     }
 
