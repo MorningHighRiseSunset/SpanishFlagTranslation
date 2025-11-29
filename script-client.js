@@ -70,9 +70,7 @@ function speakText(text, langCode) {
     utterance.pitch = 1;
     utterance.volume = 1;
     // attach basic lifecycle logging to help debug mobile playback issues
-    utterance.onstart = () => debugLog('utterance onstart', { text, langCode });
-    utterance.onend = () => debugLog('utterance onend');
-    utterance.onerror = (ev) => debugLog('utterance onerror', ev && ev.error ? ev.error : ev);
+
 
     window.speechSynthesis.speak(utterance);
 }
@@ -102,50 +100,15 @@ async function unlockAudioOnGesture() {
         src.buffer = buffer;
         src.connect(__unlockAudioContext.destination);
         src.start(0);
-        debugLog('Audio unlocked on user gesture (played tone)');
+        // audio unlocked
     } catch (err) {
-        debugLog('Audio unlock failed', err && (err.message || err));
+        // audio unlock failed
     }
 }
 
-// On-page debug area so mobile users can see TTS logs without a remote console
-function ensureDebugPanel() {
-    if (document.getElementById('ttsDebug')) return;
-    const p = document.createElement('div');
-    p.id = 'ttsDebug';
-    const style = p.style;
-    style.position = 'fixed';
-    style.right = '8px';
-    style.bottom = '8px';
-    style.maxWidth = '40%';
-    style.maxHeight = '35%';
-    style.overflow = 'auto';
-    style.background = 'rgba(0,0,0,0.75)';
-    style.color = '#fff';
-    style.fontSize = '12px';
-    style.padding = '8px';
-    style.zIndex = 99999;
-    style.borderRadius = '6px';
-    style.fontFamily = 'monospace';
-    p.textContent = 'TTS Debug Logs';
-    document.body.appendChild(p);
-}
-
+// Stub debug function (removed - no longer needed)
 function debugLog(...args) {
-    try {
-        console.log('TTS Debug:', ...args);
-        const panel = document.getElementById('ttsDebug');
-        if (!panel) return;
-        const line = document.createElement('div');
-        const ts = new Date().toLocaleTimeString();
-        line.textContent = ts + ' ' + args.map(a => {
-            try { return (typeof a === 'object') ? JSON.stringify(a) : String(a); } catch (e) { return String(a); }
-        }).join(' ');
-        panel.appendChild(line);
-        panel.scrollTop = panel.scrollHeight;
-    } catch (e) {
-        // ignore
-    }
+    // console.log('TTS Debug:', ...args);
 }
 
 function setBusy(busy) {
@@ -267,20 +230,18 @@ async function startTranslate() {
             const detectedSource = data.detectedSource || null;
             const usedTarget = data.targetUsed || null;
 
-            debugLog('Translate result', { detectedSource, usedTarget, dataKeys: Object.keys(data) });
+
 
             // Prefer detected/returned codes; fall back to manual selection when manual mode is on
             const effectiveSource = detectedSource || (manualToggleEl && manualToggleEl.checked && manualSourceEl && manualSourceEl.value ? manualKeyToCode[manualSourceEl.value] : null);
             const effectiveTarget = usedTarget || (manualToggleEl && manualToggleEl.checked && manualTargetEl && manualTargetEl.value ? manualKeyToCode[manualTargetEl.value] : null);
 
-            debugLog('Effective codes', { effectiveSource, effectiveTarget });
 
-            // Only speak aloud when translating between English and Spanish (either direction)
+
+            // TTS disabled - only play when user clicks Play button
+            // Store translation for manual playback
             if ((effectiveSource === 'en' && effectiveTarget === 'es') || (effectiveSource === 'es' && effectiveTarget === 'en')) {
-                debugLog('TTS: Speaking', result, 'in language', effectiveTarget);
-                speakText(result, effectiveTarget || 'es');
-            } else {
-                debugLog('TTS: Not speaking. Condition not met.', { effectiveSource, effectiveTarget });
+                lastTranslation = { text: result, langCode: effectiveTarget || 'es' };
             }
 
             // Update detection/target display
@@ -369,8 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Localize placeholder/button/help
   const locale = localizeUI();
   if (input) input.placeholder = locale.placeholder;
-    // ensure debug panel is present so mobile users can read logs
-    ensureDebugPanel();
+  
   const help = document.querySelector('.help');
   if (help) help.textContent = locale.help;
   const manualToggleLabel = document.getElementById('manualToggleLabel');
@@ -383,14 +343,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Hide manual controls initially
     if (manualControls) manualControls.style.display = 'none';
 
-    // Submit handler
+            // Submit handler
     if (form) {
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
-            // Attempt to unlock audio within the user gesture to satisfy
-            // browser autoplay / audio policies (important on iOS/Safari).
-            await unlockAudioOnGesture();
-            debugLog('Submit pressed — starting translate');
             await startTranslate();
         });
     }
@@ -415,13 +371,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Play button: manual TTS trigger for iPhone fallback
+    // Play button: manual TTS trigger
     const playBtn = document.getElementById('playBtn');
     if (playBtn) {
-        playBtn.addEventListener('click', function(e) {
+        playBtn.addEventListener('click', async function(e) {
             e.preventDefault();
+            // Unlock audio on gesture
+            await unlockAudioOnGesture();
             if (lastTranslation.text && lastTranslation.langCode) {
-                debugLog('Manual play triggered', { text: lastTranslation.text, lang: lastTranslation.langCode });
                 speakText(lastTranslation.text, lastTranslation.langCode);
             }
         });
