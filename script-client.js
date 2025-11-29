@@ -43,6 +43,9 @@ const manualOptions = [
 
 let detectTimer = null;
 const DEBOUNCE_MS = 1500; // Increased from 600ms to avoid interrupting the user mid-word
+// Prevent overlapping translate requests and suppress duplicate results
+let isTranslating = false;
+let lastResult = null;
 
 // Map language codes to speech synthesis language tags
 const codeToSpeechLang = {
@@ -135,8 +138,14 @@ async function startTranslate() {
     if (!input || !output) return;
     const text = input.value.trim();
     if (!text) return;
+    // Prevent overlapping requests (e.g., Enter + debounced call)
+    if (isTranslating) return;
+
+    // Clear any pending debounce so we don't double-fire
+    if (detectTimer) { clearTimeout(detectTimer); detectTimer = null; }
 
     setBusy(true);
+    isTranslating = true;
     try {
         // Build payload depending on manual mode
         const manualToggle = document.getElementById('manualToggle');
@@ -162,7 +171,13 @@ async function startTranslate() {
             output.textContent = 'Error: ' + data.error;
         } else {
             const result = data.result || '';
-            typeOutputAnimated(output, result);
+            // If we just displayed the same result, avoid re-rendering it
+            if (result !== lastResult) {
+                typeOutputAnimated(output, result);
+                lastResult = result;
+            } else {
+                console.log('Duplicate translation result suppressed');
+            }
 
             // Determine source/target codes for deciding whether to speak
             const manualToggleEl = document.getElementById('manualToggle');
@@ -241,6 +256,7 @@ async function startTranslate() {
         output.textContent = locale.errorServer;
     } finally {
         setBusy(false);
+        isTranslating = false;
     }
 }
 
