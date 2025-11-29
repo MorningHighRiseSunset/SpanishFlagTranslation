@@ -151,7 +151,9 @@ async function callGoogleDetect(q) {
   }
   const json = await apiRes.json();
   if (json && json.data && json.data.detections && json.data.detections[0] && json.data.detections[0][0]) {
-    return json.data.detections[0][0].language;
+    const detected = json.data.detections[0][0];
+    // Return both language and confidence
+    return { language: detected.language, confidence: detected.confidence || 0, isReliable: detected.isReliable };
   }
   throw new Error('Invalid response from Google Detect');
 }
@@ -230,8 +232,15 @@ exports.handler = async function(event) {
         try {
           const detected = await callGoogleDetect(text);
           if (detected) {
-            sourceCode = detected;
-            console.log('Detected source language:', sourceCode);
+            let detectedLang = detected.language;
+            // If Google Detect returns "en" with low confidence (< 0.5), assume it's actually Spanish
+            // (the primary language of this site). Spanish and Portuguese share words that confuse detection.
+            if (detectedLang === 'en' && detected.confidence < 0.5) {
+              console.log('Low-confidence English detection', { confidence: detected.confidence, text: text.slice(0, 50), assuming: 'Spanish' });
+              detectedLang = 'es';
+            }
+            sourceCode = detectedLang;
+            console.log('Detected source language:', sourceCode, { confidence: detected.confidence });
             // Auto-map detected source to a sensible target if user didn't supply one
             // For Spanish flag site: Spanish/Portuguese → English; other languages → Spanish
             // (Portuguese is often misdetected for Spanish due to word overlap like "abuso")
