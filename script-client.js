@@ -182,11 +182,29 @@ async function startTranslate() {
             const detectedSource = data.detectedSource || null;
             const usedTarget = data.targetUsed || null;
 
-            console.log('TTS Debug:', { detectedSource, usedTarget, dataKeys: Object.keys(data) });
+            // Helper: normalize various language representations to short codes like 'en' or 'es'
+            function toCode(v) {
+                if (!v) return null;
+                const s = String(v).trim().toLowerCase();
+                if (/^[a-z]{2}$/.test(s)) return s;
+                if (/^[a-z]{2}-[a-z]{2,}$/.test(s)) return s.slice(0,2);
+                const map = { english: 'en', spanish: 'es', french: 'fr', hindi: 'hi', mandarin: 'zh', vietnamese: 'vi' };
+                if (map[s]) return map[s];
+                const cleaned = s.replace(/[^a-z]/g, '');
+                if (map[cleaned]) return map[cleaned];
+                return null;
+            }
+
+            console.log('TTS Debug raw:', { detectedSource, usedTarget, dataKeys: Object.keys(data) });
 
             // Prefer detected/returned codes; fall back to manual selection when manual mode is on
-            const effectiveSource = detectedSource || (manualToggleEl && manualToggleEl.checked && manualSourceEl && manualSourceEl.value ? manualKeyToCode[manualSourceEl.value] : null);
-            const effectiveTarget = usedTarget || (manualToggleEl && manualToggleEl.checked && manualTargetEl && manualTargetEl.value ? manualKeyToCode[manualTargetEl.value] : null);
+            const fromDetected = toCode(detectedSource);
+            const fromUsed = toCode(usedTarget);
+            const manualSrcCode = manualToggleEl && manualToggleEl.checked && manualSourceEl && manualSourceEl.value ? manualKeyToCode[manualSourceEl.value] : null;
+            const manualTgtCode = manualToggleEl && manualToggleEl.checked && manualTargetEl && manualTargetEl.value ? manualKeyToCode[manualTargetEl.value] : null;
+
+            const effectiveSource = fromDetected || manualSrcCode || null;
+            const effectiveTarget = fromUsed || manualTgtCode || null;
 
             console.log('TTS Debug effective:', { effectiveSource, effectiveTarget });
 
@@ -194,8 +212,12 @@ async function startTranslate() {
             if ((effectiveSource === 'en' && effectiveTarget === 'es') || (effectiveSource === 'es' && effectiveTarget === 'en')) {
                 console.log('TTS: Speaking', result, 'in language', effectiveTarget);
                 speakText(result, effectiveTarget || 'es');
+            } else if (!effectiveSource && manualToggleEl && manualToggleEl.checked && manualSrcCode && manualTgtCode && ((manualSrcCode === 'en' && manualTgtCode === 'es') || (manualSrcCode === 'es' && manualTgtCode === 'en'))) {
+                // Fallback: if manual mode selects en<->es, speak
+                console.log('TTS: Speaking (manual fallback)', result, 'in language', manualTgtCode);
+                speakText(result, manualTgtCode || 'es');
             } else {
-                console.log('TTS: Not speaking. Condition not met.', { effectiveSource, effectiveTarget });
+                console.log('TTS: Not speaking. Condition not met.', { effectiveSource, effectiveTarget, manualSrcCode, manualTgtCode });
             }
 
             // Update detection/target display
