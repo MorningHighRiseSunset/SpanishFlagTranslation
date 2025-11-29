@@ -43,9 +43,6 @@ const manualOptions = [
 
 let detectTimer = null;
 const DEBOUNCE_MS = 1500; // Increased from 600ms to avoid interrupting the user mid-word
-// Prevent overlapping translate requests and suppress duplicate results
-let isTranslating = false;
-let lastResult = null;
 
 // Map language codes to speech synthesis language tags
 const codeToSpeechLang = {
@@ -138,14 +135,8 @@ async function startTranslate() {
     if (!input || !output) return;
     const text = input.value.trim();
     if (!text) return;
-    // Prevent overlapping requests (e.g., Enter + debounced call)
-    if (isTranslating) return;
-
-    // Clear any pending debounce so we don't double-fire
-    if (detectTimer) { clearTimeout(detectTimer); detectTimer = null; }
 
     setBusy(true);
-    isTranslating = true;
     try {
         // Build payload depending on manual mode
         const manualToggle = document.getElementById('manualToggle');
@@ -171,13 +162,7 @@ async function startTranslate() {
             output.textContent = 'Error: ' + data.error;
         } else {
             const result = data.result || '';
-            // If we just displayed the same result, avoid re-rendering it
-            if (result !== lastResult) {
-                typeOutputAnimated(output, result);
-                lastResult = result;
-            } else {
-                console.log('Duplicate translation result suppressed');
-            }
+            typeOutputAnimated(output, result);
 
             // Determine source/target codes for deciding whether to speak
             const manualToggleEl = document.getElementById('manualToggle');
@@ -197,29 +182,11 @@ async function startTranslate() {
             const detectedSource = data.detectedSource || null;
             const usedTarget = data.targetUsed || null;
 
-            // Helper: normalize various language representations to short codes like 'en' or 'es'
-            function toCode(v) {
-                if (!v) return null;
-                const s = String(v).trim().toLowerCase();
-                if (/^[a-z]{2}$/.test(s)) return s;
-                if (/^[a-z]{2}-[a-z]{2,}$/.test(s)) return s.slice(0,2);
-                const map = { english: 'en', spanish: 'es', french: 'fr', hindi: 'hi', mandarin: 'zh', vietnamese: 'vi' };
-                if (map[s]) return map[s];
-                const cleaned = s.replace(/[^a-z]/g, '');
-                if (map[cleaned]) return map[cleaned];
-                return null;
-            }
-
-            console.log('TTS Debug raw:', { detectedSource, usedTarget, dataKeys: Object.keys(data) });
+            console.log('TTS Debug:', { detectedSource, usedTarget, dataKeys: Object.keys(data) });
 
             // Prefer detected/returned codes; fall back to manual selection when manual mode is on
-            const fromDetected = toCode(detectedSource);
-            const fromUsed = toCode(usedTarget);
-            const manualSrcCode = manualToggleEl && manualToggleEl.checked && manualSourceEl && manualSourceEl.value ? manualKeyToCode[manualSourceEl.value] : null;
-            const manualTgtCode = manualToggleEl && manualToggleEl.checked && manualTargetEl && manualTargetEl.value ? manualKeyToCode[manualTargetEl.value] : null;
-
-            const effectiveSource = fromDetected || manualSrcCode || null;
-            const effectiveTarget = fromUsed || manualTgtCode || null;
+            const effectiveSource = detectedSource || (manualToggleEl && manualToggleEl.checked && manualSourceEl && manualSourceEl.value ? manualKeyToCode[manualSourceEl.value] : null);
+            const effectiveTarget = usedTarget || (manualToggleEl && manualToggleEl.checked && manualTargetEl && manualTargetEl.value ? manualKeyToCode[manualTargetEl.value] : null);
 
             console.log('TTS Debug effective:', { effectiveSource, effectiveTarget });
 
@@ -227,12 +194,8 @@ async function startTranslate() {
             if ((effectiveSource === 'en' && effectiveTarget === 'es') || (effectiveSource === 'es' && effectiveTarget === 'en')) {
                 console.log('TTS: Speaking', result, 'in language', effectiveTarget);
                 speakText(result, effectiveTarget || 'es');
-            } else if (!effectiveSource && manualToggleEl && manualToggleEl.checked && manualSrcCode && manualTgtCode && ((manualSrcCode === 'en' && manualTgtCode === 'es') || (manualSrcCode === 'es' && manualTgtCode === 'en'))) {
-                // Fallback: if manual mode selects en<->es, speak
-                console.log('TTS: Speaking (manual fallback)', result, 'in language', manualTgtCode);
-                speakText(result, manualTgtCode || 'es');
             } else {
-                console.log('TTS: Not speaking. Condition not met.', { effectiveSource, effectiveTarget, manualSrcCode, manualTgtCode });
+                console.log('TTS: Not speaking. Condition not met.', { effectiveSource, effectiveTarget });
             }
 
             // Update detection/target display
@@ -256,7 +219,39 @@ async function startTranslate() {
         output.textContent = locale.errorServer;
     } finally {
         setBusy(false);
-        isTranslating = false;
+    }
+}
+
+// Debounced detection-only call: updates detected language / target display but
+// does not render or speak the translation. Keeps auto-detection while forcing
+// the user to press Submit to see/hear the actual translation.
+async function startDetect() {
+    const input = document.getElementById('input');
+    const detectLabel = document.getElementById('detectedInfo');
+    if (!input || !detectLabel) return;
+    const text = input.value.trim();
+    if (!text) {
+        detectLabel.textContent = 'Detected: — → Translating to: —';
+        return;
+    }
+
+    try {
+        const payload = { text };
+        const response = await fetch('/.netlify/functions/translate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (!response.ok) return; // leave detection UI unchanged on error
+        const data = await response.json();
+        const det = data.detectedSource || null;
+        const targ = data.targetUsed || null;
+        const detectedName = det ? (codeToFriendly[det] || det) : '—';
+        const targetName = targ ? (codeToFriendly[targ] || targ) : '—';
+        const locale = localizeUI();
+        detectLabel.textContent = `${locale.detectedPrefix} ${detectedName} → ${locale.translatingTo} ${targetName}`;
+    } catch (e) {
+        // ignore silently; detection is best-effort
     }
 }
 
@@ -309,12 +304,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Debounced input
+    // Debounced input -> only run detection (do NOT perform full translation).
+    // Full translation + TTS require pressing Submit (Enter/Go or Translate button).
     if (input) {
         input.addEventListener('input', function() {
             if (output && output.textContent.trim()) clearOutputAnimated(output);
             if (detectTimer) clearTimeout(detectTimer);
-            detectTimer = setTimeout(() => startTranslate(), DEBOUNCE_MS);
+            detectTimer = setTimeout(() => startDetect(), DEBOUNCE_MS);
         });
     }
 
