@@ -44,6 +44,17 @@ const manualOptions = [
 let detectTimer = null;
 const DEBOUNCE_MS = 1500; // Increased from 600ms to avoid interrupting the user mid-word
 
+// Speech language mapping and last translation storage (manual play)
+const codeToSpeechLang = {
+    en: 'en-US',
+    es: 'es-ES',
+    fr: 'fr-FR',
+    hi: 'hi-IN',
+    zh: 'zh-CN',
+    vi: 'vi-VN'
+};
+let lastTranslation = { text: '', langCode: '' };
+
 // Voice recognition (Web Speech API) helpers
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || null;
 let recognition = null;
@@ -160,42 +171,42 @@ function typeOutputAnimated(el, text) {
             span.classList.add('pop-in');
         }, index * 28);
     });
-    // Speak the result text after animation
-    speakText(text);
+}
+// Speak text with an explicit short code (e.g. 'en', 'es', 'zh')
+function speakText(text, langCode) {
+    if (!text || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = codeToSpeechLang[langCode] || (langCode || 'zh-CN');
+    utterance.rate = 0.95;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+    window.speechSynthesis.speak(utterance);
 }
 
-function speakText(text) {
-    // Use browser's Web Speech Synthesis API
-    if (!text || !window.speechSynthesis) return;
-    
-    // Cancel any ongoing speech
-    window.speechSynthesis.cancel();
-    
-    const utterance = new SpeechSynthesisUtterance(text);
-    
-    // Try to detect target language for appropriate voice
-    const manualToggle = document.getElementById('manualToggle');
-    const manualTarget = document.getElementById('manualTarget');
-    let targetLang = 'es'; // default to Spanish
-    
-    if (manualToggle && manualToggle.checked && manualTarget) {
-        const targetValue = manualTarget.value;
-        // Map manual keys to language codes
-        const langMap = {
-            'english': 'en',
-            'spanish': 'es',
-            'french': 'fr',
-            'hindi': 'hi',
-            'mandarin': 'zh',
-            'vietnamese': 'vi'
-        };
-        targetLang = langMap[targetValue] || 'es';
+// Audio unlock helper for iOS — play a very short tone during user gesture
+let __unlockAudioContext = null;
+async function unlockAudioOnGesture() {
+    try {
+        const C = window.AudioContext || window.webkitAudioContext;
+        if (!C) return;
+        if (!__unlockAudioContext) __unlockAudioContext = new C();
+        if (__unlockAudioContext.state === 'suspended' && typeof __unlockAudioContext.resume === 'function') {
+            await __unlockAudioContext.resume();
+        }
+        const buffer = __unlockAudioContext.createBuffer(1, __unlockAudioContext.sampleRate * 0.03, __unlockAudioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        const freq = 440;
+        for (let i = 0; i < buffer.length; i++) {
+            data[i] = Math.sin((i / buffer.length) * freq * 2 * Math.PI) * 0.001;
+        }
+        const src = __unlockAudioContext.createBufferSource();
+        src.buffer = buffer;
+        src.connect(__unlockAudioContext.destination);
+        src.start(0);
+    } catch (e) {
+        // ignore
     }
-    
-    utterance.lang = targetLang;
-    utterance.rate = 0.9; // Slightly slower for clarity
-    
-    window.speechSynthesis.speak(utterance);
 }
 
 function localizeUI() {
@@ -259,6 +270,20 @@ async function startTranslate() {
         } else {
             const result = data.result || '';
             typeOutputAnimated(output, result);
+
+            // Store last translation and show Play button; do not auto-speak
+            const manualToggleEl = document.getElementById('manualToggle');
+            const manualTargetEl = document.getElementById('manualTarget');
+            // Determine effective target (prefer returned targetUsed)
+            const usedTarget = data.targetUsed || null;
+            let effectiveTarget = usedTarget;
+            if (!effectiveTarget && manualToggleEl && manualToggleEl.checked && manualTargetEl && manualTargetEl.value) {
+                const map = { english: 'en', spanish: 'es', french: 'fr', hindi: 'hi', mandarin: 'zh', vietnamese: 'vi' };
+                effectiveTarget = map[manualTargetEl.value] || null;
+            }
+            lastTranslation = { text: result, langCode: effectiveTarget || 'zh' };
+            const playBtn = document.getElementById('playBtn');
+            if (playBtn) playBtn.style.display = 'inline-block';
 
             // Update detection/target display
             if (detectLabel) {
@@ -350,6 +375,18 @@ document.addEventListener('DOMContentLoaded', function() {
             if (manualControls) manualControls.style.display = manualOn ? 'flex' : 'none';
             // re-run translate to respect manual mode change
             startTranslate();
+        });
+    }
+
+    // Play button handler (manual playback)
+    const playBtn = document.getElementById('playBtn');
+    if (playBtn) {
+        playBtn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            await unlockAudioOnGesture();
+            if (lastTranslation.text && lastTranslation.langCode) {
+                speakText(lastTranslation.text, lastTranslation.langCode);
+            }
         });
     }
 

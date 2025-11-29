@@ -116,6 +116,13 @@ button:active{
 }
 button[disabled]{opacity:0.6;cursor:default;transform:none}
 
+.play-btn {
+    min-width: auto;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    margin-top: 12px;
+}
+
 .output{
     margin-top: 24px;
     min-height: 60px;
