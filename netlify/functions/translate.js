@@ -233,9 +233,10 @@ exports.handler = async function(event) {
             sourceCode = detected;
             console.log('Detected source language:', sourceCode);
             // Auto-map detected source to a sensible target if user didn't supply one
-            // Requirements: spanish -> english; french/hindi/mandarin/vietnamese -> spanish
+            // For Spanish flag site: Spanish/Portuguese → English; other languages → Spanish
+            // (Portuguese is often misdetected for Spanish due to word overlap like "abuso")
             if (!userTarget) {
-              if (sourceCode === 'es') targetCode = 'en';
+              if (['es', 'pt'].includes(sourceCode)) targetCode = 'en';
               else if (['fr', 'hi', 'zh', 'vi'].includes(sourceCode)) targetCode = 'es';
             }
             detectedSource = sourceCode;
