@@ -136,7 +136,11 @@ practiceFormEs.onsubmit = function(e) {
   const englishBox = document.getElementById('practiceInputEsEnglish');
   if (!found) {
     englishBox.value = '';
-    practiceResults.innerHTML = `<span style="color:red;">Could not find a matching Spanish verb in the local database.</span>`;
+    practiceResults.innerHTML = `<div style="color:red; padding: 10px; background-color: #fee; border: 1px solid #fcc; border-radius: 4px;">
+      <strong>Could not find a matching verb.</strong><br>
+      <small style="color: #666;">This tool is specifically designed for Spanish verbs (e.g., "ser", "estar", "hacer"). 
+      For translating other words or phrases, please use the general translation tool below.</small>
+    </div>`;
     return;
   }
 
@@ -297,7 +301,11 @@ practiceFormEn.onsubmit = function(e) {
   const spanishBox = document.getElementById('practiceInputEnSpanish');
   if (!result) {
     spanishBox.value = '';
-    practiceResults.innerHTML = `<span style="color:red;">Could not find a matching verb or tense in the local database.</span>`;
+    practiceResults.innerHTML = `<div style="color:red; padding: 10px; background-color: #fee; border: 1px solid #fcc; border-radius: 4px;">
+      <strong>Could not find a matching verb.</strong><br>
+      <small style="color: #666;">This tool is specifically designed for Spanish verbs (e.g., "to be", "to have", "to do"). 
+      For translating other words or phrases, please use the general translation tool below.</small>
+    </div>`;
     return;
   }
 

@@ -1,3 +1,21 @@
+/* Responsive: Make conjugation buttons smaller on mobile */
+@media (max-width: 600px) {
+  .conjugation-button, .conjugation-btn, .conjugation, .conjugationButton, .conjugation-btn-wrapper {
+    font-size: 0.85em !important;
+    padding: 4px 8px !important;
+    min-width: 0 !important;
+    width: auto !important;
+    max-width: 100% !important;
+    margin: 2px !important;
+    border-radius: 6px !important;
+    box-sizing: border-box;
+  }
+  /* If buttons are inside a flex or grid, allow wrapping */
+  .conjugation-row, .conjugation-buttons, .conjugation-list {
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+  }
+}
 :root{
     --accent: #0066cc;
     --accent-dark: #0052a3;
@@ -206,7 +224,23 @@ button[disabled]{opacity:0.6;cursor:default;transform:none}
     .site-header h1{font-size:1.3rem}
     .header-top { flex-direction: column; gap: 8px; }
     .output{font-size:1.15rem;min-height:56px;padding:14px 16px}
-    button{min-width:100px;padding:12px 20px;font-size:0.95rem}
+    button{
+        min-width:96px;
+        padding:10px 16px;
+        font-size:0.9rem;
+    }
+    /* Make TTS / small utility buttons noticeably smaller on phones */
+    #playBtn,
+    .play-btn,
+    #translateBtn,
+    #practiceModeBtn,
+    #quizModeBtn,
+    #quizForm button {
+        min-width:auto;
+        padding:8px 12px;
+        font-size:0.85rem;
+        box-shadow:0 4px 10px rgba(0,102,204,0.18);
+    }
     input[type="text"]{padding:12px 14px}
 }
 
