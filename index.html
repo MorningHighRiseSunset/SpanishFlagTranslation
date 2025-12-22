@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Spanish Flag Translation</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="slt_styles.css">
 </head>
 <body>
         <!-- SLT UI Start -->
@@ -26,32 +25,35 @@
             </div>
             <div id="practiceSection" style="display:none;">
                 <h2>
-                    Practice<br>
-                    <span class="subtitle">(Práctica)</span>
+                    Practice
                 </h2>
                 <div class="practice-forms">
-                    <form id="practiceFormEn">
-                        <div class="input-col">
-                            <input type="text" id="practiceInputEn" placeholder="Type an English verb" required>
-                            <span class="input-hint">(Escribe un verbo en inglés)</span>
-                        </div>
-                        <input type="text" id="practiceInputEnSpanish" readonly tabindex="-1" class="output-input" />
-                        <button type="submit">
-                            Show Spanish<br>
-                            <span class="btn-sub">(Mostrar en español)</span>
-                        </button>
-                    </form>
-                    <form id="practiceFormEs">
-                        <div class="input-col">
-                            <input type="text" id="practiceInputEs" placeholder="Escribe un verbo" required>
-                            <span class="input-hint">(Type a verb in Spanish)</span>
-                        </div>
-                        <input type="text" id="practiceInputEsEnglish" readonly tabindex="-1" class="output-input" />
-                        <button type="submit">
-                            Show English<br>
-                            <span class="btn-sub">(Mostrar en inglés)</span>
-                        </button>
-                    </form>
+                    <div class="practice-card">
+                        <form id="practiceFormEn">
+                            <div class="input-col">
+                                <input type="text" id="practiceInputEn" placeholder="Type an English verb" required>
+                                <span class="input-hint">(Escribe un verbo en inglés)</span>
+                            </div>
+                            <input type="text" id="practiceInputEnSpanish" readonly tabindex="-1" class="output-input" />
+                            <button type="submit">
+                                Show Spanish<br>
+                                <span class="btn-sub">(Mostrar en español)</span>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="practice-card">
+                        <form id="practiceFormEs">
+                            <div class="input-col">
+                                <input type="text" id="practiceInputEs" placeholder="Escribe un verbo" required>
+                                <span class="input-hint">(Type a verb in Spanish)</span>
+                            </div>
+                            <input type="text" id="practiceInputEsEnglish" readonly tabindex="-1" class="output-input" />
+                            <button type="submit">
+                                Show English<br>
+                                <span class="btn-sub">(Mostrar en inglés)</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
                 <div id="practiceResults"></div>
             </div>

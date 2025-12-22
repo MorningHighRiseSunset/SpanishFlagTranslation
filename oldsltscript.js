@@ -1,12 +1,4 @@
-import { verbs } from './slt_verbs.js';
-
-// --- Needed definitions from oldsltscript.js ---
-const pronouns = ["I", "You", "He", "We", "You all", "They"];
-const spanishPronouns = ["Yo", "Tú", "Él/Ella/Usted", "Nosotros", "Vosotros", "Ellos/Ellas/Ustedes"];
-const tenses = [
-  "Present", "Preterite", "Imperfect", "Future", "Conditional",
-  "Present Perfect", "Past Perfect", "Future Perfect", "Conditional Perfect"
-];
+import { verbs } from './verbs.js';
 
 const englishNotePrompts = [
   "Translate: What's your favorite food?",
@@ -79,11 +71,243 @@ const englishToSpanishPrompts = {
   "Translate: He is very funny.": "Él es muy gracioso.",
   "Translate: I want to eat something.": "Quiero comer algo.",
   "Translate: The weather is nice today.": "Hace buen tiempo hoy.",
-  "Translate: I have a question.": "Tengo una pregunta."
+  "Translate: I have a question.": "Tengo una pregunta.",
+  // --- Newest translations ---
+  "Translate: I am learning new words.": "Estoy aprendiendo palabras nuevas.",
+  "Translate: What is your name?": "¿Cómo te llamas?",
+  "Translate: I have two brothers.": "Tengo dos hermanos.",
+  "Translate: Where are you from?": "¿De dónde eres?",
+  "Translate: I like to play soccer.": "Me gusta jugar al fútbol.",
+  "Translate: The book is on the table.": "El libro está sobre la mesa.",
+  "Translate: I am going to bed.": "Me voy a la cama.",
+  "Translate: She is a teacher.": "Ella es profesora.",
+  "Translate: We are friends.": "Somos amigos.",
+  "Translate: I don't speak much Spanish.": "No hablo mucho español.",
+  "Translate: Can you repeat that, please?": "¿Puedes repetir eso, por favor?",
+  "Translate: I am hungry.": "Tengo hambre.",
+  "Translate: The cat is black.": "El gato es negro.",
+  "Translate: I live in a big city.": "Vivo en una ciudad grande.",
+  "Translate: What do you want to do today?": "¿Qué quieres hacer hoy?"
 };
-// --- Newest translations ---
-// The rest of the translations should be outside this object or added with proper commas if continuing the object.
-// (Table rows should be built as strings inside a function, not as JSX.)
+
+const pronouns = ["I", "You", "He", "We", "You all", "They"];
+const spanishPronouns = ["Yo", "Tú", "Él/Ella/Usted", "Nosotros", "Vosotros", "Ellos/Ellas/Ustedes"];
+const tenses = [
+  "Present", "Preterite", "Imperfect", "Future", "Conditional",
+  "Present Perfect", "Past Perfect", "Future Perfect", "Conditional Perfect"
+];
+
+const tenseDefinitions = {
+  "Present": "Describes actions happening now or regularly.",
+  "Preterite": "Describes completed actions in the past.",
+  "Imperfect": "Describes ongoing or habitual actions in the past.",
+  "Future": "Describes actions that will happen.",
+  "Conditional": "Describes actions that would happen under certain conditions.",
+  "Present Perfect": "Describes actions that have happened recently or have relevance to the present.",
+  "Past Perfect": "Describes actions that had happened before another past action.",
+  "Future Perfect": "Describes actions that will have happened by a certain point in the future.",
+  "Conditional Perfect": "Describes actions that would have happened under certain conditions."
+};
+
+const modeSelect = document.getElementById('modeSelect');
+const practiceModeBtn = document.getElementById('practiceModeBtn');
+const quizModeBtn = document.getElementById('quizModeBtn');
+const practiceSection = document.getElementById('practiceSection');
+const quizSection = document.getElementById('quizSection');
+const practiceFormEn = document.getElementById('practiceFormEn');
+const practiceInputEn = document.getElementById('practiceInputEn');
+const practiceFormEs = document.getElementById('practiceFormEs');
+const practiceInputEs = document.getElementById('practiceInputEs');
+const practiceResults = document.getElementById('practiceResults');
+const quizPrompt = document.getElementById('quizPrompt');
+const quizForm = document.getElementById('quizForm');
+const quizInput = document.getElementById('quizInput');
+const quizFeedback = document.getElementById('quizFeedback');
+
+let quizState = null;
+
+function speakSpanish(text) {
+  speakWithVoice(text, 'es');
+}
+
+function speakEnglish(text) {
+  speakWithVoice(text, 'en');
+}
+
+function speakWithVoice(text, langPrefix) {
+  function doSpeak() {
+    const synth = window.speechSynthesis;
+    let voices = synth.getVoices();
+    let voice = voices.find(v => v.lang && v.lang.startsWith(langPrefix));
+    const utter = new SpeechSynthesisUtterance(text);
+    if (voice) utter.voice = voice;
+    utter.lang = voice ? voice.lang : (langPrefix === 'es' ? 'es-ES' : 'en-US');
+    utter.rate = 0.6;    // Slower than normal (1.0 is default)
+    utter.volume = 1.0;  // Max volume
+    utter.pitch = 1.1;   // Slightly higher pitch for clarity
+    synth.speak(utter);
+  }
+
+  if (window.speechSynthesis.getVoices().length === 0) {
+    window.speechSynthesis.onvoiceschanged = doSpeak;
+    setTimeout(doSpeak, 200);
+  } else {
+    doSpeak();
+  }
+}
+
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('speak-btn-en')) {
+    speakEnglish(e.target.getAttribute('data-text'));
+  }
+});
+
+// --- Mode switching ---
+practiceModeBtn.onclick = () => {
+  modeSelect.style.display = 'none';
+  quizSection.style.display = 'none';
+  practiceSection.style.display = '';
+  practiceResults.innerHTML = '';
+  practiceInputEn.value = '';
+  practiceInputEs.value = '';
+};
+quizModeBtn.onclick = () => {
+  modeSelect.style.display = 'none';
+  practiceSection.style.display = 'none';
+  quizSection.style.display = '';
+  quizFeedback.innerHTML = '';
+  quizInput.value = '';
+  startQuiz();
+};
+
+// --- Practice Mode: English → Spanish ---
+practiceFormEn.onsubmit = function(e) {
+  e.preventDefault();
+  const input = practiceInputEn.value.trim();
+  if (!input) return;
+
+  // If this is a tab click, meaningIdx is passed in the event
+  let meaningIdx = (e && typeof e.meaningIdx === "number") ? e.meaningIdx : 0;
+
+  // Always use parseEnglishPhrase to get the correct meaningIdx for the input
+  const result = parseEnglishPhrase(input, meaningIdx);
+  const spanishBox = document.getElementById('practiceInputEnSpanish');
+  if (!result) {
+    spanishBox.value = '';
+    practiceResults.innerHTML = `<span style="color:red;">Could not find a matching verb or tense in the local database.</span>`;
+    return;
+  }
+
+  // Use allCandidates if present, otherwise just the single result
+  let allCandidates = result.allCandidates || [result];
+  let currentIdx = meaningIdx;
+  let candidate = allCandidates[currentIdx] || allCandidates[0];
+
+  let verb = candidate.verb;
+  meaningIdx = candidate.meaningIdx || 0;
+  const pronounIdx = (typeof candidate.pronounIdx === "number") ? candidate.pronounIdx : 0;
+  const detectedTense = candidate.tense || "Present";
+
+  // Special filtering for "to have (auxiliary)" and "to have (possession)"
+  const englishMeaning = Array.isArray(verb.english) ? verb.english[meaningIdx] : verb.english;
+  let filteredTenses;
+  if (englishMeaning === "to have (auxiliary)") {
+    // Only show perfect tenses that are available (or their mapped simple tense is available)
+    filteredTenses = [
+      "Present Perfect", "Past Perfect", "Future Perfect", "Conditional Perfect"
+    ].filter(t =>
+      (t === "Present Perfect" && verb.conjugations["Present"]) ||
+      (t === "Past Perfect" && verb.conjugations["Imperfect"]) ||
+      (t === "Future Perfect" && verb.conjugations["Future"]) ||
+      (t === "Conditional Perfect" && verb.conjugations["Conditional"])
+    );
+  } else if (englishMeaning === "to have (possession)") {
+    filteredTenses = [
+      "Present", "Preterite", "Imperfect", "Future", "Conditional"
+    ].filter(t => verb.conjugations[t]);
+  } else {
+    filteredTenses = tenses.filter(t => verb.conjugations[t]);
+  }
+
+  // Tab UI for multiple meanings 
+  let tabHtml = '';
+  if (allCandidates.length > 1) {
+    tabHtml = `<div id="meaningTabs" style="display:flex;gap:8px;margin-bottom:8px;">` +
+      allCandidates.map((c, idx) => {
+        let label;
+        if (Array.isArray(c.verb.english)) {
+          const meaning = c.verb.english[c.meaningIdx];
+          if (meaning === "to have (auxiliary)") label = "haber (auxiliary) / to have (auxiliary)";
+          else if (meaning === "to have (possession)" || meaning === "to have (shows possession)") label = "tener (shows possession) / to have (shows possession)";
+          else label = `${c.verb.spanish} / ${meaning.replace(/^to /, '')}`;
+        } else {
+          label = `${c.verb.spanish} / ${c.verb.english.replace(/^to /, '')}`;
+        }
+        return `<button class="meaning-tab${idx === currentIdx ? ' active' : ''}" data-meaning-idx="${idx}">${label}</button>`;
+      }).join('') +
+      `</div>`;
+  }
+
+  let tenseToShow = detectedTense || "Present";
+  let spanish = verb.conjugations[tenseToShow] ? verb.conjugations[tenseToShow][pronounIdx] : "(not available)";
+  spanishBox.value = `${spanishPronouns[pronounIdx]} ${spanish}`;
+
+  let html = tabHtml;
+  html += `<h3>Spanish conjugations for <b>${englishMeaning}</b> (${pronouns[pronounIdx]})`;
+  if (detectedTense) html += ` <span style="font-size:0.9em;color:#666;">[${detectedTense}]</span>`;
+  html += `</h3>`;
+  html += `<table border="1" style="width:100%;text-align:center;">
+    <tr>
+      <th>Tense</th>
+      <th>Spanish</th>
+      <th>English</th>
+    </tr>`;
+  filteredTenses.forEach(t => {
+    // For "to have (auxiliary)", map perfect tenses to simple tenses for haber
+    let conjugation;
+    if (englishMeaning === "to have (auxiliary)") {
+      if (t === "Present Perfect") conjugation = verb.conjugations["Present"] ? verb.conjugations["Present"][pronounIdx] : "(not available)";
+      else if (t === "Past Perfect") conjugation = verb.conjugations["Imperfect"] ? verb.conjugations["Imperfect"][pronounIdx] : "(not available)";
+      else if (t === "Future Perfect") conjugation = verb.conjugations["Future"] ? verb.conjugations["Future"][pronounIdx] : "(not available)";
+      else if (t === "Conditional Perfect") conjugation = verb.conjugations["Conditional"] ? verb.conjugations["Conditional"][pronounIdx] : "(not available)";
+      else conjugation = "(not available)";
+    } else {
+      conjugation = verb.conjugations[t] ? verb.conjugations[t][pronounIdx] : "(not available)";
+    }
+    if (conjugation === "(not available)") return; // <-- Only render if available
+    let english = buildEnglishPhrase(verb, t, pronounIdx, meaningIdx);
+    let highlight = (detectedTense && t === detectedTense) ? ' style="background:#e0e7ff;font-weight:bold;"' : '';
+    html += `<tr${highlight}>
+      <td>
+        ${t}
+        <button type="button" class="tense-info-btn" data-tense="${t}" title="What is ${t}?">ℹ️</button>
+      </td>
+      <td>
+        ${conjugation}
+        <button type="button" class="speak-btn" data-text="${spanishPronouns[pronounIdx]} ${conjugation}" title="Hear pronunciation">🔊</button>
+      </td>
+      <td>
+        ${english}
+        <button type="button" class="speak-btn-en" data-text="${english}" title="Hear English pronunciation">🔊</button>
+      </td>
+    </tr>`;
+  });
+  html += `</table>`;
+  practiceResults.innerHTML = html;
+
+  // Tab click handler
+  if (allCandidates.length > 1) {
+    document.querySelectorAll('.meaning-tab').forEach(btn => {
+      btn.onclick = () => {
+        practiceFormEn.onsubmit({
+          preventDefault: () => {},
+          target: practiceFormEn,
+          meaningIdx: parseInt(btn.getAttribute('data-meaning-idx'))
+        });
+      };
+    });
+  }
+};
 
 // --- Accent-insensitive normalization helper ---
 function normalizeSpanish(str) {
@@ -281,135 +505,6 @@ practiceFormEs.onsubmit = function(e) {
   });
   html += `</table>`;
   practiceResults.innerHTML = html;
-};
-
-// --- Practice Mode: English → Spanish ---
-practiceFormEn.onsubmit = function(e) {
-  e.preventDefault();
-  const input = practiceInputEn.value.trim();
-  if (!input) return;
-
-  // If this is a tab click, meaningIdx is passed in the event
-  let meaningIdx = (e && typeof e.meaningIdx === "number") ? e.meaningIdx : 0;
-
-  // Always use parseEnglishPhrase to get the correct meaningIdx for the input
-  const result = parseEnglishPhrase(input, meaningIdx);
-  const spanishBox = document.getElementById('practiceInputEnSpanish');
-  if (!result) {
-    spanishBox.value = '';
-    practiceResults.innerHTML = `<span style="color:red;">Could not find a matching verb or tense in the local database.</span>`;
-    return;
-  }
-
-  // Use allCandidates if present, otherwise just the single result
-  let allCandidates = result.allCandidates || [result];
-  let currentIdx = meaningIdx;
-  let candidate = allCandidates[currentIdx] || allCandidates[0];
-
-  let verb = candidate.verb;
-  meaningIdx = candidate.meaningIdx || 0;
-  const pronounIdx = (typeof candidate.pronounIdx === "number") ? candidate.pronounIdx : 0;
-  const detectedTense = candidate.tense || "Present";
-
-  // Special filtering for "to have (auxiliary)" and "to have (possession)"
-  const englishMeaning = Array.isArray(verb.english) ? verb.english[meaningIdx] : verb.english;
-  let filteredTenses;
-  if (englishMeaning === "to have (auxiliary)") {
-    // Only show perfect tenses that are available (or their mapped simple tense is available)
-    filteredTenses = [
-      "Present Perfect", "Past Perfect", "Future Perfect", "Conditional Perfect"
-    ].filter(t =>
-      (t === "Present Perfect" && verb.conjugations["Present"]) ||
-      (t === "Past Perfect" && verb.conjugations["Imperfect"]) ||
-      (t === "Future Perfect" && verb.conjugations["Future"]) ||
-      (t === "Conditional Perfect" && verb.conjugations["Conditional"])
-    );
-  } else if (englishMeaning === "to have (possession)") {
-    filteredTenses = [
-      "Present", "Preterite", "Imperfect", "Future", "Conditional"
-    ].filter(t => verb.conjugations[t]);
-  } else {
-    filteredTenses = tenses.filter(t => verb.conjugations[t]);
-  }
-
-  // Tab UI for multiple meanings 
-  let tabHtml = '';
-  if (allCandidates.length > 1) {
-    tabHtml = `<div id="meaningTabs" style="display:flex;gap:8px;margin-bottom:8px;">` +
-      allCandidates.map((c, idx) => {
-        let label;
-        if (Array.isArray(c.verb.english)) {
-          const meaning = c.verb.english[c.meaningIdx];
-          if (meaning === "to have (auxiliary)") label = "haber (auxiliary) / to have (auxiliary)";
-          else if (meaning === "to have (possession)" || meaning === "to have (shows possession)") label = "tener (shows possession) / to have (shows possession)";
-          else label = `${c.verb.spanish} / ${meaning.replace(/^to /, '')}`;
-        } else {
-          label = `${c.verb.spanish} / ${c.verb.english.replace(/^to /, '')}`;
-        }
-        return `<button class="meaning-tab${idx === currentIdx ? ' active' : ''}" data-meaning-idx="${idx}">${label}</button>`;
-      }).join('') +
-      `</div>`;
-  }
-
-  let tenseToShow = detectedTense || "Present";
-  let spanish = verb.conjugations[tenseToShow] ? verb.conjugations[tenseToShow][pronounIdx] : "(not available)";
-  spanishBox.value = `${spanishPronouns[pronounIdx]} ${spanish}`;
-
-  let html = tabHtml;
-  html += `<h3>Spanish conjugations for <b>${englishMeaning}</b> (${pronouns[pronounIdx]})`;
-  if (detectedTense) html += ` <span style="font-size:0.9em;color:#666;">[${detectedTense}]</span>`;
-  html += `</h3>`;
-  html += `<table border="1" style="width:100%;text-align:center;">
-    <tr>
-      <th>Tense</th>
-      <th>Spanish</th>
-      <th>English</th>
-    </tr>`;
-  filteredTenses.forEach(t => {
-    // For "to have (auxiliary)", map perfect tenses to simple tenses for haber
-    let conjugation;
-    if (englishMeaning === "to have (auxiliary)") {
-      if (t === "Present Perfect") conjugation = verb.conjugations["Present"] ? verb.conjugations["Present"][pronounIdx] : "(not available)";
-      else if (t === "Past Perfect") conjugation = verb.conjugations["Imperfect"] ? verb.conjugations["Imperfect"][pronounIdx] : "(not available)";
-      else if (t === "Future Perfect") conjugation = verb.conjugations["Future"] ? verb.conjugations["Future"][pronounIdx] : "(not available)";
-      else if (t === "Conditional Perfect") conjugation = verb.conjugations["Conditional"] ? verb.conjugations["Conditional"][pronounIdx] : "(not available)";
-      else conjugation = "(not available)";
-    } else {
-      conjugation = verb.conjugations[t] ? verb.conjugations[t][pronounIdx] : "(not available)";
-    }
-    if (conjugation === "(not available)") return; // <-- Only render if available
-    let english = buildEnglishPhrase(verb, t, pronounIdx, meaningIdx);
-    let highlight = (detectedTense && t === detectedTense) ? ' style="background:#e0e7ff;font-weight:bold;"' : '';
-    html += `<tr${highlight}>
-      <td>
-        ${t}
-        <button type="button" class="tense-info-btn" data-tense="${t}" title="What is ${t}?">ℹ️</button>
-      </td>
-      <td>
-        ${conjugation}
-        <button type="button" class="speak-btn" data-text="${spanishPronouns[pronounIdx]} ${conjugation}" title="Hear pronunciation">🔊</button>
-      </td>
-      <td>
-        ${english}
-        <button type="button" class="speak-btn-en" data-text="${english}" title="Hear English pronunciation">🔊</button>
-      </td>
-    </tr>`;
-  });
-  html += `</table>`;
-  practiceResults.innerHTML = html;
-
-  // Tab click handler
-  if (allCandidates.length > 1) {
-    document.querySelectorAll('.meaning-tab').forEach(btn => {
-      btn.onclick = () => {
-        practiceFormEn.onsubmit({
-          preventDefault: () => {},
-          target: practiceFormEn,
-          meaningIdx: parseInt(btn.getAttribute('data-meaning-idx'))
-        });
-      };
-    });
-  }
 };
 
 // --- Quiz Mode: Spanish → English ---
@@ -887,12 +982,343 @@ const irregulars = {
   }
 }
 
-// --- Practice/Quiz Mode Toggle ---
-document.getElementById('practiceModeBtn').addEventListener('click', function() {
-  document.getElementById('practiceSection').style.display = '';
-  document.getElementById('quizSection').style.display = 'none';
+document.getElementById('checkSpanishBtn').onclick = function () {
+  const notes = document.getElementById('notesArea').value.trim();
+  const feedbackBox = document.getElementById('notesFeedback');
+  if (!notes) {
+    feedbackBox.textContent = "Please type a Spanish sentence or phrase to check.";
+    feedbackBox.style.background = "#fee2e2";
+    feedbackBox.style.color = "#ef4444";
+    feedbackBox.style.borderLeft = "4px solid #ef4444";
+    return;
+  }
+
+  // --- PATCH: Check if user is answering the current prompt ---
+  const currentPrompt = document.getElementById('notesPrompt').textContent;
+  const expectedSpanish = englishToSpanishPrompts[currentPrompt];
+  let translationScore = 0;
+  let translationFeedback = "";
+
+  if (expectedSpanish) {
+    // Normalize for accents/case
+    const normalize = s =>
+      s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[¡!¿?.,]/g, '').trim();
+
+    if (normalize(notes) === normalize(expectedSpanish)) {
+      translationScore = 2;
+      translationFeedback = `<div style="color:green;font-weight:bold;">✅ Perfect translation for the prompt!</div>`;
+    } else if (normalize(notes).includes(normalize(expectedSpanish.split(' ')[0]))) {
+      translationScore = 1;
+      translationFeedback = `<div style="color:#2563eb;">Good try! Your answer is close to the expected translation.</div>`;
+    }
+  }
+
+  const commonSpanishWords = [
+    "el", "la", "de", "que", "y", "en", "a", "los", "se", "no", "por", "con", "su", "para", "es", "una", "yo", "tú", "él", "ella", "nosotros", "vosotros", "ellos", "ellas", "usted", "ustedes", "mi", "me", "te", "le", "lo", "la", "nos", "os", "les", "las"
+  ];
+  const accents = /[áéíóúñü]/i;
+  let feedback = "";
+  let suggestions = [];
+  let score = 0;
+
+  // Encourage if it looks Spanish
+  let spanishScore = 0;
+  for (let word of commonSpanishWords) {
+    if (notes.toLowerCase().includes(word)) spanishScore++;
+  }
+  if (accents.test(notes)) spanishScore++;
+
+  // Check for punctuation
+  if (notes.endsWith(".")) {
+    feedback += "¡Bien! Your sentence ends with a period.<br>";
+    score += 1;
+  } else if (notes.endsWith("!")) {
+    feedback += "¡Buen énfasis! Your sentence ends with an exclamation mark.<br>";
+    score += 1;
+  } else if (notes.endsWith("?")) {
+    feedback += "¡Pregunta! Your sentence ends with a question mark.<br>";
+    score += 1;
+  } else {
+    suggestions.push("Try ending your sentence with a period, exclamation, or question mark.");
+  }
+
+  // Capitalization
+  if (notes[0] && notes[0] === notes[0].toLowerCase()) {
+    suggestions.push("Start your sentence with a capital letter.");
+  } else {
+    score += 1;
+  }
+
+  // Inverted punctuation
+  if (notes.includes("?") && !notes.includes("¿")) {
+    suggestions.push("Spanish questions should start with '¿'.");
+  } else if (notes.includes("¿")) {
+    score += 1;
+  }
+  if (notes.includes("!") && !notes.includes("¡")) {
+    suggestions.push("Spanish exclamations should start with '¡'.");
+  } else if (notes.includes("¡")) {
+    score += 1;
+  }
+
+  // Detect some common mistakes
+  if (notes.toLowerCase().includes("yo es")) {
+    suggestions.push("Remember: 'yo soy' or 'yo estoy', not 'yo es'.");
+  }
+  if (notes.toLowerCase().includes("tu eres") && !notes.includes("tú eres")) {
+    suggestions.push("Did you mean 'tú eres'? Don't forget the accent on 'tú' for 'you'.");
+  }
+  if (/\bsi\b/i.test(notes) && !notes.includes("sí")) {
+    suggestions.push("Did you mean 'sí' (yes) with an accent?");
+  }
+  if (/\bel\b/i.test(notes) && !notes.includes("él")) {
+    suggestions.push("Did you mean 'él' (he) with an accent?");
+  }
+
+  // Subject-verb agreement (very basic)
+  if (notes.match(/\byo eres\b/i)) {
+    suggestions.push("It should be 'yo soy' or 'yo estoy', not 'yo eres'.");
+  }
+  if (notes.match(/\btú soy\b/i)) {
+    suggestions.push("It should be 'tú eres' or 'tú estás', not 'tú soy'.");
+  }
+
+  // Encourage advanced grammar
+  if (notes.includes("hubiera") || notes.includes("hubiese")) {
+    feedback += "👏 You're using the past subjunctive! Advanced!<br>";
+    score += 1;
+  }
+  if (notes.match(/\b(me|te|se|nos|os)\s+[a-z]+/i)) {
+    feedback += " Reflexive verbs detected, nice!<br>";
+    score += 1;
+  }
+
+  // Warn about very short sentences
+  if (notes.split(" ").length < 3) {
+    suggestions.push("Try writing a longer sentence for more practice.");
+  } else {
+    score += 1;
+  }
+
+  // Feedback based on score
+  if (spanishScore > 2) {
+    feedback += "👍 That looks like a good Spanish sentence!<br>";
+    score += 2;
+  } else if (spanishScore > 0) {
+    feedback += "It looks like you're trying Spanish. Keep practicing!<br>";
+    score += 1;
+  } else {
+    feedback += "This doesn't look like Spanish. Try writing a Spanish sentence!<br>";
+  }
+
+  // Clamp score and show stars
+  let maxScore = 7;
+  let starScore = Math.max(1, Math.min(5, Math.round(((score + translationScore) / maxScore) * 5)));
+  let stars = "★".repeat(starScore) + "☆".repeat(5 - starScore);
+  feedback = `<div style="font-size:1.3em;color:#f59e42;margin-bottom:4px;">${stars}</div>` +
+             (translationFeedback ? translationFeedback + "<br>" : "") +
+             feedback;
+
+  // Add suggestions if any
+  if (suggestions.length > 0) {
+    feedback += "<br><b>Suggestions:</b><ul style='margin:0 0 0 18px;'>";
+    for (let s of suggestions) feedback += `<li>${s}</li>`;
+    feedback += "</ul>";
+    feedbackBox.style.background = "#fef9c3";
+    feedbackBox.style.color = "#b45309";
+    feedbackBox.style.borderLeft = "4px solid #fde68a";
+  } else {
+    feedbackBox.style.background = "#e0f2fe";
+    feedbackBox.style.color = "#2563eb";
+    feedbackBox.style.borderLeft = "4px solid #38bdf8";
+  }
+
+  feedbackBox.innerHTML = feedback;
+  feedbackBox.style.animation = "fadeIn 0.7s";
+};
+
+
+// --- Check English Button Logic ---
+document.getElementById('checkEnglishBtn').onclick = function() {
+  const notes = document.getElementById('notesArea').value.trim();
+  const feedbackBox = document.getElementById('notesFeedback');
+  if (!notes) {
+    feedbackBox.textContent = "Please type an English sentence or phrase to check.";
+    feedbackBox.style.background = "#fee2e2";
+    feedbackBox.style.color = "#ef4444";
+    feedbackBox.style.borderLeft = "4px solid #ef4444";
+    return;
+  }
+
+  let feedback = "";
+  let suggestions = [];
+  let score = 0;
+
+  // Capitalization
+  if (notes[0] && notes[0] === notes[0].toLowerCase()) {
+    suggestions.push("Start your sentence with a capital letter.");
+  } else {
+    score += 1;
+  }
+
+  // Punctuation
+  if (notes.endsWith(".") || notes.endsWith("!") || notes.endsWith("?")) {
+    score += 1;
+  } else {
+    suggestions.push("End your sentence with a period, exclamation, or question mark.");
+  }
+
+  // Length
+  if (notes.split(" ").length < 3) {
+    suggestions.push("Try writing a longer sentence for more practice.");
+  } else {
+    score += 1;
+  }
+
+  // Common mistakes
+  if (notes.match(/\bi amn't\b/i)) {
+    suggestions.push("In English, use 'I'm not' instead of 'I amn't'.");
+  }
+  if (notes.match(/\bhe don't\b/i)) {
+    suggestions.push("Use 'he doesn't' instead of 'he don't'.");
+  }
+  if (notes.match(/\byou was\b/i)) {
+    suggestions.push("Use 'you were' instead of 'you was'.");
+  }
+
+  // Looks like English?
+  let englishWords = ["the", "is", "are", "was", "were", "have", "has", "will", "would", "can", "could", "should", "I", "you", "he", "she", "it", "we", "they"];
+  let englishScore = 0;
+  for (let word of englishWords) {
+    if (notes.toLowerCase().includes(word.toLowerCase())) englishScore++;
+  }
+  if (englishScore > 2) {
+    feedback += "👍 That looks like a good English sentence!";
+    score += 2;
+  } else if (englishScore > 0) {
+    feedback += "It looks like you're trying English. Keep practicing!";
+    score += 1;
+  } else {
+    feedback += "This doesn't look like English. Try writing an English sentence!";
+  }
+
+  // Clamp score and show stars
+  let maxScore = 5;
+  let starScore = Math.max(1, Math.min(5, Math.round((score / maxScore) * 5)));
+  let stars = "★".repeat(starScore) + "☆".repeat(5 - starScore);
+  feedback = `<div style="font-size:1.3em;color:#f59e42;margin-bottom:4px;">${stars}</div>` + feedback;
+
+  // Add suggestions if any
+  if (suggestions.length > 0) {
+    feedback += "<br><b>Suggestions:</b><ul style='margin:0 0 0 18px;'>";
+    for (let s of suggestions) feedback += `<li>${s}</li>`;
+    feedback += "</ul>";
+    feedbackBox.style.background = "#fef9c3";
+    feedbackBox.style.color = "#b45309";
+    feedbackBox.style.borderLeft = "4px solid #fde68a";
+  } else {
+    feedbackBox.style.background = "#e0f2fe";
+    feedbackBox.style.color = "#2563eb";
+    feedbackBox.style.borderLeft = "4px solid #38bdf8";
+  }
+
+  feedbackBox.innerHTML = feedback;
+  feedbackBox.style.animation = "fadeIn 0.7s";
+};
+
+// Make startQuiz available for inline onclick
+window.startQuiz = startQuiz;
+
+// --- Notes Print Logic ---
+document.getElementById('printNotesBtn').onclick = function() {
+  const notes = document.getElementById('notesArea').value;
+  const win = window.open('', '', 'width=600,height=600');
+  win.document.write('<html><head><title>My Notes</title></head><body>');
+  win.document.write('<h2>My Notes</h2>');
+  win.document.write('<pre style="font-size:1.1em;">' + notes.replace(/</g, "&lt;").replace(/>/g, "&gt;") + '</pre>');
+  win.document.write('</body></html>');
+  win.document.close();
+  win.print();
+};
+
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('speak-btn')) {
+    speakSpanish(e.target.getAttribute('data-text'));
+  }
 });
-document.getElementById('quizModeBtn').addEventListener('click', function() {
-  document.getElementById('practiceSection').style.display = 'none';
-  document.getElementById('quizSection').style.display = '';
-});
+
+function showRandomNotesPrompt() {
+  const prompt = englishNotePrompts[Math.floor(Math.random() * englishNotePrompts.length)];
+  document.getElementById('notesPrompt').textContent = prompt;
+}
+showRandomNotesPrompt();
+
+// --- Translation Check Logic (English prompt to Spanish) ---
+document.getElementById('checkTranslationBtn').onclick = function() {
+  const userInput = document.getElementById('translationAttemptInput').value.trim();
+  const feedbackDiv = document.getElementById('translationCheckFeedback');
+  const currentPrompt = document.getElementById('notesPrompt').textContent;
+  const correct = englishToSpanishPrompts[currentPrompt];
+
+  if (!userInput) {
+    feedbackDiv.innerHTML = '<span style="color:#ef4444;">Please enter your Spanish translation above.</span>';
+    return;
+  }
+  if (!correct) {
+    feedbackDiv.innerHTML = '<span style="color:#ef4444;">No correct answer found for this prompt.</span>';
+    return;
+  }
+
+  // Normalize for comparison (remove accents, punctuation, lowercase)
+  const normalize = s =>
+    s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[¡!¿?.,]/g, '').trim();
+  const normUser = normalize(userInput);
+  const normCorrect = normalize(correct);
+
+  // Calculate accuracy (Levenshtein distance based)
+  function levenshtein(a, b) {
+    const matrix = Array(a.length + 1).fill(null).map(() => Array(b.length + 1).fill(null));
+    for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+    for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j] + 1, // deletion
+          matrix[i][j - 1] + 1, // insertion
+          matrix[i - 1][j - 1] + cost // substitution
+        );
+      }
+    }
+    return matrix[a.length][b.length];
+  }
+  const maxLen = Math.max(normUser.length, normCorrect.length);
+  const lev = levenshtein(normUser, normCorrect);
+  const accuracy = maxLen === 0 ? 100 : Math.max(0, Math.round(100 * (1 - lev / maxLen)));
+
+  // Tips based on common issues
+  let tips = [];
+  if (!userInput.match(/^[A-ZÁÉÍÓÚÑ¿¡]/)) tips.push("Start with a capital letter or inverted punctuation (¿/¡).");
+  if (!userInput.match(/[.!?]$/)) tips.push("End your sentence with a period, exclamation, or question mark.");
+  if (userInput.includes("yo es")) tips.push("Remember: 'yo soy' or 'yo estoy', not 'yo es'.");
+  if (userInput.includes("tu eres") && !userInput.includes("tú eres")) tips.push("Did you mean 'tú eres'? Don't forget the accent on 'tú' for 'you'.");
+  if (/\bsi\b/i.test(userInput) && !userInput.includes("sí")) tips.push("Did you mean 'sí' (yes) with an accent?");
+  if (/\bel\b/i.test(userInput) && !userInput.includes("él")) tips.push("Did you mean 'él' (he) with an accent?");
+  if (userInput.length < 10) tips.push("Try writing a longer sentence for more practice.");
+  if (userInput.includes("? ") && !userInput.includes("¿")) tips.push("Spanish questions should start with '¿'.");
+  if (userInput.includes("! ") && !userInput.includes("¡")) tips.push("Spanish exclamations should start with '¡'.");
+
+  let feedback = `<div style='margin-bottom:6px;'><b>Your attempt:</b> <span style='color:#2563eb;'>${userInput}</span></div>`;
+  feedback += `<div style='margin-bottom:6px;'><b>Correct answer:</b> <span style='color:#059669;'>${correct}</span></div>`;
+  feedback += `<div style='margin-bottom:6px;'><b>Accuracy:</b> <span style='color:#f59e42;font-weight:bold;'>${accuracy}%</span></div>`;
+  if (tips.length > 0) {
+    feedback += `<div style='margin-top:8px;'><b>Tips to remember:</b><ul style='margin:0 0 0 18px;'>`;
+    for (let t of tips) feedback += `<li>${t}</li>`;
+    feedback += `</ul></div>`;
+  } else if (accuracy === 100) {
+    feedback += `<div style='color:green;margin-top:8px;'>Excellent! Your translation is perfect.</div>`;
+  } else if (accuracy > 80) {
+    feedback += `<div style='color:#2563eb;margin-top:8px;'>Very close! Just a few small differences.</div>`;
+  }
+  feedbackDiv.innerHTML = feedback;
+};
