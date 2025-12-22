@@ -150,7 +150,7 @@ practiceFormEs.onsubmit = function(e) {
     let tabHtml = '';
     let meanings = Array.isArray(found.verb.english) ? found.verb.english : [found.verb.english];
     let meaningIdx = 0;
-    tabHtml = `<div id="meaningTabsEs" style="display:flex;gap:8px;margin-bottom:8px;">` +
+    tabHtml = `<div id="meaningTabsEs" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;">` +
       meanings.map((m, idx) =>
         `<button class="meaning-tab-es${idx === meaningIdx ? ' active' : ''}" data-meaning-idx="${idx}">${m}</button>`
       ).join('') +
@@ -198,7 +198,7 @@ practiceFormEs.onsubmit = function(e) {
           let idx = parseInt(btn.getAttribute('data-meaning-idx'));
           englishBox.value = meanings[idx];
           // Re-render table for selected meaning
-          let html = `<div id="meaningTabsEs" style="display:flex;gap:8px;margin-bottom:8px;">` +
+          let html = `<div id="meaningTabsEs" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;">` +
             meanings.map((m, j) =>
               `<button class="meaning-tab-es${j === idx ? ' active' : ''}" data-meaning-idx="${j}">${m}</button>`
             ).join('') +
@@ -343,7 +343,7 @@ practiceFormEn.onsubmit = function(e) {
   // Tab UI for multiple meanings 
   let tabHtml = '';
   if (allCandidates.length > 1) {
-    tabHtml = `<div id="meaningTabs" style="display:flex;gap:8px;margin-bottom:8px;">` +
+    tabHtml = `<div id="meaningTabs" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;">` +
       allCandidates.map((c, idx) => {
         let label;
         if (Array.isArray(c.verb.english)) {
