@@ -5,16 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Spanish Flag Translation</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="slt_styles.css">
 </head>
 <body>
-    <div class="container">
-        <header class="site-header">
-            <div class="header-top">
-                <h1>Spanish Translation Assistant (Asistente de Traducción al Español)</h1>
+        <!-- SLT UI Start -->
+        <div class="container slt-ui">
+            <h1>
+                Spanish Verb Learning Tool<br>
+                <span class="subtitle">(Herramienta para aprender verbos en español)</span>
+            </h1>
+            <div id="modeSelect">
+                <button id="practiceModeBtn">
+                    Practice<br>
+                    <span class="btn-sub">(Práctica)</span>
+                </button>
+                <button id="quizModeBtn">
+                    Quiz<br>
+                    <span class="btn-sub">(Cuestionario)</span>
+                </button>
             </div>
-            <p class="tag">Fast, friendly translations with playful text animations (Traducciones rápidas y amigables con animaciones de texto)</p>
-        </header>
-
+            <div id="practiceSection" style="display:none;">
+                <h2>
+                    Practice<br>
+                    <span class="subtitle">(Práctica)</span>
+                </h2>
+                <div class="practice-forms">
+                    <form id="practiceFormEn">
+                        <div class="input-col">
+                            <input type="text" id="practiceInputEn" placeholder="Type an English verb" required>
+                            <span class="input-hint">(Escribe un verbo en inglés)</span>
+                        </div>
+                        <input type="text" id="practiceInputEnSpanish" readonly tabindex="-1" class="output-input" />
+                        <button type="submit">
+                            Show Spanish<br>
+                            <span class="btn-sub">(Mostrar en español)</span>
+                        </button>
+                    </form>
+                    <form id="practiceFormEs">
+                        <div class="input-col">
+                            <input type="text" id="practiceInputEs" placeholder="Escribe un verbo" required>
+                            <span class="input-hint">(Type a verb in Spanish)</span>
+                        </div>
+                        <input type="text" id="practiceInputEsEnglish" readonly tabindex="-1" class="output-input" />
+                        <button type="submit">
+                            Show English<br>
+                            <span class="btn-sub">(Mostrar en inglés)</span>
+                        </button>
+                    </form>
+                </div>
+                <div id="practiceResults"></div>
+            </div>
+            <div id="quizSection" style="display:none;">
+                <h2>
+                    Quiz<br>
+                    <span class="subtitle">(Cuestionario)</span>
+                </h2>
+                <div id="quizPrompt"></div>
+                <form id="quizForm">
+                    <input type="text" id="quizInput" placeholder="Type the Spanish translation" required>
+                    <button type="submit">
+                        Submit<br>
+                        <span class="btn-sub">(Enviar)</span>
+                    </button>
+                </form>
+                <div id="quizFeedback"></div>
+            </div>
+        </div>
+        <!-- SLT UI End -->
+                    <!-- SLT Notes Check Section (added for script compatibility) -->
+                <!-- SLT Notes Check Section (added for script compatibility) -->
+        <div class="container">
         <form id="translateForm" class="controls" action="#">
             <label for="input" class="visually-hidden">Text to translate (Texto a traducir)</label>
             <input type="text" id="input" inputmode="text" autocomplete="off" placeholder="Type a word or phrase... (Escriba una palabra o frase...)">
@@ -53,10 +113,9 @@
 
         <div id="output" class="output" role="status" aria-live="polite"></div>
         <button type="button" id="playBtn" class="btn play-btn" style="display:none;">🔊 Play</button>
-
-        <small class="help">Tip: use short phrases for best results. Tap the button or press Enter. (Consejo: use frases cortas para mejores resultados. Pulse el botón o presione Enter.)</small>
     </div>
         <!-- Modal and dropdowns removed: auto-detecting language as you type -->
     <script src="script-client.js"></script>
+    <script type="module" src="slt_script.js"></script>
 </body>
 </html>

@@ -1,0 +1,414 @@
+/* --- RESET & BASE --- */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  background: linear-gradient(135deg, #e0f2fe 0%, #f3e8ff 100%);
+  min-height: 100vh;
+  color: #312e81;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+/* --- CONTAINER --- */
+.container {
+  width: 100%;
+  max-width: 98vw;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.97);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(60,60,120,0.10);
+  padding: 18px 6vw 24px 6vw;
+  position: relative;
+  z-index: 2;
+  margin-top: 0.5em;
+}
+
+/* --- HEADINGS --- */
+h1, h2, h3 {
+  text-align: center;
+  margin: 0 0 18px 0;
+  font-weight: bold;
+}
+h1 { font-size: 2rem; }
+h2 { font-size: 1.3rem; color: #818cf8; }
+h3 { font-size: 1.1rem; color: #06b6d4; }
+
+/* --- BUTTONS --- */
+button, .category-btn, #randomVerbBtn, #darkModeBtn {
+  background: linear-gradient(90deg, #818cf8, #06b6d4);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 13px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(129,140,248,0.08);
+  width: 100%;
+  margin-bottom: 10px;
+  transition: background 0.2s, transform 0.1s;
+  display: block;
+}
+button:hover, .category-btn:hover, #randomVerbBtn:hover, #darkModeBtn:hover {
+  background: linear-gradient(90deg, #06b6d4, #818cf8);
+  transform: translateY(-2px) scale(1.04);
+}
+
+/* --- FORMS --- */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+  width: 100%;
+}
+input[type="text"], textarea {
+  width: 100%;
+  min-height: 48px;
+  font-size: 1.08rem;
+  padding: 14px 16px;
+  border: 2px solid #38bdf8;
+  border-radius: 8px;
+  background: #f0f9ff;
+  color: #312e81;
+  margin-bottom: 4px;
+  box-sizing: border-box;
+}
+button {
+  min-height: 48px;
+  font-size: 1.08rem;
+}
+input[type="text"]:focus, textarea:focus {
+  border-color: #a78bfa;
+  /* Remove the background override for textarea, keep for input */
+  /* background: #e0e7ff; */
+}
+
+.notebook-area:focus {
+  /* Always keep the notebook lines, even when focused */
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      #fff 0px,
+      #fff 27px,
+      #bae6fd 28px,
+      #fff 29px
+    );
+}
+
+/* --- PRACTICE/QUIZ FORMS --- */
+#practiceFormEn, #practiceFormEs {
+  gap: 10px;
+}
+#practiceFormEn button,
+#practiceFormEs button {
+  margin-top: 6px;
+}
+#practiceInputEnSpanish, #practiceInputEsEnglish {
+  color: #2563eb;
+  font-weight: bold;
+  background: #f0f9ff;
+  border: 2px solid #38bdf8;
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 1rem;
+  margin-bottom: 8px;
+  width: 100%;
+  min-height: 48px;
+}
+
+/* --- FEEDBACK & STATUS --- */
+#feedback, #quizFeedback, .notes-feedback {
+  margin-top: 12px;
+  min-height: 32px;
+  text-align: center;
+  font-size: 1rem;
+  color: #2563eb;
+  background: #e0f2fe;
+  border-left: 4px solid #38bdf8;
+  border-radius: 8px;
+  padding: 10px 12px;
+  box-shadow: 0 2px 8px rgba(56,189,248,0.07);
+  animation: fadeIn 0.7s;
+  transition: background 0.3s, color 0.3s;
+}
+.correct { color: #10b981; font-weight: bold; }
+.incorrect { color: #ef4444; font-weight: bold; }
+
+/* --- SCORE & DARK MODE BUTTONS --- */
+#scoreDiv, #darkModeBtn {
+  position: static;
+  display: block;
+  margin: 12px auto;
+  text-align: center;
+  font-size: 1rem;
+  background: #f1f5f9;
+  color: #06b6d4;
+  border-radius: 8px;
+  padding: 6px 16px;
+  box-shadow: 0 2px 8px rgba(129,140,248,0.08);
+  font-weight: 600;
+  width: 100%;
+}
+
+/* --- IRREGULAR LIST --- */
+#irregularList {
+  display: none;
+  margin-top: 12px;
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 12px 10px;
+  box-shadow: 0 2px 8px rgba(129,140,248,0.08);
+  animation: slide-down 0.5s;
+}
+#irregularList.show { display: block; }
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-20px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+/* --- TABLES --- */
+.spreadsheet-table,
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1em;
+  display: block;
+  overflow-x: auto;
+  font-size: 0.98em;
+}
+.spreadsheet-table th, .spreadsheet-table td,
+table th, table td {
+  border: 1px solid #cbd5e1;
+  padding: 0.5em 0.7em;
+  text-align: center;
+  background: #f8fafc;
+  min-width: 80px;
+}
+.spreadsheet-table th, table th {
+  background: #e0e7ef;
+  font-weight: bold;
+}
+
+/* --- ANIMATIONS --- */
+
+/* --- ANIMATIONS --- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+/* --- EMOJI BURST --- */
+#emojiBurst {
+  position: absolute;
+  left: 0; right: 0;
+  top: 40%;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.7s;
+  transform: scale(0.7);
+  z-index: 10;
+}
+#emojiBurst.show {
+  opacity: 1;
+  transform: scale(1.2) rotate(-8deg);
+  animation: burstFade 1s forwards;
+}
+@keyframes burstFade {
+  0% { opacity: 1; transform: scale(1.2) rotate(-8deg);}
+  80% { opacity: 1;}
+  100% { opacity: 0; transform: scale(1.5) rotate(8deg);}
+}
+
+/* --- TENSE INFO POPUP --- */
+.tense-info-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+  margin-left: 4px;
+  color: #818cf8;
+  vertical-align: middle;
+  padding: 0;
+}
+.tense-info-btn:hover { color: #06b6d4; }
+#tense-popup {
+  animation: fadeIn 0.2s;
+  max-width: 95vw;
+  word-break: break-word;
+  position: absolute;
+  background: #fff;
+  border: 1px solid #a78bfa;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(60,60,120,0.12);
+  padding: 10px 8px;
+  z-index: 1000;
+  left: 8px !important;
+  right: 8px !important;
+}
+
+/* --- DARK MODE --- */
+body.dark-mode {
+  background: linear-gradient(135deg, #18181b 0%, #312e81 100%);
+  color: #e0e7ef;
+}
+body.dark-mode .container {
+  background: rgba(30, 27, 75, 0.98);
+  box-shadow: 0 8px 32px rgba(20,20,40,0.25);
+}
+body.dark-mode h2 { color: #38bdf8; }
+body.dark-mode h3, 
+body.dark-mode #scoreDiv { color: #38bdf8; }
+body.dark-mode th {
+  background: #312e81;
+  color: #38bdf8;
+}
+body.dark-mode td {
+  background: #18181b;
+  color: #e0e7ef;
+}
+body.dark-mode #examples, 
+body.dark-mode #memoryTip, 
+body.dark-mode #irregularList {
+  background: #232946;
+  color: #e0e7ef;
+}
+body.dark-mode .suggestion-box {
+  background: #232946;
+  color: #e0e7ef;
+  border-color: #38bdf8;
+}
+body.dark-mode .suggestion:hover {
+  background: #38bdf8;
+  color: #fff;
+}
+body.dark-mode .notebook-notes,
+body.dark-mode .notes-feedback {
+  background: #232946;
+  color: #e0e7ef;
+  border-color: #38bdf8;
+}
+body.dark-mode .notebook-area {
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      #232946 0px,
+      #232946 27px,
+      #232946 28px,
+      #232946 29px
+    );
+  color: #38bdf8;
+}
+
+/* --- DESKTOP ENHANCEMENTS --- */
+@media (min-width: 700px) {
+  .container {
+    max-width: 700px;
+    margin: 40px auto 0 auto;
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(60,60,120,0.10);
+    padding: 32px 32px 48px 32px;
+  }
+  .notebook-notes {
+    max-width: 750px;
+    margin: 40px auto 0 auto;
+    padding: 32px 32px 48px 32px;
+    border-radius: 24px;
+  }
+  .notebook-notes::before {
+    left: 18px;
+    width: 6px;
+    border-radius: 6px;
+  }
+  form {
+    flex-direction: row;
+    gap: 12px;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+  #practiceFormEn, #practiceFormEs {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  #practiceFormEn > div,
+  #practiceFormEs > div {
+    flex: 1 1 220px;
+    min-width: 180px;
+    max-width: 260px;
+  }
+  #practiceFormEn input[type="text"],
+  #practiceFormEs input[type="text"] {
+    width: 100%;
+    min-width: 160px;
+    max-width: 260px;
+    font-size: 1.08rem;
+    height: 48px;
+  }
+  #practiceInputEnSpanish, #practiceInputEsEnglish {
+    min-width: 160px;
+    max-width: 260px;
+    width: 100%;
+    margin-left: 16px;
+    margin-bottom: 0;
+    flex: 2;
+    font-size: 1.08rem;
+    height: 48px;
+  }
+  #practiceFormEn button,
+  #practiceFormEs button {
+    width: auto;
+    min-width: 120px;
+    max-width: 160px;
+    margin-left: 12px;
+    margin-top: 0;
+    font-size: 1.08rem;
+    padding: 12px 18px;
+    white-space: normal;
+  }
+  #notesBox > div[style*="display:flex"] button,
+  .notes-btn-row button {
+    width: auto;
+    min-width: 100px;
+    margin: 0 0 0 8px;
+    padding: 8px 16px;
+    font-size: 1rem;
+  }
+  #scoreDiv, #darkModeBtn {
+    width: auto;
+    position: absolute;
+    margin: 0;
+    text-align: right;
+    top: 18px;
+    right: 32px;
+    left: unset;
+  }
+  #darkModeBtn {
+    left: 32px;
+    right: unset;
+    top: 18px;
+    background: linear-gradient(90deg, #312e81, #06b6d4);
+  }
+}
+
+.speak-btn, .speak-btn-en {
+  font-size: 1em;
+  padding: 2px 6px;
+  border-radius: 50%;
+  width: 2em;
+  height: 2em;
+  min-width: unset;
+  min-height: unset;
+  background: #e0e7ff;
+  color: #312e81;
+  margin-left: 4px;
+  vertical-align: middle;
+  box-shadow: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.speak-btn:hover, .speak-btn-en:hover {
+  background: #818cf8;
+  color: #fff;
+}
+
