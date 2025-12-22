@@ -1,19 +1,44 @@
-/* Responsive: Make conjugation buttons smaller on mobile */
+/* Responsive: Make conjugation table text & buttons smaller on mobile */
 @media (max-width: 600px) {
-  .conjugation-button, .conjugation-btn, .conjugation, .conjugationButton, .conjugation-btn-wrapper {
-    font-size: 0.85em !important;
+  /* Overall text in the conjugation results area */
+  #practiceResults {
+    font-size: 0.86rem;
+  }
+  #practiceResults h3 {
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+  #practiceResults table {
+    font-size: 0.82rem;
+  }
+  #practiceResults th,
+  #practiceResults td {
+    padding: 4px 3px;
+  }
+
+  /* The small tabs at the top of conjugation results */
+  .meaning-tab,
+  .meaning-tab-es {
+    font-size: 0.78rem !important;
     padding: 4px 8px !important;
     min-width: 0 !important;
     width: auto !important;
     max-width: 100% !important;
     margin: 2px !important;
-    border-radius: 6px !important;
+    border-radius: 999px !important;
     box-sizing: border-box;
   }
-  /* If buttons are inside a flex or grid, allow wrapping */
-  .conjugation-row, .conjugation-buttons, .conjugation-list {
-    flex-wrap: wrap !important;
-    gap: 4px !important;
+
+  /* Tiny TTS / info buttons inside the table cells */
+  .speak-btn,
+  .speak-btn-en,
+  .tense-info-btn {
+    font-size: 0.75rem !important;
+    padding: 3px 6px !important;
+    min-width: 0 !important;
+    width: auto !important;
+    border-radius: 999px !important;
+    box-sizing: border-box;
   }
 }
 :root{
