@@ -4,8 +4,11 @@ import { verbs } from './slt_verbs.js';
 const pronouns = ["I", "You", "He", "We", "You all", "They"];
 const spanishPronouns = ["Yo", "Tú", "Él/Ella/Usted", "Nosotros", "Vosotros", "Ellos/Ellas/Ustedes"];
 const tenses = [
+  // --- Indicative Mood ---
   "Present", "Preterite", "Imperfect", "Future", "Conditional",
-  "Present Perfect", "Past Perfect", "Future Perfect", "Conditional Perfect"
+  "Present Perfect", "Past Perfect", "Future Perfect", "Conditional Perfect",
+  // --- Subjunctive Mood ---
+  "Present Subjunctive", "Imperfect Subjunctive", "Present Perfect Subjunctive", "Past Perfect Subjunctive"
 ];
 
 const englishNotePrompts = [
