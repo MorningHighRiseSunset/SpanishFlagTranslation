@@ -197,9 +197,9 @@ practiceFormEs.onsubmit = function(e) {
             ${t}
             <button type="button" class="tense-info-btn" data-tense="${t}" title="What is ${t}?">ℹ️</button>
           </td>
-          <td>
+            <td>
             ${sp}
-            <button type="button" class="speak-btn" data-text="${spanishPronouns[i]} ${sp}" title="Hear pronunciation">🔊</button>
+            <button type="button" class="speak-btn" data-text="${sp}" title="Hear pronunciation">🔊</button>
           </td>
           <td>
             ${eng}
@@ -244,7 +244,7 @@ practiceFormEs.onsubmit = function(e) {
                 </td>
                 <td>
                   ${sp}
-                  <button type="button" class="speak-btn" data-text="${spanishPronouns[i]} ${sp}" title="Hear pronunciation">🔊</button>
+                  <button type="button" class="speak-btn" data-text="${sp}" title="Hear pronunciation">🔊</button>
                 </td>
                 <td>
                   ${eng}
@@ -299,7 +299,7 @@ practiceFormEs.onsubmit = function(e) {
       </td>
       <td>
         ${sp}
-        <button type="button" class="speak-btn" data-text="${spanishPronouns[found.pronounIdx]} ${sp}" title="Hear pronunciation">🔊</button>
+        <button type="button" class="speak-btn" data-text="${sp}" title="Hear pronunciation">🔊</button>
       </td>
     </tr>`;
   });
