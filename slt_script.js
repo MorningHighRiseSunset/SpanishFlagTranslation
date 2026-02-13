@@ -11,6 +11,23 @@ const tenses = [
   "Present Subjunctive", "Imperfect Subjunctive", "Present Perfect Subjunctive", "Past Perfect Subjunctive"
 ];
 
+// Short human-readable definitions for tense info popups
+const tenseDefinitions = {
+  "Present": "Used for actions happening now or general truths (I speak).",
+  "Preterite": "Simple past used for completed actions (I spoke).",
+  "Imperfect": "Past habitual or ongoing actions (I was speaking / used to speak).",
+  "Future": "Actions that will happen (I will speak).",
+  "Conditional": "Hypothetical or polite actions (I would speak).",
+  "Present Perfect": "Actions completed recently or with relevance now (I have spoken).",
+  "Past Perfect": "Action completed before another past action (I had spoken).",
+  "Future Perfect": "Action that will have been completed (I will have spoken).",
+  "Conditional Perfect": "Hypothetical past (I would have spoken).",
+  "Present Subjunctive": "Expresses doubt, desire, or uncertainty in present (that I speak).",
+  "Imperfect Subjunctive": "Subjunctive for past/unreal situations (that I spoke / that I were to speak).",
+  "Present Perfect Subjunctive": "Subjunctive for actions that may have occurred (that I have spoken).",
+  "Past Perfect Subjunctive": "Subjunctive for events prior to a past point (that I had spoken)."
+};
+
 const englishNotePrompts = [
   "Translate: What's your favorite food?",
   "Translate: I like apples!",
@@ -524,8 +541,39 @@ quizForm.onsubmit = e => {
 document.addEventListener('click', function(e) {
   if (e.target.classList.contains('tense-info-btn')) {
     const tense = e.target.getAttribute('data-tense');
-    const def = tenseDefinitions[tense] || "No definition available.";
+    const def = (typeof tenseDefinitions !== 'undefined' && tenseDefinitions[tense]) ? tenseDefinitions[tense] : "No definition available.";
     showTensePopup(tense, def, e.target);
+    return;
+  }
+
+  // Speak Spanish phrase (uses global speakText if available, falls back to Web Speech API)
+  if (e.target.classList.contains('speak-btn')) {
+    const txt = e.target.getAttribute('data-text') || '';
+    if (!txt) return;
+    if (typeof window.speakText === 'function') {
+      window.speakText(txt, 'es');
+    } else {
+      const u = new SpeechSynthesisUtterance(txt);
+      u.lang = 'es-ES';
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(u);
+    }
+    return;
+  }
+
+  // Speak English phrase
+  if (e.target.classList.contains('speak-btn-en')) {
+    const txt = e.target.getAttribute('data-text') || '';
+    if (!txt) return;
+    if (typeof window.speakText === 'function') {
+      window.speakText(txt, 'en');
+    } else {
+      const u = new SpeechSynthesisUtterance(txt);
+      u.lang = 'en-US';
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(u);
+    }
+    return;
   }
 });
 
