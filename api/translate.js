@@ -1,7 +1,8 @@
 // Vercel serverless function: enhanced translator with intent parsing and quoted-phrase handling
-// Using MyMemory Translation API (free, no API key required)
+// Using DeepL API
 
-const MYMEMORY_URL = 'https://api.mymemory.translated.net/get';
+const DEEPL_API_KEY = process.env.DEEPL_API_KEY;
+const DEEPL_URL = process.env.DEEPL_URL || 'https://api-free.deepl.com/v2/translate';
 const path = require('path');
 
 // Load language aliases shipped with the site (falls back gracefully)
@@ -115,9 +116,22 @@ function resolveLanguageName(name) {
   return null;
 }
 
-async function callMyMemoryTranslate(q, target, source) {
-  const url = `${MYMEMORY_URL}?q=${encodeURIComponent(String(q))}&langpair=${source || 'auto'}|${target}`;
-  const apiRes = await fetch(url);
+async function callDeepLTranslate(q, target, source) {
+  const url = DEEPL_URL;
+  const payload = {
+    text: [String(q)],
+    target_lang: target.toUpperCase()
+  };
+  if (source) payload.source_lang = source.toUpperCase();
+
+  const apiRes = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `DeepL-Auth-Key ${DEEPL_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
 
   if (!apiRes.ok) {
     let textErr = '';
@@ -126,8 +140,8 @@ async function callMyMemoryTranslate(q, target, source) {
     } catch (e) {
       textErr = String(e);
     }
-    console.log('MyMemory failed', { status: apiRes.status, body: textErr.slice(0,2000) });
-    const err = new Error('MyMemory API error');
+    console.log('DeepL failed', { status: apiRes.status, body: textErr.slice(0,2000) });
+    const err = new Error('DeepL API error');
     err.status = apiRes.status;
     err.details = textErr;
     throw err;
@@ -135,10 +149,10 @@ async function callMyMemoryTranslate(q, target, source) {
 
   const json = await apiRes.json();
 
-  if (json && json.responseData && json.responseData.translatedText) {
-    return { translatedText: json.responseData.translatedText };
+  if (json && json.translations && json.translations[0]) {
+    return { translatedText: json.translations[0].text };
   }
-  const err = new Error('Invalid response from MyMemory');
+  const err = new Error('Invalid response from DeepL');
   err.raw = json;
   throw err;
 }
@@ -151,6 +165,7 @@ module.exports = async function handler(req, res) {
       return res.status(405).json({ error: 'Method not allowed' });
     }
     console.log('Incoming request body (raw):', typeof req.body === 'string' ? req.body.slice(0,1000) : req.body);
+    if (!DEEPL_API_KEY) return res.status(500).json({ error: 'Server: DeepL API key not configured' });
     const body = req.body || {};
     console.log('Parsed request body:', { text: body.text ? '[REDACTED]' : undefined, source: body.source, target: body.target });
     const { text, source: userSource, target: userTarget } = body || {};
@@ -178,7 +193,7 @@ module.exports = async function handler(req, res) {
   let detectedSource = sourceCode || null;
   let usedTarget = targetCode || null;
     try {
-      // MyMemory auto-detects source language, so we skip explicit detection
+      // DeepL auto-detects source language, so we skip explicit detection
       // Just use the text as-is for pattern matching
       englishText = String(text);
     } catch (err) {
@@ -233,10 +248,10 @@ module.exports = async function handler(req, res) {
 
       if (extractedTargetCode) {
         try {
-          // Only call MyMemory if we have a valid source code to translate FROM
+          // Only call DeepL if we have a valid source code to translate FROM
           // If sourceCode is not available or null, fall through to fallback
           if (sourceCode && sourceCode !== extractedTargetCode) {
-            const translated = await callMyMemoryTranslate(phraseToTranslate || text, extractedTargetCode, sourceCode);
+            const translated = await callDeepLTranslate(phraseToTranslate || text, extractedTargetCode, sourceCode);
             // Return only the translated phrase as the direct answer and include detected/source info
             return res.status(200).json({ result: translated.translatedText, detectedSource: detectedSource, targetUsed: extractedTargetCode });
           }
@@ -250,8 +265,8 @@ module.exports = async function handler(req, res) {
 
     // Fallback: translate from source to target language using user's preference
     try {
-      console.log('Calling MyMemory for fallback', { text: text.slice(0,200), targetCode, sourceCode });
-      const translated = await callMyMemoryTranslate(text, targetCode, sourceCode);
+      console.log('Calling DeepL for fallback', { text: text.slice(0,200), targetCode, sourceCode });
+      const translated = await callDeepLTranslate(text, targetCode, sourceCode);
       return res.status(200).json({ result: translated.translatedText, detectedSource: detectedSource, targetUsed: targetCode });
     } catch (err) {
       return res.status(502).json({ error: 'Translation provider error', details: err.details || String(err) });
