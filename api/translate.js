@@ -1,19 +1,7 @@
 // Vercel serverless function: enhanced translator with intent parsing and quoted-phrase handling
-// This file was migrated from the local server implementation so behavior is consistent
+// Using LibreTranslate API (free, no API key required)
 
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
-// Safe debug: log presence of the API key (masked) so we can tell if Vercel injected it
-try {
-  if (GOOGLE_API_KEY) {
-    const masked = `${GOOGLE_API_KEY.slice(0, 6)}...${GOOGLE_API_KEY.slice(-4)}`;
-    console.log('GOOGLE_API_KEY present:', true, 'masked:', masked);
-  } else {
-    console.log('GOOGLE_API_KEY present:', false);
-  }
-} catch (e) {
-  // Defensive: don't let logging errors break the function
-  console.log('Error while logging GOOGLE_API_KEY presence', String(e));
-}
+const LIBRETRANSLATE_URL = process.env.LIBRETRANSLATE_URL || 'https://libretranslate.com';
 const path = require('path');
 
 // Load language aliases shipped with the site (falls back gracefully)
@@ -127,8 +115,8 @@ function resolveLanguageName(name) {
   return null;
 }
 
-async function callGoogleDetect(q) {
-  const url = `https://translation.googleapis.com/language/translate/v2/detect?key=${GOOGLE_API_KEY}`;
+async function callLibreDetect(q) {
+  const url = `${LIBRETRANSLATE_URL}/detect`;
   const payload = { q: String(q) };
   const apiRes = await fetch(url, {
     method: 'POST',
@@ -136,33 +124,30 @@ async function callGoogleDetect(q) {
     body: JSON.stringify(payload)
   });
   if (!apiRes.ok) {
-    // Log Google Detect response for debugging (do not log API key)
     let textErr = '';
     try {
       textErr = await apiRes.text();
     } catch (e) {
       textErr = String(e);
     }
-    console.log('Google Detect failed', { status: apiRes.status, body: textErr.slice(0,2000) });
-    const err = new Error('Google detect error');
+    console.log('LibreTranslate Detect failed', { status: apiRes.status, body: textErr.slice(0,2000) });
+    const err = new Error('LibreTranslate detect error');
     err.status = apiRes.status;
     err.details = textErr;
     throw err;
   }
   const json = await apiRes.json();
-  if (json && json.data && json.data.detections && json.data.detections[0] && json.data.detections[0][0]) {
-    const detected = json.data.detections[0][0];
-    // Return both language and confidence
-    return { language: detected.language, confidence: detected.confidence || 0, isReliable: detected.isReliable };
+  if (json && json.length > 0) {
+    const detected = json[0];
+    return { language: detected.language, confidence: detected.confidence || 0 };
   }
-  throw new Error('Invalid response from Google Detect');
+  throw new Error('Invalid response from LibreTranslate Detect');
 }
 
-async function callGoogleTranslate(q, target, source) {
-  const url = `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_API_KEY}`;
+async function callLibreTranslate(q, target, source) {
+  const url = `${LIBRETRANSLATE_URL}/translate`;
   const payload = { q: String(q), target: target, format: 'text' };
   if (source) payload.source = source;
-
 
   const apiRes = await fetch(url, {
     method: 'POST',
@@ -171,15 +156,14 @@ async function callGoogleTranslate(q, target, source) {
   });
 
   if (!apiRes.ok) {
-    // Log Google Translate response for debugging (trim large bodies)
     let textErr = '';
     try {
       textErr = await apiRes.text();
     } catch (e) {
       textErr = String(e);
     }
-    console.log('Google Translate failed', { status: apiRes.status, body: textErr.slice(0,2000) });
-    const err = new Error('Google API error');
+    console.log('LibreTranslate failed', { status: apiRes.status, body: textErr.slice(0,2000) });
+    const err = new Error('LibreTranslate API error');
     err.status = apiRes.status;
     err.details = textErr;
     throw err;
@@ -187,10 +171,10 @@ async function callGoogleTranslate(q, target, source) {
 
   const json = await apiRes.json();
 
-  if (json && json.data && json.data.translations && json.data.translations[0]) {
-    return json.data.translations[0];
+  if (json && json.translatedText) {
+    return { translatedText: json.translatedText };
   }
-  const err = new Error('Invalid response from Google Translate');
+  const err = new Error('Invalid response from LibreTranslate');
   err.raw = json;
   throw err;
 }
@@ -203,7 +187,6 @@ export default async function handler(req, res) {
       return res.status(405).json({ error: 'Method not allowed' });
     }
     console.log('Incoming request body (raw):', typeof req.body === 'string' ? req.body.slice(0,1000) : req.body);
-    if (!GOOGLE_API_KEY) return res.status(500).json({ error: 'Server: API key not configured' });
     const body = req.body || {};
     console.log('Parsed request body:', { text: body.text ? '[REDACTED]' : undefined, source: body.source, target: body.target });
     const { text, source: userSource, target: userTarget } = body || {};
@@ -231,10 +214,10 @@ export default async function handler(req, res) {
   let detectedSource = sourceCode || null;
   let usedTarget = targetCode || null;
     try {
-      // If we don't know the source language, try to detect it using Google Detect
+      // If we don't know the source language, try to detect it using LibreTranslate Detect
       if (!sourceCode) {
         try {
-          const detected = await callGoogleDetect(text);
+          const detected = await callLibreDetect(text);
           if (detected) {
             let detectedLang = detected.language;
             // Spanish flag site: Spanish/Portuguese share many words and get misdetected.
@@ -265,7 +248,7 @@ export default async function handler(req, res) {
       }
 
       if (sourceCode && sourceCode !== 'en') {
-        const t = await callGoogleTranslate(text, 'en', sourceCode);
+        const t = await callLibreTranslate(text, 'en', sourceCode);
         englishText = t.translatedText || String(text);
       } else {
         englishText = String(text);
@@ -322,10 +305,10 @@ export default async function handler(req, res) {
 
       if (extractedTargetCode) {
         try {
-          // Only call Google Translate if we have a valid source code to translate FROM
+          // Only call LibreTranslate if we have a valid source code to translate FROM
           // If sourceCode is not available or null, fall through to fallback
           if (sourceCode && sourceCode !== extractedTargetCode) {
-            const translated = await callGoogleTranslate(phraseToTranslate || text, extractedTargetCode, sourceCode);
+            const translated = await callLibreTranslate(phraseToTranslate || text, extractedTargetCode, sourceCode);
             // Return only the translated phrase as the direct answer and include detected/source info
             return res.status(200).json({ result: translated.translatedText, detectedSource: detectedSource, targetUsed: extractedTargetCode });
           }
@@ -339,8 +322,8 @@ export default async function handler(req, res) {
 
     // Fallback: translate from source to target language using user's preference
     try {
-      console.log('Calling Google Translate for fallback', { text: text.slice(0,200), targetCode, sourceCode });
-      const translated = await callGoogleTranslate(text, targetCode, sourceCode);
+      console.log('Calling LibreTranslate for fallback', { text: text.slice(0,200), targetCode, sourceCode });
+      const translated = await callLibreTranslate(text, targetCode, sourceCode);
       return res.status(200).json({ result: translated.translatedText, detectedSource: detectedSource, targetUsed: targetCode });
     } catch (err) {
       return res.status(502).json({ error: 'Translation provider error', details: err.details || String(err) });
