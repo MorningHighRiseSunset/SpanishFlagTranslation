@@ -122,7 +122,10 @@ async function callDeepLTranslate(q, target, source) {
     text: [String(q)],
     target_lang: target.toUpperCase()
   };
-  if (source) payload.source_lang = source.toUpperCase();
+  // Only pass source_lang if it's explicitly provided (DeepL auto-detects otherwise)
+  if (source && source !== 'auto' && source !== '') {
+    payload.source_lang = source.toUpperCase();
+  }
 
   const apiRes = await fetch(url, {
     method: 'POST',
