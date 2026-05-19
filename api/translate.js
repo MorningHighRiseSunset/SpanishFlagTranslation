@@ -195,15 +195,19 @@ async function callGoogleTranslate(q, target, source) {
   throw err;
 }
 
-exports.handler = async function(event) {
+export default async function handler(req, res) {
   console.log('translate handler invoked');
   try {
-    console.log('Incoming event body (raw):', typeof event.body === 'string' ? event.body.slice(0,1000) : event.body);
-    if (!GOOGLE_API_KEY) return { statusCode: 500, body: JSON.stringify({ error: 'Server: API key not configured' }) };
-    const body = JSON.parse(event.body || '{}');
+    console.log('Incoming request method:', req.method);
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Method not allowed' });
+    }
+    console.log('Incoming request body (raw):', typeof req.body === 'string' ? req.body.slice(0,1000) : req.body);
+    if (!GOOGLE_API_KEY) return res.status(500).json({ error: 'Server: API key not configured' });
+    const body = req.body || {};
     console.log('Parsed request body:', { text: body.text ? '[REDACTED]' : undefined, source: body.source, target: body.target });
     const { text, source: userSource, target: userTarget } = body || {};
-    if (!text) return { statusCode: 400, body: JSON.stringify({ error: 'Missing `text` in request body' }) };
+    if (!text) return res.status(400).json({ error: 'Missing `text` in request body' });
 
     // Map user language names (from dropdown) to codes (be resilient if mapping fails)
     let sourceCode = null;
@@ -323,10 +327,7 @@ exports.handler = async function(event) {
           if (sourceCode && sourceCode !== extractedTargetCode) {
             const translated = await callGoogleTranslate(phraseToTranslate || text, extractedTargetCode, sourceCode);
             // Return only the translated phrase as the direct answer and include detected/source info
-            return {
-              statusCode: 200,
-              body: JSON.stringify({ result: translated.translatedText, detectedSource: detectedSource, targetUsed: extractedTargetCode })
-            };
+            return res.status(200).json({ result: translated.translatedText, detectedSource: detectedSource, targetUsed: extractedTargetCode });
           }
         } catch (err) {
           console.log('Pattern-matched translation failed, falling back to full-text translation', { error: String(err).slice(0, 200) });
@@ -340,17 +341,14 @@ exports.handler = async function(event) {
     try {
       console.log('Calling Google Translate for fallback', { text: text.slice(0,200), targetCode, sourceCode });
       const translated = await callGoogleTranslate(text, targetCode, sourceCode);
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ result: translated.translatedText, detectedSource: detectedSource, targetUsed: targetCode })
-      };
+      return res.status(200).json({ result: translated.translatedText, detectedSource: detectedSource, targetUsed: targetCode });
     } catch (err) {
-      return { statusCode: 502, body: JSON.stringify({ error: 'Translation provider error', details: err.details || String(err) }) };
+      return res.status(502).json({ error: 'Translation provider error', details: err.details || String(err) });
     }
 
   } catch (err) {
     console.error('Unhandled error in translate handler:', err);
     const errorDetails = err && err.stack ? err.stack : String(err);
-    return { statusCode: 500, body: JSON.stringify({ error: 'Server error', details: errorDetails }) };
+    return res.status(500).json({ error: 'Server error', details: errorDetails });
   }
-};
+}
