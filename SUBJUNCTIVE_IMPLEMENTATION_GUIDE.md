@@ -8,7 +8,7 @@ The tenses array in `slt_script.js` has been reorganized to clearly show the moo
 ```javascript
 const tenses = [
   // --- Indicative Mood ---
-  "Present", "Preterite", "Imperfect", "Future", "Conditional",
+  "Present", "Preterite", "Imperfect", "Future", "Conditional",  
   "Present Perfect", "Past Perfect", "Future Perfect", "Conditional Perfect",
   // --- Subjunctive Mood ---
   "Present Subjunctive", "Imperfect Subjunctive", "Present Perfect Subjunctive", "Past Perfect Subjunctive"
@@ -75,7 +75,7 @@ Follow the pattern established for "ser", "estar", and "tener" for the remaining
 - Present Subjunctive: stem + a (coma, comas, coma, comamos, comáis, coman)
 - Imperfect Subjunctive: stem + iera (comiera, comieras, comiera, comiéramos, comierais, comieran)
 
-**For Perfect Subjunctive tenses**:
+**For Perfect Subjunctive tenses**: 
 - Present Perfect: haya + past participle
 - Past Perfect: hubiera + past participle
 

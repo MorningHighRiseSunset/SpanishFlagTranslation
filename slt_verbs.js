@@ -4157,4 +4157,22 @@ export const verbs = [
       "Conditional Perfect": ["habría rasgado", "habrías rasgado", "habría rasgado", "habríamos rasgado", "habríais rasgado", "habrían rasgado"]
     }
   }
+  ,
+  {
+    english: ["to deliver", "to hand over"],
+    spanish: "entregar",
+    type: "regular",
+    memoryTip: "Used for delivering or handing over something.",
+    conjugations: {
+      "Present": ["entrego", "entregas", "entrega", "entregamos", "entregáis", "entregan"],
+      "Preterite": ["entregué", "entregaste", "entregó", "entregamos", "entregasteis", "entregaron"],
+      "Imperfect": ["entregaba", "entregabas", "entregaba", "entregábamos", "entregabais", "entregaban"],
+      "Future": ["entregaré", "entregarás", "entregará", "entregaremos", "entregaréis", "entregarán"],
+      "Conditional": ["entregaría", "entregarías", "entregaría", "entregaríamos", "entregaríais", "entregarían"],
+      "Present Perfect": ["he entregado", "has entregado", "ha entregado", "hemos entregado", "habéis entregado", "han entregado"],
+      "Past Perfect": ["había entregado", "habías entregado", "había entregado", "habíamos entregado", "habíais entregado", "habían entregado"],
+      "Future Perfect": ["habré entregado", "habrás entregado", "habrá entregado", "habremos entregado", "habréis entregado", "habrán entregado"],
+      "Conditional Perfect": ["habría entregado", "habrías entregado", "habría entregado", "habríamos entregado", "habríais entregado", "habrían entregado"]
+    }
+  }
 ];
