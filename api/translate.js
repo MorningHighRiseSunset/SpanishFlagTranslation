@@ -1,7 +1,7 @@
 // Vercel serverless function: enhanced translator with intent parsing and quoted-phrase handling
-// Using LibreTranslate API (free, no API key required)
+// Using MyMemory Translation API (free, no API key required)
 
-const LIBRETRANSLATE_URL = process.env.LIBRETRANSLATE_URL || 'https://libretranslate.com';
+const MYMEMORY_URL = 'https://api.mymemory.translated.net/get';
 const path = require('path');
 
 // Load language aliases shipped with the site (falls back gracefully)
@@ -115,45 +115,9 @@ function resolveLanguageName(name) {
   return null;
 }
 
-async function callLibreDetect(q) {
-  const url = `${LIBRETRANSLATE_URL}/detect`;
-  const payload = { q: String(q) };
-  const apiRes = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-  if (!apiRes.ok) {
-    let textErr = '';
-    try {
-      textErr = await apiRes.text();
-    } catch (e) {
-      textErr = String(e);
-    }
-    console.log('LibreTranslate Detect failed', { status: apiRes.status, body: textErr.slice(0,2000) });
-    const err = new Error('LibreTranslate detect error');
-    err.status = apiRes.status;
-    err.details = textErr;
-    throw err;
-  }
-  const json = await apiRes.json();
-  if (json && json.length > 0) {
-    const detected = json[0];
-    return { language: detected.language, confidence: detected.confidence || 0 };
-  }
-  throw new Error('Invalid response from LibreTranslate Detect');
-}
-
-async function callLibreTranslate(q, target, source) {
-  const url = `${LIBRETRANSLATE_URL}/translate`;
-  const payload = { q: String(q), target: target, format: 'text' };
-  if (source) payload.source = source;
-
-  const apiRes = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
+async function callMyMemoryTranslate(q, target, source) {
+  const url = `${MYMEMORY_URL}?q=${encodeURIComponent(String(q))}&langpair=${source || 'auto'}|${target}`;
+  const apiRes = await fetch(url);
 
   if (!apiRes.ok) {
     let textErr = '';
@@ -162,8 +126,8 @@ async function callLibreTranslate(q, target, source) {
     } catch (e) {
       textErr = String(e);
     }
-    console.log('LibreTranslate failed', { status: apiRes.status, body: textErr.slice(0,2000) });
-    const err = new Error('LibreTranslate API error');
+    console.log('MyMemory failed', { status: apiRes.status, body: textErr.slice(0,2000) });
+    const err = new Error('MyMemory API error');
     err.status = apiRes.status;
     err.details = textErr;
     throw err;
@@ -171,10 +135,10 @@ async function callLibreTranslate(q, target, source) {
 
   const json = await apiRes.json();
 
-  if (json && json.translatedText) {
-    return { translatedText: json.translatedText };
+  if (json && json.responseData && json.responseData.translatedText) {
+    return { translatedText: json.responseData.translatedText };
   }
-  const err = new Error('Invalid response from LibreTranslate');
+  const err = new Error('Invalid response from MyMemory');
   err.raw = json;
   throw err;
 }
@@ -214,45 +178,9 @@ module.exports = async function handler(req, res) {
   let detectedSource = sourceCode || null;
   let usedTarget = targetCode || null;
     try {
-      // If we don't know the source language, try to detect it using LibreTranslate Detect
-      if (!sourceCode) {
-        try {
-          const detected = await callLibreDetect(text);
-          if (detected) {
-            let detectedLang = detected.language;
-            // Spanish flag site: Spanish/Portuguese share many words and get misdetected.
-            // Treat low-confidence English, Portuguese, and other ambiguous detections as Spanish.
-            // Only trust high-confidence English (>= 0.7) on a Spanish site.
-            if (detectedLang === 'en' && detected.confidence < 0.7) {
-              console.log('Low-confidence English detection', { confidence: detected.confidence, text: text.slice(0, 50), assuming: 'Spanish' });
-              detectedLang = 'es';
-            } else if (detectedLang === 'pt') {
-              // Portuguese is almost always a misdetection of Spanish on this site
-              console.log('Portuguese detection (likely Spanish misdetect)', { confidence: detected.confidence, text: text.slice(0, 50), assuming: 'Spanish' });
-              detectedLang = 'es';
-            }
-            sourceCode = detectedLang;
-            console.log('Detected source language:', sourceCode, { confidence: detected.confidence });
-            // Auto-map detected source to a sensible target if user didn't supply one
-            // For Spanish flag site: Spanish → English; other languages → Spanish
-            if (!userTarget) {
-              if (sourceCode === 'es') targetCode = 'en';
-              else if (['fr', 'hi', 'zh', 'vi'].includes(sourceCode)) targetCode = 'es';
-            }
-            detectedSource = sourceCode;
-            usedTarget = targetCode;
-          }
-        } catch (e) {
-          console.log('Language detection failed, continuing without it', String(e));
-        }
-      }
-
-      if (sourceCode && sourceCode !== 'en') {
-        const t = await callLibreTranslate(text, 'en', sourceCode);
-        englishText = t.translatedText || String(text);
-      } else {
-        englishText = String(text);
-      }
+      // MyMemory auto-detects source language, so we skip explicit detection
+      // Just use the text as-is for pattern matching
+      englishText = String(text);
     } catch (err) {
       englishText = String(text);
     }
@@ -305,10 +233,10 @@ module.exports = async function handler(req, res) {
 
       if (extractedTargetCode) {
         try {
-          // Only call LibreTranslate if we have a valid source code to translate FROM
+          // Only call MyMemory if we have a valid source code to translate FROM
           // If sourceCode is not available or null, fall through to fallback
           if (sourceCode && sourceCode !== extractedTargetCode) {
-            const translated = await callLibreTranslate(phraseToTranslate || text, extractedTargetCode, sourceCode);
+            const translated = await callMyMemoryTranslate(phraseToTranslate || text, extractedTargetCode, sourceCode);
             // Return only the translated phrase as the direct answer and include detected/source info
             return res.status(200).json({ result: translated.translatedText, detectedSource: detectedSource, targetUsed: extractedTargetCode });
           }
@@ -322,8 +250,8 @@ module.exports = async function handler(req, res) {
 
     // Fallback: translate from source to target language using user's preference
     try {
-      console.log('Calling LibreTranslate for fallback', { text: text.slice(0,200), targetCode, sourceCode });
-      const translated = await callLibreTranslate(text, targetCode, sourceCode);
+      console.log('Calling MyMemory for fallback', { text: text.slice(0,200), targetCode, sourceCode });
+      const translated = await callMyMemoryTranslate(text, targetCode, sourceCode);
       return res.status(200).json({ result: translated.translatedText, detectedSource: detectedSource, targetUsed: targetCode });
     } catch (err) {
       return res.status(502).json({ error: 'Translation provider error', details: err.details || String(err) });
