@@ -179,7 +179,7 @@ async function callLibreTranslate(q, target, source) {
   throw err;
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   console.log('translate handler invoked');
   try {
     console.log('Incoming request method:', req.method);
