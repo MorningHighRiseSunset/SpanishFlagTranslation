@@ -4922,5 +4922,56 @@ export const verbs = [
       "Future Perfect": ["habré parpadeado", "habrás parpadeado", "habrá parpadeado", "habremos parpadeado", "habéis parpadeado", "habrán parpadeado"],
       "Conditional Perfect": ["habría parpadeado", "habrías parpadeado", "habría parpadeado", "habríamos parpadeado", "habríais parpadeado", "habrían parpadeado"]
     }
+  },
+  {
+    english: ["to bother", "to annoy"],
+    spanish: "molestar",
+    type: "regular",
+    memoryTip: "Used for bothering or annoying someone.",
+    conjugations: {
+      "Present": ["molesto", "molestas", "molesta", "molestamos", "molestáis", "molestan"],
+      "Preterite": ["molesté", "molestaste", "molestó", "molestamos", "molestasteis", "molestaron"],
+      "Imperfect": ["molestaba", "molestabas", "molestaba", "molestábamos", "molestabais", "molestaban"],
+      "Future": ["molestaré", "molestarás", "molestará", "molestaremos", "molestaréis", "molestarán"],
+      "Conditional": ["molestaría", "molestarías", "molestaría", "molestaríamos", "molestaríais", "molestarían"],
+      "Present Perfect": ["he molestado", "has molestado", "ha molestado", "hemos molestado", "habéis molestado", "han molestado"],
+      "Past Perfect": ["había molestado", "habías molestado", "había molestado", "habíamos molestado", "habíais molestado", "habían molestado"],
+      "Future Perfect": ["habré molestado", "habrás molestado", "habrá molestado", "habremos molestado", "habéis molestado", "habrán molestado"],
+      "Conditional Perfect": ["habría molestado", "habrías molestado", "habría molestado", "habríamos molestado", "habríais molestado", "habrían molestado"]
+    }
+  },
+  {
+    english: ["to have a snack", "to have afternoon tea"],
+    spanish: "merendar",
+    type: "regular",
+    memoryTip: "Used for having a snack or afternoon meal.",
+    conjugations: {
+      "Present": ["meriendo", "meriendas", "merienda", "merendamos", "merendáis", "meriendan"],
+      "Preterite": ["merendé", "merendaste", "merendó", "merendamos", "merendasteis", "merendaron"],
+      "Imperfect": ["merendaba", "merendabas", "merendaba", "merendábamos", "merendabais", "merendaban"],
+      "Future": ["merendaré", "merendarás", "merendará", "merendaremos", "merendaréis", "merendarán"],
+      "Conditional": ["merendaría", "merendarías", "merendaría", "merendaríamos", "merendaríais", "merendarían"],
+      "Present Perfect": ["he merendado", "has merendado", "ha merendado", "hemos merendado", "habéis merendado", "han merendado"],
+      "Past Perfect": ["había merendado", "habías merendado", "había merendado", "habíamos merendado", "habíais merendado", "habían merendado"],
+      "Future Perfect": ["habré merendado", "habrás merendado", "habrá merendado", "habremos merendado", "habéis merendado", "habrán merendado"],
+      "Conditional Perfect": ["habría merendado", "habrías merendado", "habría merendado", "habríamos merendado", "habríais merendado", "habrían merendado"]
+    }
+  },
+  {
+    english: ["to greet", "to say hello"],
+    spanish: "saludar",
+    type: "regular",
+    memoryTip: "Used for greeting someone or saying hello.",
+    conjugations: {
+      "Present": ["saludo", "saludas", "saluda", "saludamos", "saludáis", "saludan"],
+      "Preterite": ["saludé", "saludaste", "saludó", "saludamos", "saludasteis", "saludaron"],
+      "Imperfect": ["saludaba", "saludabas", "saludaba", "saludábamos", "saludabais", "saludaban"],
+      "Future": ["saludaré", "saludarás", "saludará", "saludaremos", "saludaréis", "saludarán"],
+      "Conditional": ["saludaría", "saludarías", "saludaría", "saludaríamos", "saludaríais", "saludarían"],
+      "Present Perfect": ["he saludado", "has saludado", "ha saludado", "hemos saludado", "habéis saludado", "han saludado"],
+      "Past Perfect": ["había saludado", "habías saludado", "había saludado", "habíamos saludado", "habíais saludado", "habían saludado"],
+      "Future Perfect": ["habré saludado", "habrás saludado", "habrá saludado", "habremos saludado", "habéis saludado", "habrán saludado"],
+      "Conditional Perfect": ["habría saludado", "habrías saludado", "habría saludado", "habríamos saludado", "habríais saludado", "habrían saludado"]
+    }
   }
 ];
