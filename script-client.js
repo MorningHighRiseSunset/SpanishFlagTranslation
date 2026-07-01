@@ -30,6 +30,21 @@ const i18n = {
 // Friendly names for language codes
 const codeToFriendly = { en: 'English', es: 'Spanish', fr: 'French', hi: 'Hindi', zh: 'Mandarin', vi: 'Vietnamese' };
 
+// Alphabet keywords in different languages
+const alphabetKeywords = {
+    english: ['alphabet', 'abc', 'letters', 'a b c'],
+    spanish: ['alfabeto', 'abecedario', 'letras', 'a b c'],
+    hindi: ['वर्णमाला', 'अक्षर', 'alphabet', 'letters'],
+    mandarin: ['字母', '字母表', 'alphabet', '字母'],
+    french: ['alphabet', 'lettres', 'a b c', 'abécédaire']
+};
+
+// English alphabet
+const englishAlphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+
+// Spanish alphabet with accents
+const spanishAlphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'Á', 'É', 'Í', 'Ó', 'Ú', 'Ü'];
+
 // Manual options (values map to server mapping expectations)
 const manualOptions = [
     { key: '', label_en: i18n.en.autoOption, label_es: i18n.es.autoOption },
@@ -180,6 +195,15 @@ async function startTranslate() {
     const text = input.value.trim();
     if (!text) return;
 
+    // Check if this is an alphabet request
+    if (isAlphabetRequest(text)) {
+        displayAlphabet();
+        if (detectLabel) {
+            detectLabel.textContent = 'Alphabet Display / Alfabeto';
+        }
+        return;
+    }
+
     setBusy(true);
     try {
         // Build payload depending on manual mode
@@ -313,6 +337,81 @@ function friendlyNameFromManualKey(key) {
 function localeString(k) {
     const l = localizeUI();
     return l[k] || k;
+}
+
+// Check if text contains alphabet keywords in any language
+function isAlphabetRequest(text) {
+    const lowerText = text.toLowerCase().trim();
+    for (const lang in alphabetKeywords) {
+        for (const keyword of alphabetKeywords[lang]) {
+            if (lowerText.includes(keyword.toLowerCase())) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+// Display alphabet with English and Spanish columns with speaker buttons
+function displayAlphabet() {
+    const output = document.getElementById('output');
+    if (!output) return;
+
+    // Clear existing output
+    output.innerHTML = '';
+
+    // Create alphabet container
+    const alphabetContainer = document.createElement('div');
+    alphabetContainer.className = 'alphabet-container';
+
+    // Create header row
+    const headerRow = document.createElement('div');
+    headerRow.className = 'alphabet-header';
+    headerRow.innerHTML = `
+        <div class="alphabet-col">English</div>
+        <div class="alphabet-col">Español (with accents)</div>
+        <div class="alphabet-col">Sound</div>
+    `;
+    alphabetContainer.appendChild(headerRow);
+
+    // Determine max length (use Spanish alphabet length since it has more letters)
+    const maxLength = spanishAlphabet.length;
+
+    // Create rows for each letter
+    for (let i = 0; i < maxLength; i++) {
+        const row = document.createElement('div');
+        row.className = 'alphabet-row';
+
+        const englishLetter = englishAlphabet[i] || '';
+        const spanishLetter = spanishAlphabet[i] || '';
+
+        row.innerHTML = `
+            <div class="alphabet-col">${englishLetter}</div>
+            <div class="alphabet-col">${spanishLetter}</div>
+            <div class="alphabet-col">
+                ${spanishLetter ? `<button class="alphabet-speak-btn" data-letter="${spanishLetter}" data-lang="es">🔊</button>` : ''}
+            </div>
+        `;
+        alphabetContainer.appendChild(row);
+    }
+
+    output.appendChild(alphabetContainer);
+
+    // Add event listeners for speaker buttons
+    const speakButtons = output.querySelectorAll('.alphabet-speak-btn');
+    speakButtons.forEach(btn => {
+        btn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            await unlockAudioOnGesture();
+            const letter = this.getAttribute('data-letter');
+            const lang = this.getAttribute('data-lang');
+            speakText(letter, lang);
+        });
+    });
+
+    // Hide the play button since alphabet has its own speakers
+    const playBtn = document.getElementById('playBtn');
+    if (playBtn) playBtn.style.display = 'none';
 }
 
 // Initialize UI
