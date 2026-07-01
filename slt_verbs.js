@@ -4171,8 +4171,756 @@ export const verbs = [
       "Conditional": ["entregaría", "entregarías", "entregaría", "entregaríamos", "entregaríais", "entregarían"],
       "Present Perfect": ["he entregado", "has entregado", "ha entregado", "hemos entregado", "habéis entregado", "han entregado"],
       "Past Perfect": ["había entregado", "habías entregado", "había entregado", "habíamos entregado", "habíais entregado", "habían entregado"],
-      "Future Perfect": ["habré entregado", "habrás entregado", "habrá entregado", "habremos entregado", "habréis entregado", "habrán entregado"],
+      "Future Perfect": ["habré entregado", "habrás entregado", "habrá entregado", "habremos entregado", "habéis entregado", "habrán entregado"],
       "Conditional Perfect": ["habría entregado", "habrías entregado", "habría entregado", "habríamos entregado", "habríais entregado", "habrían entregado"]
+    }
+  },
+  {
+    english: ["to write"],
+    spanish: "escribir",
+    type: "regular",
+    memoryTip: "Used for writing or composing text.",
+    conjugations: {
+      "Present": ["escribo", "escribes", "escribe", "escribimos", "escribís", "escriben"],
+      "Preterite": ["escribí", "escribiste", "escribió", "escribimos", "escribisteis", "escribieron"],
+      "Imperfect": ["escribía", "escribías", "escribía", "escribíamos", "escribíais", "escribían"],
+      "Future": ["escribiré", "escribirás", "escribirá", "escribiremos", "escribiréis", "escribirán"],
+      "Conditional": ["escribiría", "escribirías", "escribiría", "escribiríamos", "escribiríais", "escribirían"],
+      "Present Perfect": ["he escrito", "has escrito", "ha escrito", "hemos escrito", "habéis escrito", "han escrito"],
+      "Past Perfect": ["había escrito", "habías escrito", "había escrito", "habíamos escrito", "habíais escrito", "habían escrito"],
+      "Future Perfect": ["habré escrito", "habrás escrito", "habrá escrito", "habremos escrito", "habéis escrito", "habrán escrito"],
+      "Conditional Perfect": ["habría escrito", "habrías escrito", "habría escrito", "habríamos escrito", "habríais escrito", "habrían escrito"]
+    }
+  },
+  {
+    english: ["to read"],
+    spanish: "leer",
+    type: "irregular",
+    memoryTip: "Used for reading written material.",
+    conjugations: {
+      "Present": ["leo", "lees", "lee", "leemos", "leéis", "leen"],
+      "Preterite": ["leí", "leíste", "leyó", "leímos", "leísteis", "leyeron"],
+      "Imperfect": ["leía", "leías", "leía", "leíamos", "leíais", "leían"],
+      "Future": ["leeré", "leerás", "leerá", "leeremos", "leeréis", "leerán"],
+      "Conditional": ["leería", "leerías", "leería", "leeríamos", "leeríais", "leerían"],
+      "Present Perfect": ["he leído", "has leído", "ha leído", "hemos leído", "habéis leído", "han leído"],
+      "Past Perfect": ["había leído", "habías leído", "había leído", "habíamos leído", "habíais leído", "habían leído"],
+      "Future Perfect": ["habré leído", "habrás leído", "habrá leído", "habremos leído", "habéis leído", "habrán leído"],
+      "Conditional Perfect": ["habría leído", "habrías leído", "habría leído", "habríamos leído", "habríais leído", "habrían leído"]
+    }
+  },
+  {
+    english: ["to eat"],
+    spanish: "comer",
+    type: "regular",
+    memoryTip: "Used for eating or consuming food.",
+    conjugations: {
+      "Present": ["como", "comes", "come", "comemos", "coméis", "comen"],
+      "Preterite": ["comí", "comiste", "comió", "comimos", "comisteis", "comieron"],
+      "Imperfect": ["comía", "comías", "comía", "comíamos", "comíais", "comían"],
+      "Future": ["comeré", "comerás", "comerá", "comeremos", "comeréis", "comerán"],
+      "Conditional": ["comería", "comerías", "comería", "comeríamos", "comeríais", "comerían"],
+      "Present Perfect": ["he comido", "has comido", "ha comido", "hemos comido", "habéis comido", "han comido"],
+      "Past Perfect": ["había comido", "habías comido", "había comido", "habíamos comido", "habíais comido", "habían comido"],
+      "Future Perfect": ["habré comido", "habrás comido", "habrá comido", "habremos comido", "habéis comido", "habrán comido"],
+      "Conditional Perfect": ["habría comido", "habrías comido", "habría comido", "habríamos comido", "habríais comido", "habrían comido"]
+    }
+  },
+  {
+    english: ["to drink"],
+    spanish: "beber",
+    type: "regular",
+    memoryTip: "Used for drinking liquids.",
+    conjugations: {
+      "Present": ["bebo", "bebes", "bebe", "bebemos", "bebéis", "beben"],
+      "Preterite": ["bebí", "bebiste", "bebió", "bebimos", "bebisteis", "bebieron"],
+      "Imperfect": ["bebía", "bebías", "bebía", "bebíamos", "bebíais", "bebían"],
+      "Future": ["beberé", "beberás", "beberá", "beberemos", "beberéis", "beberán"],
+      "Conditional": ["bebería", "beberías", "bebería", "beberíamos", "beberíais", "beberían"],
+      "Present Perfect": ["he bebido", "has bebido", "ha bebido", "hemos bebido", "habéis bebido", "han bebido"],
+      "Past Perfect": ["había bebido", "habías bebido", "había bebido", "habíamos bebido", "habíais bebido", "habían bebido"],
+      "Future Perfect": ["habré bebido", "habrás bebido", "habrá bebido", "habremos bebido", "habéis bebido", "habrán bebido"],
+      "Conditional Perfect": ["habría bebido", "habrías bebido", "habría bebido", "habríamos bebido", "habríais bebido", "habrían bebido"]
+    }
+  },
+  {
+    english: ["to run"],
+    spanish: "correr",
+    type: "regular",
+    memoryTip: "Used for running or moving quickly on foot.",
+    conjugations: {
+      "Present": ["corro", "corres", "corre", "corremos", "corréis", "corren"],
+      "Preterite": ["corrí", "corriste", "corrió", "corrimos", "corristeis", "corrieron"],
+      "Imperfect": ["corría", "corrías", "corría", "corríamos", "corríais", "corrían"],
+      "Future": ["correré", "correrás", "correrá", "correremos", "correréis", "correrán"],
+      "Conditional": ["correría", "correrías", "correría", "correríamos", "correríais", "correrían"],
+      "Present Perfect": ["he corrido", "has corrido", "ha corrido", "hemos corrido", "habéis corrido", "han corrido"],
+      "Past Perfect": ["había corrido", "habías corrido", "había corrido", "habíamos corrido", "habíais corrido", "habían corrido"],
+      "Future Perfect": ["habré corrido", "habrás corrido", "habrá corrido", "habremos corrido", "habéis corrido", "habrán corrido"],
+      "Conditional Perfect": ["habría corrido", "habrías corrido", "habría corrido", "habríamos corrido", "habríais corrido", "habrían corrido"]
+    }
+  },
+  {
+    english: ["to walk"],
+    spanish: "caminar",
+    type: "regular",
+    memoryTip: "Used for walking or moving on foot.",
+    conjugations: {
+      "Present": ["camino", "caminas", "camina", "caminamos", "camináis", "caminan"],
+      "Preterite": ["caminé", "caminaste", "caminó", "caminamos", "caminasteis", "caminaron"],
+      "Imperfect": ["caminaba", "caminabas", "caminaba", "caminábamos", "caminabais", "caminaban"],
+      "Future": ["caminaré", "caminarás", "caminará", "caminaremos", "caminaréis", "caminarán"],
+      "Conditional": ["caminaría", "caminarías", "caminaría", "caminaríamos", "caminaríais", "caminarían"],
+      "Present Perfect": ["he caminado", "has caminado", "ha caminado", "hemos caminado", "habéis caminado", "han caminado"],
+      "Past Perfect": ["había caminado", "habías caminado", "había caminado", "habíamos caminado", "habíais caminado", "habían caminado"],
+      "Future Perfect": ["habré caminado", "habrás caminado", "habrá caminado", "habremos caminado", "habéis caminado", "habrán caminado"],
+      "Conditional Perfect": ["habría caminado", "habrías caminado", "habría caminado", "habríamos caminado", "habríais caminado", "habrían caminado"]
+    }
+  },
+  {
+    english: ["to sleep"],
+    spanish: "dormir",
+    type: "irregular",
+    memoryTip: "Stem-changing verb (o → ue) in present: duermo, duermes, etc.",
+    conjugations: {
+      "Present": ["duermo", "duermes", "duerme", "dormimos", "dormís", "duermen"],
+      "Preterite": ["dormí", "dormiste", "durmió", "dormimos", "dormisteis", "durmieron"],
+      "Imperfect": ["dormía", "dormías", "dormía", "dormíamos", "dormíais", "dormían"],
+      "Future": ["dormiré", "dormirás", "dormirá", "dormiremos", "dormiréis", "dormirán"],
+      "Conditional": ["dormiría", "dormirías", "dormiría", "dormiríamos", "dormiríais", "dormirían"],
+      "Present Perfect": ["he dormido", "has dormido", "ha dormido", "hemos dormido", "habéis dormido", "han dormido"],
+      "Past Perfect": ["había dormido", "habías dormido", "había dormido", "habíamos dormido", "habíais dormido", "habían dormido"],
+      "Future Perfect": ["habré dormido", "habrás dormido", "habrá dormido", "habremos dormido", "habéis dormido", "habrán dormido"],
+      "Conditional Perfect": ["habría dormido", "habrías dormido", "habría dormido", "habríamos dormido", "habríais dormido", "habrían dormido"]
+    }
+  },
+  {
+    english: ["to learn"],
+    spanish: "aprender",
+    type: "regular",
+    memoryTip: "Used for learning or acquiring knowledge.",
+    conjugations: {
+      "Present": ["aprendo", "aprendes", "aprende", "aprendemos", "aprendéis", "aprenden"],
+      "Preterite": ["aprendí", "aprendiste", "aprendió", "aprendimos", "aprendisteis", "aprendieron"],
+      "Imperfect": ["aprendía", "aprendías", "aprendía", "aprendíamos", "aprendíais", "aprendían"],
+      "Future": ["aprenderé", "aprenderás", "aprenderá", "aprenderemos", "aprenderéis", "aprenderán"],
+      "Conditional": ["aprendería", "aprenderías", "aprendería", "aprenderíamos", "aprenderíais", "aprenderían"],
+      "Present Perfect": ["he aprendido", "has aprendido", "ha aprendido", "hemos aprendido", "habéis aprendido", "han aprendido"],
+      "Past Perfect": ["había aprendido", "habías aprendido", "había aprendido", "habíamos aprendido", "habíais aprendido", "habían aprendido"],
+      "Future Perfect": ["habré aprendido", "habrás aprendido", "habrá aprendido", "habremos aprendido", "habéis aprendido", "habrán aprendido"],
+      "Conditional Perfect": ["habría aprendido", "habrías aprendido", "habría aprendido", "habríamos aprendido", "habríais aprendido", "habrían aprendido"]
+    }
+  },
+  {
+    english: ["to teach"],
+    spanish: "enseñar",
+    type: "regular",
+    memoryTip: "Used for teaching or showing someone how to do something.",
+    conjugations: {
+      "Present": ["enseño", "enseñas", "enseña", "enseñamos", "enseñáis", "enseñan"],
+      "Preterite": ["enseñé", "enseñaste", "enseñó", "enseñamos", "enseñasteis", "enseñaron"],
+      "Imperfect": ["enseñaba", "enseñabas", "enseñaba", "enseñábamos", "enseñabais", "enseñaban"],
+      "Future": ["enseñaré", "enseñarás", "enseñará", "enseñaremos", "enseñaréis", "enseñarán"],
+      "Conditional": ["enseñaría", "enseñarías", "enseñaría", "enseñaríamos", "enseñaríais", "enseñarían"],
+      "Present Perfect": ["he enseñado", "has enseñado", "ha enseñado", "hemos enseñado", "habéis enseñado", "han enseñado"],
+      "Past Perfect": ["había enseñado", "habías enseñado", "había enseñado", "habíamos enseñado", "habíais enseñado", "habían enseñado"],
+      "Future Perfect": ["habré enseñado", "habrás enseñado", "habrá enseñado", "habremos enseñado", "habéis enseñado", "habrán enseñado"],
+      "Conditional Perfect": ["habría enseñado", "habrías enseñado", "habría enseñado", "habríamos enseñado", "habríais enseñado", "habrían enseñado"]
+    }
+  },
+  {
+    english: ["to study"],
+    spanish: "estudiar",
+    type: "regular",
+    memoryTip: "Used for studying or learning about a subject.",
+    conjugations: {
+      "Present": ["estudio", "estudias", "estudia", "estudiamos", "estudiáis", "estudian"],
+      "Preterite": ["estudié", "estudiaste", "estudió", "estudiamos", "estudiasteis", "estudiaron"],
+      "Imperfect": ["estudiaba", "estudiabas", "estudiaba", "estudiábamos", "estudiabais", "estudiaban"],
+      "Future": ["estudiaré", "estudiarás", "estudiará", "estudiaremos", "estudiaréis", "estudiarán"],
+      "Conditional": ["estudiaría", "estudiarías", "estudiaría", "estudiaríamos", "estudiaríais", "estudiarían"],
+      "Present Perfect": ["he estudiado", "has estudiado", "ha estudiado", "hemos estudiado", "habéis estudiado", "han estudiado"],
+      "Past Perfect": ["había estudiado", "habías estudiado", "había estudiado", "habíamos estudiado", "habíais estudiado", "habían estudiado"],
+      "Future Perfect": ["habré estudiado", "habrás estudiado", "habrá estudiado", "habremos estudiado", "habéis estudiado", "habrán estudiado"],
+      "Conditional Perfect": ["habría estudiado", "habrías estudiado", "habría estudiado", "habríamos estudiado", "habríais estudiado", "habrían estudiado"]
+    }
+  },
+  {
+    english: ["to understand"],
+    spanish: "entender",
+    type: "irregular",
+    memoryTip: "Stem-changing verb (e → ie) in present: entiendo, entiendes, etc.",
+    conjugations: {
+      "Present": ["entiendo", "entiendes", "entiende", "entendemos", "entendéis", "entienden"],
+      "Preterite": ["entendí", "entendiste", "entendió", "entendimos", "entendisteis", "entendieron"],
+      "Imperfect": ["entendía", "entendías", "entendía", "entendíamos", "entendíais", "entendían"],
+      "Future": ["entenderé", "entenderás", "entenderá", "entenderemos", "entenderéis", "entenderán"],
+      "Conditional": ["entendería", "entenderías", "entendería", "entenderíamos", "entenderíais", "entenderían"],
+      "Present Perfect": ["he entendido", "has entendido", "ha entendido", "hemos entendido", "habéis entendido", "han entendido"],
+      "Past Perfect": ["había entendido", "habías entendido", "había entendido", "habíamos entendido", "habíais entendido", "habían entendido"],
+      "Future Perfect": ["habré entendido", "habrás entendido", "habrá entendido", "habremos entendido", "habéis entendido", "habrán entendido"],
+      "Conditional Perfect": ["habría entendido", "habrías entendido", "habría entendido", "habríamos entendido", "habríais entendido", "habrían entendido"]
+    }
+  },
+  {
+    english: ["to think"],
+    spanish: "pensar",
+    type: "irregular",
+    memoryTip: "Stem-changing verb (e → ie) in present: pienso, piensas, etc.",
+    conjugations: {
+      "Present": ["pienso", "piensas", "piensa", "pensamos", "pensáis", "piensan"],
+      "Preterite": ["pensé", "pensaste", "pensó", "pensamos", "pensasteis", "pensaron"],
+      "Imperfect": ["pensaba", "pensabas", "pensaba", "pensábamos", "pensabais", "pensaban"],
+      "Future": ["pensaré", "pensarás", "pensará", "pensaremos", "pensaréis", "pensarán"],
+      "Conditional": ["pensaría", "pensarías", "pensaría", "pensaríamos", "pensaríais", "pensarían"],
+      "Present Perfect": ["he pensado", "has pensado", "ha pensado", "hemos pensado", "habéis pensado", "han pensado"],
+      "Past Perfect": ["había pensado", "habías pensado", "había pensado", "habíamos pensado", "habíais pensado", "habían pensado"],
+      "Future Perfect": ["habré pensado", "habrás pensado", "habrá pensado", "habremos pensado", "habéis pensado", "habrán pensado"],
+      "Conditional Perfect": ["habría pensado", "habrías pensado", "habría pensado", "habríamos pensado", "habríais pensado", "habrían pensado"]
+    }
+  },
+  {
+    english: ["to love"],
+    spanish: "amar",
+    type: "regular",
+    memoryTip: "Used for loving or having affection for someone/something.",
+    conjugations: {
+      "Present": ["amo", "amas", "ama", "amamos", "amáis", "aman"],
+      "Preterite": ["amé", "amaste", "amó", "amamos", "amasteis", "amaron"],
+      "Imperfect": ["amaba", "amabas", "amaba", "amábamos", "amabais", "amaban"],
+      "Future": ["amaré", "amarás", "amará", "amaremos", "amaréis", "amarán"],
+      "Conditional": ["amaría", "amarías", "amaría", "amaríamos", "amaríais", "amarían"],
+      "Present Perfect": ["he amado", "has amado", "ha amado", "hemos amado", "habéis amado", "han amado"],
+      "Past Perfect": ["había amado", "habías amado", "había amado", "habíamos amado", "habíais amado", "habían amado"],
+      "Future Perfect": ["habré amado", "habrás amado", "habrá amado", "habremos amado", "habéis amado", "habrán amado"],
+      "Conditional Perfect": ["habría amado", "habrías amado", "habría amado", "habríamos amado", "habríais amado", "habrían amado"]
+    }
+  },
+  {
+    english: ["to help"],
+    spanish: "ayudar",
+    type: "regular",
+    memoryTip: "Used for helping or assisting someone.",
+    conjugations: {
+      "Present": ["ayudo", "ayudas", "ayuda", "ayudamos", "ayudáis", "ayudan"],
+      "Preterite": ["ayudé", "ayudaste", "ayudó", "ayudamos", "ayudasteis", "ayudaron"],
+      "Imperfect": ["ayudaba", "ayudabas", "ayudaba", "ayudábamos", "ayudabais", "ayudaban"],
+      "Future": ["ayudaré", "ayudarás", "ayudará", "ayudaremos", "ayudaréis", "ayudarán"],
+      "Conditional": ["ayudaría", "ayudarías", "ayudaría", "ayudaríamos", "ayudaríais", "ayudarían"],
+      "Present Perfect": ["he ayudado", "has ayudado", "ha ayudado", "hemos ayudado", "habéis ayudado", "han ayudado"],
+      "Past Perfect": ["había ayudado", "habías ayudado", "había ayudado", "habíamos ayudado", "habíais ayudado", "habían ayudado"],
+      "Future Perfect": ["habré ayudado", "habrás ayudado", "habrá ayudado", "habremos ayudado", "habéis ayudado", "habrán ayudado"],
+      "Conditional Perfect": ["habría ayudado", "habrías ayudado", "habría ayudado", "habríamos ayudado", "habríais ayudado", "habrían ayudado"]
+    }
+  },
+  {
+    english: ["to play"],
+    spanish: "jugar",
+    type: "irregular",
+    memoryTip: "Stem-changing verb (u → ue) in present: juego, juegas, etc.",
+    conjugations: {
+      "Present": ["juego", "juegas", "juega", "jugamos", "jugáis", "juegan"],
+      "Preterite": ["jugué", "jugaste", "jugó", "jugamos", "jugasteis", "jugaron"],
+      "Imperfect": ["jugaba", "jugabas", "jugaba", "jugábamos", "jugabais", "jugaban"],
+      "Future": ["jugaré", "jugarás", "jugará", "jugaremos", "jugaréis", "jugarán"],
+      "Conditional": ["jugaría", "jugarías", "jugaría", "jugaríamos", "jugaríais", "jugarían"],
+      "Present Perfect": ["he jugado", "has jugado", "ha jugado", "hemos jugado", "habéis jugado", "han jugado"],
+      "Past Perfect": ["había jugado", "habías jugado", "había jugado", "habíamos jugado", "habíais jugado", "habían jugado"],
+      "Future Perfect": ["habré jugado", "habrás jugado", "habrá jugado", "habremos jugado", "habéis jugado", "habrán jugado"],
+      "Conditional Perfect": ["habría jugado", "habrías jugado", "habría jugado", "habríamos jugado", "habríais jugado", "habrían jugado"]
+    }
+  },
+  {
+    english: ["to listen"],
+    spanish: "escuchar",
+    type: "regular",
+    memoryTip: "Used for listening to sounds or music.",
+    conjugations: {
+      "Present": ["escucho", "escuchas", "escucha", "escuchamos", "escucháis", "escuchan"],
+      "Preterite": ["escuché", "escuchaste", "escuchó", "escuchamos", "escuchasteis", "escucharon"],
+      "Imperfect": ["escuchaba", "escuchabas", "escuchaba", "escuchábamos", "escuchabais", "escuchaban"],
+      "Future": ["escucharé", "escucharás", "escuchará", "escucharemos", "escucharéis", "escucharán"],
+      "Conditional": ["escucharía", "escucharías", "escucharía", "escucharíamos", "escucharíais", "escucharían"],
+      "Present Perfect": ["he escuchado", "has escuchado", "ha escuchado", "hemos escuchado", "habéis escuchado", "han escuchado"],
+      "Past Perfect": ["había escuchado", "habías escuchado", "había escuchado", "habíamos escuchado", "habíais escuchado", "habían escuchado"],
+      "Future Perfect": ["habré escuchado", "habrás escuchado", "habrá escuchado", "habremos escuchado", "habéis escuchado", "habrán escuchado"],
+      "Conditional Perfect": ["habría escuchado", "habrías escuchado", "habría escuchado", "habríamos escuchado", "habríais escuchado", "habrían escuchado"]
+    }
+  },
+  {
+    english: ["to sing"],
+    spanish: "cantar",
+    type: "regular",
+    memoryTip: "Used for singing or producing music with voice.",
+    conjugations: {
+      "Present": ["canto", "cantas", "canta", "cantamos", "cantáis", "cantan"],
+      "Preterite": ["canté", "cantaste", "cantó", "cantamos", "cantasteis", "cantaron"],
+      "Imperfect": ["cantaba", "cantabas", "cantaba", "cantábamos", "cantabais", "cantaban"],
+      "Future": ["cantaré", "cantarás", "cantará", "cantaremos", "cantaréis", "cantarán"],
+      "Conditional": ["cantaría", "cantarías", "cantaría", "cantaríamos", "cantaríais", "cantarían"],
+      "Present Perfect": ["he cantado", "has cantado", "ha cantado", "hemos cantado", "habéis cantado", "han cantado"],
+      "Past Perfect": ["había cantado", "habías cantado", "había cantado", "habíamos cantado", "habíais cantado", "habían cantado"],
+      "Future Perfect": ["habré cantado", "habrás cantado", "habrá cantado", "habremos cantado", "habéis cantado", "habrán cantado"],
+      "Conditional Perfect": ["habría cantado", "habrías cantado", "habría cantado", "habríamos cantado", "habríais cantado", "habrían cantado"]
+    }
+  },
+  {
+    english: ["to dance"],
+    spanish: "bailar",
+    type: "regular",
+    memoryTip: "Used for dancing or moving rhythmically to music.",
+    conjugations: {
+      "Present": ["bailo", "bailas", "baila", "bailamos", "bailáis", "bailan"],
+      "Preterite": ["baile", "bailaste", "bailó", "bailamos", "bailasteis", "bailaron"],
+      "Imperfect": ["bailaba", "bailabas", "bailaba", "bailábamos", "bailabais", "bailaban"],
+      "Future": ["bailaré", "bailarás", "bailará", "bailaremos", "bailaréis", "bailarán"],
+      "Conditional": ["bailaría", "bailarías", "bailaría", "bailaríamos", "bailaríais", "bailarían"],
+      "Present Perfect": ["he bailado", "has bailado", "ha bailado", "hemos bailado", "habéis bailado", "han bailado"],
+      "Past Perfect": ["había bailado", "habías bailado", "había bailado", "habíamos bailado", "habíais bailado", "habían bailado"],
+      "Future Perfect": ["habré bailado", "habrás bailado", "habrá bailado", "habremos bailado", "habéis bailado", "habrán bailado"],
+      "Conditional Perfect": ["habría bailado", "habrías bailado", "habría bailado", "habríamos bailado", "habríais bailado", "habrían bailado"]
+    }
+  },
+  {
+    english: ["to buy"],
+    spanish: "comprar",
+    type: "regular",
+    memoryTip: "Used for purchasing or acquiring something.",
+    conjugations: {
+      "Present": ["compro", "compras", "compra", "compramos", "compráis", "compran"],
+      "Preterite": ["compré", "compraste", "compró", "compramos", "comprasteis", "compraron"],
+      "Imperfect": ["compraba", "comprabas", "compraba", "comprábamos", "comprabais", "compraban"],
+      "Future": ["compraré", "comprarás", "comprará", "compraremos", "compraréis", "comprarán"],
+      "Conditional": ["compraría", "comprarías", "compraría", "compraríamos", "compraríais", "comprarían"],
+      "Present Perfect": ["he comprado", "has comprado", "ha comprado", "hemos comprado", "habéis comprado", "han comprado"],
+      "Past Perfect": ["había comprado", "habías comprado", "había comprado", "habíamos comprado", "habíais comprado", "habían comprado"],
+      "Future Perfect": ["habré comprado", "habrás comprado", "habrá comprado", "habremos comprado", "habéis comprado", "habrán comprado"],
+      "Conditional Perfect": ["habría comprado", "habrías comprado", "habría comprado", "habríamos comprado", "habríais comprado", "habrían comprado"]
+    }
+  },
+  {
+    english: ["to sell"],
+    spanish: "vender",
+    type: "regular",
+    memoryTip: "Used for selling or exchanging something for money.",
+    conjugations: {
+      "Present": ["vendo", "vendes", "vende", "vendemos", "vendéis", "venden"],
+      "Preterite": ["vendí", "vendiste", "vendió", "vendimos", "vendisteis", "vendieron"],
+      "Imperfect": ["vendía", "vendías", "vendía", "vendíamos", "vendíais", "vendían"],
+      "Future": ["venderé", "venderás", "venderá", "venderemos", "venderéis", "venderán"],
+      "Conditional": ["vendería", "venderías", "vendería", "venderíamos", "venderíais", "venderían"],
+      "Present Perfect": ["he vendido", "has vendido", "ha vendido", "hemos vendido", "habéis vendido", "han vendido"],
+      "Past Perfect": ["había vendido", "habías vendido", "había vendido", "habíamos vendido", "habíais vendido", "habían vendido"],
+      "Future Perfect": ["habré vendido", "habrás vendido", "habrá vendido", "habremos vendido", "habéis vendido", "habrán vendido"],
+      "Conditional Perfect": ["habría vendido", "habrías vendido", "habría vendido", "habríamos vendido", "habríais vendido", "habrían vendido"]
+    }
+  },
+  {
+    english: ["to pay"],
+    spanish: "pagar",
+    type: "regular",
+    memoryTip: "Used for paying or giving money for something.",
+    conjugations: {
+      "Present": ["pago", "pagas", "paga", "pagamos", "pagáis", "pagan"],
+      "Preterite": ["pagué", "pagaste", "pagó", "pagamos", "pagasteis", "pagaron"],
+      "Imperfect": ["pagaba", "pagabas", "pagaba", "pagábamos", "pagabais", "pagaban"],
+      "Future": ["pagaré", "pagarás", "pagará", "pagaremos", "pagaréis", "pagarán"],
+      "Conditional": ["pagaría", "pagarías", "pagaría", "pagaríamos", "pagaríais", "pagarían"],
+      "Present Perfect": ["he pagado", "has pagado", "ha pagado", "hemos pagado", "habéis pagado", "han pagado"],
+      "Past Perfect": ["había pagado", "habías pagado", "había pagado", "habíamos pagado", "habíais pagado", "habían pagado"],
+      "Future Perfect": ["habré pagado", "habrás pagado", "habrá pagado", "habremos pagado", "habéis pagado", "habrán pagado"],
+      "Conditional Perfect": ["habría pagado", "habrías pagado", "habría pagado", "habríamos pagado", "habríais pagado", "habrían pagado"]
+    }
+  },
+  {
+    english: ["to wait"],
+    spanish: "esperar",
+    type: "regular",
+    memoryTip: "Used for waiting or expecting something.",
+    conjugations: {
+      "Present": ["espero", "esperas", "espera", "esperamos", "esperáis", "esperan"],
+      "Preterite": ["esperé", "esperaste", "esperó", "esperamos", "esperasteis", "esperaron"],
+      "Imperfect": ["esperaba", "esperabas", "esperaba", "esperábamos", "esperabais", "esperaban"],
+      "Future": ["esperaré", "esperarás", "esperará", "esperaremos", "esperaréis", "esperarán"],
+      "Conditional": ["esperaría", "esperarías", "esperaría", "esperaríamos", "esperaríais", "esperarían"],
+      "Present Perfect": ["he esperado", "has esperado", "ha esperado", "hemos esperado", "habéis esperado", "han esperado"],
+      "Past Perfect": ["había esperado", "habías esperado", "había esperado", "habíamos esperado", "habíais esperado", "habían esperado"],
+      "Future Perfect": ["habré esperado", "habrás esperado", "habrá esperado", "habremos esperado", "habéis esperado", "habrán esperado"],
+      "Conditional Perfect": ["habría esperado", "habrías esperado", "habría esperado", "habríamos esperado", "habríais esperado", "habrían esperado"]
+    }
+  },
+  {
+    english: ["to search", "to look for"],
+    spanish: "buscar",
+    type: "regular",
+    memoryTip: "Used for searching or looking for something.",
+    conjugations: {
+      "Present": ["busco", "buscas", "busca", "buscamos", "buscáis", "buscan"],
+      "Preterite": ["busqué", "buscaste", "buscó", "buscamos", "buscasteis", "buscaron"],
+      "Imperfect": ["buscaba", "buscabas", "buscaba", "buscábamos", "buscabais", "buscaban"],
+      "Future": ["buscaré", "buscarás", "buscará", "buscaremos", "buscaréis", "buscarán"],
+      "Conditional": ["buscaría", "buscarías", "buscaría", "buscaríamos", "buscaríais", "buscarían"],
+      "Present Perfect": ["he buscado", "has buscado", "ha buscado", "hemos buscado", "habéis buscado", "han buscado"],
+      "Past Perfect": ["había buscado", "habías buscado", "había buscado", "habíamos buscado", "habíais buscado", "habían buscado"],
+      "Future Perfect": ["habré buscado", "habrás buscado", "habrá buscado", "habremos buscado", "habéis buscado", "habrán buscado"],
+      "Conditional Perfect": ["habría buscado", "habrías buscado", "habría buscado", "habríamos buscado", "habríais buscado", "habrían buscado"]
+    }
+  },
+  {
+    english: ["to lose"],
+    spanish: "perder",
+    type: "irregular",
+    memoryTip: "Stem-changing verb (e → ie) in present: pierdo, pierdes, etc.",
+    conjugations: {
+      "Present": ["pierdo", "pierdes", "pierde", "perdemos", "perdéis", "pierden"],
+      "Preterite": ["perdí", "perdiste", "perdió", "perdimos", "perdisteis", "perdieron"],
+      "Imperfect": ["perdía", "perdías", "perdía", "perdíamos", "perdíais", "perdían"],
+      "Future": ["perderé", "perderás", "perderá", "perderemos", "perderéis", "perderán"],
+      "Conditional": ["perdería", "perderías", "perdería", "perderíamos", "perderíais", "perderían"],
+      "Present Perfect": ["he perdido", "has perdido", "ha perdido", "hemos perdido", "habéis perdido", "han perdido"],
+      "Past Perfect": ["había perdido", "habías perdido", "había perdido", "habíamos perdido", "habíais perdido", "habían perdido"],
+      "Future Perfect": ["habré perdido", "habrás perdido", "habrá perdido", "habremos perdido", "habéis perdido", "habrán perdido"],
+      "Conditional Perfect": ["habría perdido", "habrías perdido", "habría perdido", "habríamos perdido", "habríais perdido", "habrían perdido"]
+    }
+  },
+  {
+    english: ["to win"],
+    spanish: "ganar",
+    type: "regular",
+    memoryTip: "Used for winning or achieving victory.",
+    conjugations: {
+      "Present": ["gano", "ganas", "gana", "ganamos", "ganáis", "ganan"],
+      "Preterite": ["gané", "ganaste", "ganó", "ganamos", "ganasteis", "ganaron"],
+      "Imperfect": ["ganaba", "ganabas", "ganaba", "ganábamos", "ganabais", "ganaban"],
+      "Future": ["ganaré", "ganarás", "ganará", "ganaremos", "ganaréis", "ganarán"],
+      "Conditional": ["ganaría", "ganarías", "ganaría", "ganaríamos", "ganaríais", "ganarían"],
+      "Present Perfect": ["he ganado", "has ganado", "ha ganado", "hemos ganado", "habéis ganado", "han ganado"],
+      "Past Perfect": ["había ganado", "habías ganado", "había ganado", "habíamos ganado", "habíais ganado", "habían ganado"],
+      "Future Perfect": ["habré ganado", "habrás ganado", "habrá ganado", "habremos ganado", "habéis ganado", "habrán ganado"],
+      "Conditional Perfect": ["habría ganado", "habrías ganado", "habría ganado", "habríamos ganado", "habríais ganado", "habrían ganado"]
+    }
+  },
+  {
+    english: ["to cook"],
+    spanish: "cocinar",
+    type: "regular",
+    memoryTip: "Used for cooking or preparing food.",
+    conjugations: {
+      "Present": ["cocino", "cocinas", "cocina", "cocinamos", "cocináis", "cocinan"],
+      "Preterite": ["cociné", "cocinaste", "cocinó", "cocinamos", "cocinasteis", "cocinaron"],
+      "Imperfect": ["cocinaba", "cocinabas", "cocinaba", "cocinábamos", "cocinabais", "cocinaban"],
+      "Future": ["cocinaré", "cocinarás", "cocinará", "cocinaremos", "cocinaréis", "cocinarán"],
+      "Conditional": ["cocinaría", "cocinarías", "cocinaría", "cocinaríamos", "cocinaríais", "cocinarían"],
+      "Present Perfect": ["he cocinado", "has cocinado", "ha cocinado", "hemos cocinado", "habéis cocinado", "han cocinado"],
+      "Past Perfect": ["había cocinado", "habías cocinado", "había cocinado", "habíamos cocinado", "habíais cocinado", "habían cocinado"],
+      "Future Perfect": ["habré cocinado", "habrás cocinado", "habrá cocinado", "habremos cocinado", "habéis cocinado", "habrán cocinado"],
+      "Conditional Perfect": ["habría cocinado", "habrías cocinado", "habría cocinado", "habríamos cocinado", "habríais cocinado", "habrían cocinado"]
+    }
+  },
+  {
+    english: ["to clean"],
+    spanish: "limpiar",
+    type: "regular",
+    memoryTip: "Used for cleaning or making something tidy.",
+    conjugations: {
+      "Present": ["limpio", "limpias", "limpia", "limpiamos", "limpiáis", "limpian"],
+      "Preterite": ["limpié", "limpiaste", "limpió", "limpiamos", "limpiasteis", "limpiaron"],
+      "Imperfect": ["limpiaba", "limpiabas", "limpiaba", "limpiábamos", "limpiabais", "limpiaban"],
+      "Future": ["limpiaré", "limpiarás", "limpiará", "limpiaremos", "limpiaréis", "limpiarán"],
+      "Conditional": ["limpiaría", "limpiarías", "limpiaría", "limpiaríamos", "limpiaríais", "limpiarían"],
+      "Present Perfect": ["he limpiado", "has limpiado", "ha limpiado", "hemos limpiado", "habéis limpiado", "han limpiado"],
+      "Past Perfect": ["había limpiado", "habías limpiado", "había limpiado", "habíamos limpiado", "habíais limpiado", "habían limpiado"],
+      "Future Perfect": ["habré limpiado", "habrás limpiado", "habrá limpiado", "habremos limpiado", "habéis limpiado", "habrán limpiado"],
+      "Conditional Perfect": ["habría limpiado", "habrías limpiado", "habría limpiado", "habríamos limpiado", "habríais limpiado", "habrían limpiado"]
+    }
+  },
+  {
+    english: ["to wash"],
+    spanish: "lavar",
+    type: "regular",
+    memoryTip: "Used for washing or cleaning something.",
+    conjugations: {
+      "Present": ["lavo", "lavas", "lava", "lavamos", "laváis", "lavan"],
+      "Preterite": ["lavé", "lavaste", "lavó", "lavamos", "lavasteis", "lavaron"],
+      "Imperfect": ["lavaba", "lavabas", "lavaba", "lavábamos", "lavabais", "lavaban"],
+      "Future": ["lavaré", "lavarás", "lavará", "lavaremos", "lavaréis", "lavarán"],
+      "Conditional": ["lavaría", "lavarías", "lavaría", "lavaríamos", "lavaríais", "lavarían"],
+      "Present Perfect": ["he lavado", "has lavado", "ha lavado", "hemos lavado", "habéis lavado", "han lavado"],
+      "Past Perfect": ["había lavado", "habías lavado", "había lavado", "habíamos lavado", "habíais lavado", "habían lavado"],
+      "Future Perfect": ["habré lavado", "habrás lavado", "habrá lavado", "habremos lavado", "habéis lavado", "habrán lavado"],
+      "Conditional Perfect": ["habría lavado", "habrías lavado", "habría lavado", "habríamos lavado", "habríais lavado", "habrían lavado"]
+    }
+  },
+  {
+    english: ["to cut"],
+    spanish: "cortar",
+    type: "regular",
+    memoryTip: "Used for cutting or slicing something.",
+    conjugations: {
+      "Present": ["corto", "cortas", "corta", "cortamos", "cortáis", "cortan"],
+      "Preterite": ["corté", "cortaste", "cortó", "cortamos", "cortasteis", "cortaron"],
+      "Imperfect": ["cortaba", "cortabas", "cortaba", "cortábamos", "cortabais", "cortaban"],
+      "Future": ["cortaré", "cortarás", "cortará", "cortaremos", "cortaréis", "cortarán"],
+      "Conditional": ["cortaría", "cortarías", "cortaría", "cortaríamos", "cortaríais", "cortarían"],
+      "Present Perfect": ["he cortado", "has cortado", "ha cortado", "hemos cortado", "habéis cortado", "han cortado"],
+      "Past Perfect": ["había cortado", "habías cortado", "había cortado", "habíamos cortado", "habíais cortado", "habían cortado"],
+      "Future Perfect": ["habré cortado", "habrás cortado", "habrá cortado", "habremos cortado", "habéis cortado", "habrán cortado"],
+      "Conditional Perfect": ["habría cortado", "habrías cortado", "habría cortado", "habríamos cortado", "habríais cortado", "habrían cortado"]
+    }
+  },
+  {
+    english: ["to break"],
+    spanish: "romper",
+    type: "regular",
+    memoryTip: "Used for breaking or damaging something.",
+    conjugations: {
+      "Present": ["rompo", "rompes", "rompe", "rompemos", "rompéis", "rompen"],
+      "Preterite": ["rompí", "rompiste", "rompió", "rompimos", "rompisteis", "rompieron"],
+      "Imperfect": ["rompía", "rompías", "rompía", "rompíamos", "rompíais", "rompían"],
+      "Future": ["romperé", "romperás", "romperá", "romperemos", "romperéis", "romperán"],
+      "Conditional": ["rompería", "romperías", "rompería", "romperíamos", "romperíais", "romperían"],
+      "Present Perfect": ["he roto", "has roto", "ha roto", "hemos roto", "habéis roto", "han roto"],
+      "Past Perfect": ["había roto", "habías roto", "había roto", "habíamos roto", "habíais roto", "habían roto"],
+      "Future Perfect": ["habré roto", "habrás roto", "habrá roto", "habremos roto", "habéis roto", "habrán roto"],
+      "Conditional Perfect": ["habría roto", "habrías roto", "habría roto", "habríamos roto", "habríais roto", "habrían roto"]
+    }
+  },
+  {
+    english: ["to build"],
+    spanish: "construir",
+    type: "irregular",
+    memoryTip: "Used for building or constructing something.",
+    conjugations: {
+      "Present": ["construyo", "construyes", "construye", "construimos", "construís", "construyen"],
+      "Preterite": ["construí", "construiste", "construyó", "construimos", "construisteis", "construyeron"],
+      "Imperfect": ["construía", "construías", "construía", "construíamos", "construíais", "construían"],
+      "Future": ["construiré", "construirás", "construirá", "construiremos", "construiréis", "construirán"],
+      "Conditional": ["construiría", "construirías", "construiría", "construiríamos", "construiríais", "construirían"],
+      "Present Perfect": ["he construido", "has construido", "ha construido", "hemos construido", "habéis construido", "han construido"],
+      "Past Perfect": ["había construido", "habías construido", "había construido", "habíamos construido", "habíais construido", "habían construido"],
+      "Future Perfect": ["habré construido", "habrás construido", "habrá construido", "habremos construido", "habéis construido", "habrán construido"],
+      "Conditional Perfect": ["habría construido", "habrías construido", "habría construido", "habríamos construido", "habríais construido", "habrían construido"]
+    }
+  },
+  {
+    english: ["to start", "to begin"],
+    spanish: "empezar",
+    type: "irregular",
+    memoryTip: "Stem-changing verb (e → ie) in present: empiezo, empiezas, etc.",
+    conjugations: {
+      "Present": ["empiezo", "empiezas", "empieza", "empezamos", "empezáis", "empiezan"],
+      "Preterite": ["empecé", "empezaste", "empezó", "empezamos", "empezasteis", "empezaron"],
+      "Imperfect": ["empezaba", "empezabas", "empezaba", "empezábamos", "empezabais", "empezaban"],
+      "Future": ["empezaré", "empezarás", "empezará", "empezaremos", "empezaréis", "empezarán"],
+      "Conditional": ["empezaría", "empezarías", "empezaría", "empezaríamos", "empezaríais", "empezarían"],
+      "Present Perfect": ["he empezado", "has empezado", "ha empezado", "hemos empezado", "habéis empezado", "han empezado"],
+      "Past Perfect": ["había empezado", "habías empezado", "había empezado", "habíamos empezado", "habíais empezado", "habían empezado"],
+      "Future Perfect": ["habré empezado", "habrás empezado", "habrá empezado", "habremos empezado", "habéis empezado", "habrán empezado"],
+      "Conditional Perfect": ["habría empezado", "habrías empezado", "habría empezado", "habríamos empezado", "habríais empezado", "habrían empezado"]
+    }
+  },
+  {
+    english: ["to finish", "to end"],
+    spanish: "terminar",
+    type: "regular",
+    memoryTip: "Used for finishing or completing something.",
+    conjugations: {
+      "Present": ["termino", "terminas", "termina", "terminamos", "termináis", "terminan"],
+      "Preterite": ["terminé", "terminaste", "terminó", "terminamos", "terminasteis", "terminaron"],
+      "Imperfect": ["terminaba", "terminabas", "terminaba", "terminábamos", "terminabais", "terminaban"],
+      "Future": ["terminaré", "terminarás", "terminará", "terminaremos", "terminaréis", "terminarán"],
+      "Conditional": ["terminaría", "terminarías", "terminaría", "terminaríamos", "terminaríais", "terminarían"],
+      "Present Perfect": ["he terminado", "has terminado", "ha terminado", "hemos terminado", "habéis terminado", "han terminado"],
+      "Past Perfect": ["había terminado", "habías terminado", "había terminado", "habíamos terminado", "habíais terminado", "habían terminado"],
+      "Future Perfect": ["habré terminado", "habrás terminado", "habrá terminado", "habremos terminado", "habéis terminado", "habrán terminado"],
+      "Conditional Perfect": ["habría terminado", "habrías terminado", "habría terminado", "habríamos terminado", "habríais terminado", "habrían terminado"]
+    }
+  },
+  {
+    english: ["to change"],
+    spanish: "cambiar",
+    type: "regular",
+    memoryTip: "Used for changing or altering something.",
+    conjugations: {
+      "Present": ["cambio", "cambias", "cambia", "cambiamos", "cambiáis", "cambian"],
+      "Preterite": ["cambié", "cambiaste", "cambió", "cambiamos", "cambiasteis", "cambiaron"],
+      "Imperfect": ["cambiaba", "cambiabas", "cambiaba", "cambiábamos", "cambiabais", "cambiaban"],
+      "Future": ["cambiaré", "cambiarás", "cambiará", "cambiaremos", "cambiaréis", "cambiarán"],
+      "Conditional": ["cambiaría", "cambiarías", "cambiaría", "cambiaríamos", "cambiaríais", "cambiarían"],
+      "Present Perfect": ["he cambiado", "has cambiado", "ha cambiado", "hemos cambiado", "habéis cambiado", "han cambiado"],
+      "Past Perfect": ["había cambiado", "habías cambiado", "había cambiado", "habíamos cambiado", "habíais cambiado", "habían cambiado"],
+      "Future Perfect": ["habré cambiado", "habrás cambiado", "habrá cambiado", "habremos cambiado", "habéis cambiado", "habrán cambiado"],
+      "Conditional Perfect": ["habría cambiado", "habrías cambiado", "habría cambiado", "habríamos cambiado", "habríais cambiado", "habrían cambiado"]
+    }
+  },
+  {
+    english: ["to choose"],
+    spanish: "elegir",
+    type: "irregular",
+    memoryTip: "Stem-changing verb (e → i) in present: elijo, eliges, etc.",
+    conjugations: {
+      "Present": ["elijo", "eliges", "elige", "elegimos", "elegís", "eligen"],
+      "Preterite": ["elegí", "elegiste", "eligió", "elegimos", "elegisteis", "eligieron"],
+      "Imperfect": ["elegía", "elegías", "elegía", "elegíamos", "elegíais", "elegían"],
+      "Future": ["elegiré", "elegirás", "elegirá", "elegiremos", "elegiréis", "elegirán"],
+      "Conditional": ["elegiría", "elegirías", "elegiría", "elegiríamos", "elegiríais", "elegirían"],
+      "Present Perfect": ["he elegido", "has elegido", "ha elegido", "hemos elegido", "habéis elegido", "han elegido"],
+      "Past Perfect": ["había elegido", "habías elegido", "había elegido", "habíamos elegido", "habíais elegido", "habían elegido"],
+      "Future Perfect": ["habré elegido", "habrás elegido", "habrá elegido", "habremos elegido", "habéis elegido", "habrán elegido"],
+      "Conditional Perfect": ["habría elegido", "habrías elegido", "habría elegido", "habríamos elegido", "habríais elegido", "habrían elegido"]
+    }
+  },
+  {
+    english: ["to fly"],
+    spanish: "volar",
+    type: "regular",
+    memoryTip: "Used for flying or traveling through the air.",
+    conjugations: {
+      "Present": ["vuelo", "vuelas", "vuela", "volamos", "voláis", "vuelan"],
+      "Preterite": ["volé", "volaste", "voló", "volamos", "volasteis", "volaron"],
+      "Imperfect": ["volaba", "volabas", "volaba", "volábamos", "volabais", "volaban"],
+      "Future": ["volaré", "volarás", "volará", "volaremos", "volaréis", "volarán"],
+      "Conditional": ["volaría", "volarías", "volaría", "volaríamos", "volaríais", "volarían"],
+      "Present Perfect": ["he volado", "has volado", "ha volado", "hemos volado", "habéis volado", "han volado"],
+      "Past Perfect": ["había volado", "habías volado", "había volado", "habíamos volado", "habíais volado", "habían volado"],
+      "Future Perfect": ["habré volado", "habrás volado", "habrá volado", "habremos volado", "habéis volado", "habrán volado"],
+      "Conditional Perfect": ["habría volado", "habrías volado", "habría volado", "habríamos volado", "habríais volado", "habrían volado"]
+    }
+  },
+  {
+    english: ["to swim"],
+    spanish: "nadar",
+    type: "regular",
+    memoryTip: "Used for swimming or moving through water.",
+    conjugations: {
+      "Present": ["nado", "nadas", "nada", "nadamos", "nadáis", "nadan"],
+      "Preterite": ["nadé", "nadaste", "nadó", "nadamos", "nadasteis", "nadaron"],
+      "Imperfect": ["nadaba", "nadabas", "nadaba", "nadábamos", "nadabais", "nadaban"],
+      "Future": ["nadaré", "nadarás", "nadará", "nadaremos", "nadaréis", "nadarán"],
+      "Conditional": ["nadaría", "nadarías", "nadaría", "nadaríamos", "nadaríais", "nadarían"],
+      "Present Perfect": ["he nadado", "has nadado", "ha nadado", "hemos nadado", "habéis nadado", "han nadado"],
+      "Past Perfect": ["había nadado", "habías nadado", "había nadado", "habíamos nadado", "habíais nadado", "habían nadado"],
+      "Future Perfect": ["habré nadado", "habrás nadado", "habrá nadado", "habremos nadado", "habéis nadado", "habrán nadado"],
+      "Conditional Perfect": ["habría nadado", "habrías nadado", "habría nadado", "habríamos nadado", "habríais nadado", "habrían nadado"]
+    }
+  },
+  {
+    english: ["to jump"],
+    spanish: "saltar",
+    type: "regular",
+    memoryTip: "Used for jumping or leaping.",
+    conjugations: {
+      "Present": ["salto", "saltas", "salta", "saltamos", "saltáis", "saltan"],
+      "Preterite": ["salté", "saltaste", "saltó", "saltamos", "saltasteis", "saltaron"],
+      "Imperfect": ["saltaba", "saltabas", "saltaba", "saltábamos", "saltabais", "saltaban"],
+      "Future": ["saltaré", "saltarás", "saltará", "saltaremos", "saltaréis", "saltarán"],
+      "Conditional": ["saltaría", "saltarías", "saltaría", "saltaríamos", "saltaríais", "saltarían"],
+      "Present Perfect": ["he saltado", "has saltado", "ha saltado", "hemos saltado", "habéis saltado", "han saltado"],
+      "Past Perfect": ["había saltado", "habías saltado", "había saltado", "habíamos saltado", "habíais saltado", "habían saltado"],
+      "Future Perfect": ["habré saltado", "habrás saltado", "habrá saltado", "habremos saltado", "habéis saltado", "habrán saltado"],
+      "Conditional Perfect": ["habría saltado", "habrías saltado", "habría saltado", "habríamos saltado", "habríais saltado", "habrían saltado"]
+    }
+  },
+  {
+    english: ["to sit"],
+    spanish: "sentar",
+    type: "regular",
+    memoryTip: "Used for sitting or placing in a seated position.",
+    conjugations: {
+      "Present": ["siento", "sientas", "sienta", "sentamos", "sentáis", "sientan"],
+      "Preterite": ["senté", "sentaste", "sentó", "sentamos", "sentasteis", "sentaron"],
+      "Imperfect": ["sentaba", "sentabas", "sentaba", "sentábamos", "sentabais", "sentaban"],
+      "Future": ["sentaré", "sentarás", "sentará", "sentaremos", "sentaréis", "sentarán"],
+      "Conditional": ["sentaría", "sentarías", "sentaría", "sentaríamos", "sentaríais", "sentarían"],
+      "Present Perfect": ["he sentado", "has sentado", "ha sentado", "hemos sentado", "habéis sentado", "han sentado"],
+      "Past Perfect": ["había sentado", "habías sentado", "había sentado", "habíamos sentado", "habíais sentado", "habían sentado"],
+      "Future Perfect": ["habré sentado", "habrás sentado", "habrá sentado", "habremos sentado", "habéis sentado", "habrán sentado"],
+      "Conditional Perfect": ["habría sentado", "habrías sentado", "habría sentado", "habríamos sentado", "habríais sentado", "habrían sentado"]
+    }
+  },
+  {
+    english: ["to stand"],
+    spanish: "parar",
+    type: "regular",
+    memoryTip: "Used for standing or stopping.",
+    conjugations: {
+      "Present": ["paro", "paras", "para", "paramos", "paráis", "paran"],
+      "Preterite": ["paré", "paraste", "paró", "paramos", "parasteis", "pararon"],
+      "Imperfect": ["paraba", "parabas", "paraba", "parábamos", "parabais", "paraban"],
+      "Future": ["pararé", "pararás", "parará", "pararemos", "pararéis", "pararán"],
+      "Conditional": ["pararía", "pararías", "pararía", "pararíamos", "pararíais", "pararían"],
+      "Present Perfect": ["he parado", "has parado", "ha parado", "hemos parado", "habéis parado", "han parado"],
+      "Past Perfect": ["había parado", "habías parado", "había parado", "habíamos parado", "habíais parado", "habían parado"],
+      "Future Perfect": ["habré parado", "habrás parado", "habrá parado", "habremos parado", "habéis parado", "habrán parado"],
+      "Conditional Perfect": ["habría parado", "habrías parado", "habría parado", "habríamos parado", "habríais parado", "habrían parado"]
+    }
+  },
+  {
+    english: ["to climb"],
+    spanish: "subir",
+    type: "regular",
+    memoryTip: "Used for climbing or going up.",
+    conjugations: {
+      "Present": ["subo", "subes", "sube", "subimos", "subís", "suben"],
+      "Preterite": ["subí", "subiste", "subió", "subimos", "subisteis", "subieron"],
+      "Imperfect": ["subía", "subías", "subía", "subíamos", "subíais", "subían"],
+      "Future": ["subiré", "subirás", "subirá", "subiremos", "subiréis", "subirán"],
+      "Conditional": ["subiría", "subirías", "subiría", "subiríamos", "subiríais", "subirían"],
+      "Present Perfect": ["he subido", "has subido", "ha subido", "hemos subido", "habéis subido", "han subido"],
+      "Past Perfect": ["había subido", "habías subido", "había subido", "habíamos subido", "habíais subido", "habían subido"],
+      "Future Perfect": ["habré subido", "habrás subido", "habrá subido", "habremos subido", "habéis subido", "habrán subido"],
+      "Conditional Perfect": ["habría subido", "habrías subido", "habría subido", "habríamos subido", "habríais subido", "habrían subido"]
+    }
+  },
+  {
+    english: ["to descend", "to go down"],
+    spanish: "bajar",
+    type: "regular",
+    memoryTip: "Used for descending or going down.",
+    conjugations: {
+      "Present": ["bajo", "bajas", "baja", "bajamos", "bajáis", "bajan"],
+      "Preterite": ["bajé", "bajaste", "bajó", "bajamos", "bajasteis", "bajaron"],
+      "Imperfect": ["bajaba", "bajabas", "bajaba", "bajábamos", "bajabais", "bajaban"],
+      "Future": ["bajaré", "bajarás", "bajará", "bajaremos", "bajaréis", "bajarán"],
+      "Conditional": ["bajaría", "bajarías", "bajaría", "bajaríamos", "bajaríais", "bajarían"],
+      "Present Perfect": ["he bajado", "has bajado", "ha bajado", "hemos bajado", "habéis bajado", "han bajado"],
+      "Past Perfect": ["había bajado", "habías bajado", "había bajado", "habíamos bajado", "habíais bajado", "habían bajado"],
+      "Future Perfect": ["habré bajado", "habrás bajado", "habrá bajado", "habremos bajado", "habéis bajado", "habrán bajado"],
+      "Conditional Perfect": ["habría bajado", "habrías bajado", "habría bajado", "habríamos bajado", "habríais bajado", "habrían bajado"]
+    }
+  },
+  {
+    english: ["to walk", "to stroll", "to take for a walk"],
+    spanish: "pasear",
+    type: "regular",
+    memoryTip: "Used for walking leisurely or taking someone/something for a walk.",
+    conjugations: {
+      "Present": ["paseo", "paseas", "pasea", "paseamos", "paseáis", "pasean"],
+      "Preterite": ["paseé", "paseaste", "paseó", "paseamos", "paseasteis", "pasearon"],
+      "Imperfect": ["paseaba", "paseabas", "paseaba", "paseábamos", "paseabais", "paseaban"],
+      "Future": ["pasearé", "pasearás", "paseará", "pasearemos", "pasearéis", "pasearán"],
+      "Conditional": ["pasearía", "pasearías", "pasearía", "pasearíamos", "pasearíais", "pasearían"],
+      "Present Perfect": ["he paseado", "has paseado", "ha paseado", "hemos paseado", "habéis paseado", "han paseado"],
+      "Past Perfect": ["había paseado", "habías paseado", "había paseado", "habíamos paseado", "habíais paseado", "habían paseado"],
+      "Future Perfect": ["habré paseado", "habrás paseado", "habrá paseado", "habremos paseado", "habéis paseado", "habrán paseado"],
+      "Conditional Perfect": ["habría paseado", "habrías paseado", "habría paseado", "habríamos paseado", "habríais paseado", "habrían paseado"]
+    }
+  },
+  {
+    english: ["to blink"],
+    spanish: "parpadear",
+    type: "regular",
+    memoryTip: "Used for blinking or winking.",
+    conjugations: {
+      "Present": ["parpadeo", "parpadeas", "parpadea", "parpadeamos", "parpadeáis", "parpadean"],
+      "Preterite": ["parpadeé", "parpadeaste", "parpadeó", "parpadeamos", "parpadeasteis", "parpadearon"],
+      "Imperfect": ["parpadeaba", "parpadeabas", "parpadeaba", "parpadeábamos", "parpadeabais", "parpadeaban"],
+      "Future": ["parpadearé", "parpadearás", "parpadeará", "parpadearemos", "parpadearéis", "parpadearán"],
+      "Conditional": ["parpadearía", "parpadearías", "parpadearía", "parpadearíamos", "parpadearíais", "parpadearían"],
+      "Present Perfect": ["he parpadeado", "has parpadeado", "ha parpadeado", "hemos parpadeado", "habéis parpadeado", "han parpadeado"],
+      "Past Perfect": ["había parpadeado", "habías parpadeado", "había parpadeado", "habíamos parpadeado", "habíais parpadeado", "habían parpadeado"],
+      "Future Perfect": ["habré parpadeado", "habrás parpadeado", "habrá parpadeado", "habremos parpadeado", "habéis parpadeado", "habrán parpadeado"],
+      "Conditional Perfect": ["habría parpadeado", "habrías parpadeado", "habría parpadeado", "habríamos parpadeado", "habríais parpadeado", "habrían parpadeado"]
     }
   }
 ];
