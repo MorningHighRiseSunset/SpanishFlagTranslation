@@ -4973,5 +4973,22 @@ export const verbs = [
       "Future Perfect": ["habré saludado", "habrás saludado", "habrá saludado", "habremos saludado", "habéis saludado", "habrán saludado"],
       "Conditional Perfect": ["habría saludado", "habrías saludado", "habría saludado", "habríamos saludado", "habríais saludado", "habrían saludado"]
     }
+  },
+  {
+    english: ["to hold", "to fasten", "to secure"],
+    spanish: "sujetar",
+    type: "regular",
+    memoryTip: "Used for holding something in place or fastening it securely.",
+    conjugations: {
+      "Present": ["sujeto", "sujetas", "sujeta", "sujetamos", "sujetáis", "sujetan"],
+      "Preterite": ["sujeté", "sujetaste", "sujetó", "sujetamos", "sujetasteis", "sujetaron"],
+      "Imperfect": ["sujetaba", "sujetabas", "sujetaba", "sujetábamos", "sujetabais", "sujetaban"],
+      "Future": ["sujetaré", "sujetarás", "sujetará", "sujetaremos", "sujetaréis", "sujetarán"],
+      "Conditional": ["sujetaría", "sujetarías", "sujetaría", "sujetaríamos", "sujetaríais", "sujetarían"],
+      "Present Perfect": ["he sujetado", "has sujetado", "ha sujetado", "hemos sujetado", "habéis sujetado", "han sujetado"],
+      "Past Perfect": ["había sujetado", "habías sujetado", "había sujetado", "habíamos sujetado", "habíais sujetado", "habían sujetado"],
+      "Future Perfect": ["habré sujetado", "habrás sujetado", "habrá sujetado", "habremos sujetado", "habéis sujetado", "habrán sujetado"],
+      "Conditional Perfect": ["habría sujetado", "habrías sujetado", "habría sujetado", "habríamos sujetado", "habríais sujetado", "habrían sujetado"]
+    }
   }
 ];
