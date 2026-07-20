@@ -4990,5 +4990,141 @@ export const verbs = [
       "Future Perfect": ["habré sujetado", "habrás sujetado", "habrá sujetado", "habremos sujetado", "habéis sujetado", "habrán sujetado"],
       "Conditional Perfect": ["habría sujetado", "habrías sujetado", "habría sujetado", "habríamos sujetado", "habríais sujetado", "habrían sujetado"]
     }
+  },
+  {
+    english: ["to die", "to pass away"],
+    spanish: "fallecer",
+    type: "irregular",
+    memoryTip: "Used for dying or passing away (formal).",
+    conjugations: {
+      "Present": ["fallezco", "falleces", "fallece", "fallecemos", "fallecéis", "fallecen"],
+      "Preterite": ["fallecí", "falleciste", "falleció", "fallecimos", "fallecisteis", "fallecieron"],
+      "Imperfect": ["fallecía", "fallecías", "fallecía", "fallecíamos", "fallecíais", "fallecían"],
+      "Future": ["falleceré", "fallecerás", "fallecerá", "falleceremos", "falleceréis", "fallecerán"],
+      "Conditional": ["fallecería", "fallecerías", "fallecería", "falleceríamos", "falleceríais", "fallecerían"],
+      "Present Perfect": ["he fallecido", "has fallecido", "ha fallecido", "hemos fallecido", "habéis fallecido", "han fallecido"],
+      "Past Perfect": ["había fallecido", "habías fallecido", "había fallecido", "habíamos fallecido", "habíais fallecido", "habían fallecido"],
+      "Future Perfect": ["habré fallecido", "habrás fallecido", "habrá fallecido", "habremos fallecido", "habéis fallecido", "habrán fallecido"],
+      "Conditional Perfect": ["habría fallecido", "habrías fallecido", "habría fallecido", "habríamos fallecido", "habríais fallecido", "habrían fallecido"]
+    }
+  },
+  {
+    english: ["to be born"],
+    spanish: "nacer",
+    type: "irregular",
+    memoryTip: "Used for being born or coming into existence.",
+    conjugations: {
+      "Present": ["nazco", "naces", "nace", "nacemos", "nacéis", "nacen"],
+      "Preterite": ["nací", "naciste", "nació", "nacimos", "nacisteis", "nacieron"],
+      "Imperfect": ["nacía", "nacías", "nacía", "nacíamos", "nacíais", "nacían"],
+      "Future": ["naceré", "nacerás", "nacerá", "naceremos", "naceréis", "nacerán"],
+      "Conditional": ["nacería", "nacerías", "nacería", "naceríamos", "naceríais", "nacerían"],
+      "Present Perfect": ["he nacido", "has nacido", "ha nacido", "hemos nacido", "habéis nacido", "han nacido"],
+      "Past Perfect": ["había nacido", "habías nacido", "había nacido", "habíamos nacido", "habíais nacido", "habían nacido"],
+      "Future Perfect": ["habré nacido", "habrás nacido", "habrá nacido", "habremos nacido", "habéis nacido", "habrán nacido"],
+      "Conditional Perfect": ["habría nacido", "habrías nacido", "habría nacido", "habríamos nacido", "habríais nacido", "habrían nacido"]
+    }
+  },
+  {
+    english: ["to grow"],
+    spanish: "crecer",
+    type: "irregular",
+    memoryTip: "Used for growing or increasing in size.",
+    conjugations: {
+      "Present": ["crezco", "creces", "crece", "crecemos", "crecéis", "crecen"],
+      "Preterite": ["crecí", "creciste", "creció", "crecimos", "crecisteis", "crecieron"],
+      "Imperfect": ["crecía", "crecías", "crecía", "crecíamos", "crecíais", "crecían"],
+      "Future": ["creceré", "crecerás", "crecerá", "creceremos", "creceréis", "crecerán"],
+      "Conditional": ["crecería", "crecerías", "crecería", "creceríamos", "creceríais", "crecerían"],
+      "Present Perfect": ["he crecido", "has crecido", "ha crecido", "hemos crecido", "habéis crecido", "han crecido"],
+      "Past Perfect": ["había crecido", "habías crecido", "había crecido", "habíamos crecido", "habíais crecido", "habían crecido"],
+      "Future Perfect": ["habré crecido", "habrás crecido", "habrá crecido", "habremos crecido", "habéis crecido", "habrán crecido"],
+      "Conditional Perfect": ["habría crecido", "habrías crecido", "habría crecido", "habríamos crecido", "habríais crecido", "habrían crecido"]
+    }
+  },
+  {
+    english: ["to smile"],
+    spanish: "sonreír",
+    type: "irregular",
+    memoryTip: "Used for smiling or showing a smile.",
+    conjugations: {
+      "Present": ["sonrío", "sonríes", "sonríe", "sonreímos", "sonreís", "sonríen"],
+      "Preterite": ["sonreí", "sonreíste", "sonrió", "sonreímos", "sonreísteis", "sonrieron"],
+      "Imperfect": ["sonreía", "sonreías", "sonreía", "sonreíamos", "sonreíais", "sonreían"],
+      "Future": ["sonreiré", "sonreirás", "sonreirá", "sonreiremos", "sonreiréis", "sonreirán"],
+      "Conditional": ["sonreiría", "sonreirías", "sonreiría", "sonreiríamos", "sonreiríais", "sonreirían"],
+      "Present Perfect": ["he sonreído", "has sonreído", "ha sonreído", "hemos sonreído", "habéis sonreído", "han sonreído"],
+      "Past Perfect": ["había sonreído", "habías sonreído", "había sonreído", "habíamos sonreído", "habíais sonreído", "habían sonreído"],
+      "Future Perfect": ["habré sonreído", "habrás sonreído", "habrá sonreído", "habremos sonreído", "habéis sonreído", "habrán sonreído"],
+      "Conditional Perfect": ["habría sonreído", "habrías sonreído", "habría sonreído", "habríamos sonreído", "habríais sonreído", "habrían sonreído"]
+    }
+  },
+  {
+    english: ["to laugh"],
+    spanish: "reír",
+    type: "irregular",
+    memoryTip: "Used for laughing.",
+    conjugations: {
+      "Present": ["río", "ríes", "ríe", "reímos", "reís", "ríen"],
+      "Preterite": ["reí", "reíste", "rió", "reímos", "reísteis", "rieron"],
+      "Imperfect": ["reía", "reías", "reía", "reíamos", "reíais", "reían"],
+      "Future": ["reiré", "reirás", "reirá", "reiremos", "reiréis", "reirán"],
+      "Conditional": ["reiría", "reirías", "reiría", "reiríamos", "reiríais", "reirían"],
+      "Present Perfect": ["he reído", "has reído", "ha reído", "hemos reído", "habéis reído", "han reído"],
+      "Past Perfect": ["había reído", "habías reído", "había reído", "habíamos reído", "habíais reído", "habían reído"],
+      "Future Perfect": ["habré reído", "habrás reído", "habrá reído", "habremos reído", "habéis reído", "habrán reído"],
+      "Conditional Perfect": ["habría reído", "habrías reído", "habría reído", "habríamos reído", "habríais reído", "habrían reído"]
+    }
+  },
+  {
+    english: ["to cry", "to weep"],
+    spanish: "llorar",
+    type: "regular",
+    memoryTip: "Used for crying or shedding tears.",
+    conjugations: {
+      "Present": ["lloro", "lloras", "llora", "lloramos", "lloráis", "lloran"],
+      "Preterite": ["lloré", "lloraste", "lloró", "lloramos", "llorasteis", "lloraron"],
+      "Imperfect": ["lloraba", "llorabas", "lloraba", "llorábamos", "llorabais", "lloraban"],
+      "Future": ["lloraré", "llorarás", "llorará", "lloraremos", "lloraréis", "llorarán"],
+      "Conditional": ["lloraría", "llorarías", "lloraría", "lloraríamos", "lloraríais", "llorarían"],
+      "Present Perfect": ["he llorado", "has llorado", "ha llorado", "hemos llorado", "habéis llorado", "han llorado"],
+      "Past Perfect": ["había llorado", "habías llorado", "había llorado", "habíamos llorado", "habíais llorado", "habían llorado"],
+      "Future Perfect": ["habré llorado", "habrás llorado", "habrá llorado", "habremos llorado", "habéis llorado", "habrán llorado"],
+      "Conditional Perfect": ["habría llorado", "habrías llorado", "habría llorado", "habríamos llorado", "habríais llorado", "habrían llorado"]
+    }
+  },
+  {
+    english: ["to hug", "to embrace"],
+    spanish: "abrazar",
+    type: "regular",
+    memoryTip: "Used for hugging or embracing someone.",
+    conjugations: {
+      "Present": ["abrazo", "abrazas", "abraza", "abrazamos", "abrazáis", "abrazan"],
+      "Preterite": ["abracé", "abrazaste", "abrazó", "abrazamos", "abrazasteis", "abrazaron"],
+      "Imperfect": ["abrazaba", "abrazabas", "abrazaba", "abrazábamos", "abrazabais", "abrazaban"],
+      "Future": ["abrazaré", "abrazarás", "abrazará", "abrazaremos", "abrazaréis", "abrazarán"],
+      "Conditional": ["abrazaría", "abrazarías", "abrazaría", "abrazaríamos", "abrazaríais", "abrazarían"],
+      "Present Perfect": ["he abrazado", "has abrazado", "ha abrazado", "hemos abrazado", "habéis abrazado", "han abrazado"],
+      "Past Perfect": ["había abrazado", "habías abrazado", "había abrazado", "habíamos abrazado", "habíais abrazado", "habían abrazado"],
+      "Future Perfect": ["habré abrazado", "habrás abrazado", "habrá abrazado", "habremos abrazado", "habéis abrazado", "habrán abrazado"],
+      "Conditional Perfect": ["habría abrazado", "habrías abrazado", "habría abrazado", "habríamos abrazado", "habríais abrazado", "habrían abrazado"]
+    }
+  },
+  {
+    english: ["to kiss"],
+    spanish: "besar",
+    type: "regular",
+    memoryTip: "Used for kissing.",
+    conjugations: {
+      "Present": ["beso", "besas", "besa", "besamos", "besáis", "besan"],
+      "Preterite": ["besé", "besaste", "besó", "besamos", "besasteis", "besaron"],
+      "Imperfect": ["besaba", "besabas", "besaba", "besábamos", "besabais", "besaban"],
+      "Future": ["besaré", "besarás", "besará", "besaremos", "besaréis", "besarán"],
+      "Conditional": ["besaría", "besarías", "besaría", "besaríamos", "besaríais", "besarían"],
+      "Present Perfect": ["he besado", "has besado", "ha besado", "hemos besado", "habéis besado", "han besado"],
+      "Past Perfect": ["había besado", "habías besado", "había besado", "habíamos besado", "habíais besado", "habían besado"],
+      "Future Perfect": ["habré besado", "habrás besado", "habrá besado", "habremos besado", "habéis besado", "habrán besado"],
+      "Conditional Perfect": ["habría besado", "habrías besado", "habría besado", "habríamos besado", "habríais besado", "habrían besado"]
+    }
   }
 ];
