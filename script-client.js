@@ -217,7 +217,7 @@ async function startTranslate() {
             if (manualTarget && manualTarget.value) payload.target = manualTarget.value;
         }
 
-        const response = await fetch('https://spanishflagtranslation.vercel.app/api/translate', {
+        const response = await fetch('/api/translate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -307,7 +307,7 @@ async function startDetect() {
 
     try {
         const payload = { text };
-        const response = await fetch('https://spanishflagtranslation.vercel.app/api/translate', {
+        const response = await fetch('/api/translate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
